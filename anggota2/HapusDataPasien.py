@@ -1,8 +1,7 @@
 """
-===================================================
-  MEDWATCH - HapusDataPasien.py
+
+  fungsi HapusDataPasien.py
   Deskripsi: Menghapus data pasien dari Pasien.json
-===================================================
 """
 
 from pasien_helper import baca_file, simpan_file, FILE_PASIEN
@@ -43,6 +42,6 @@ def HapusDataPasien() -> bool:
     return True
 
 
-# ── Test langsung ──────────────────────────────────
+# Test langsung
 if __name__ == "__main__":
     HapusDataPasien()
