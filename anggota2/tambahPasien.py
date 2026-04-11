@@ -1,107 +1,104 @@
+"""
+===================================================
+  MEDWATCH - TambahPasien.py
+  Deskripsi: Input data pasien baru dengan
+             format SOAP (Subjektif, Objektif,
+             Assessment, Planning)
+===================================================
+"""
 
-from database import load_database, save_database, generate_id, get_timestamp
+from datetime import datetime
+from pasien_helper import baca_file, simpan_file, generate_id, input_wajib, FILE_PASIEN
 
 
-def input_data_pasien() -> dict:
+def TambahPasien() -> dict:
     """
-    Mengumpulkan input dari pengguna untuk data pasien baru.
-    Mengembalikan dictionary data pasien.
+    Meminta user mengisi data pasien + SOAP,
+    lalu menyimpannya ke Pasien.json.
     """
-    print("\n" + "=" * 55)
-    print("       TAMBAH DATA PASIEN BARU - REKAM MEDIS")
-    print("=" * 55)
+    print("\n" + "=" * 50)
+    print("   TAMBAH DATA PASIEN BARU - MEDWATCH")
+    print("=" * 50)
 
-    # --- DATA IDENTITAS PASIEN ---
-    print("\n[IDENTITAS PASIEN]")
-    tgl_kunjungan = input("Tanggal Kunjungan (dd-mm-yyyy)     : ").strip()
-    nama          = input("Nama Pasien                        : ").strip()
-    umur          = input("Umur (tahun)                       : ").strip()
-    alamat        = input("Alamat                             : ").strip()
+    # ── DATA IDENTITAS ────────────────────────────
+    print("\n── DATA PASIEN ──────────────────────────────")
+    tanggal = input(f"Tanggal kunjungan (default {datetime.now().strftime('%d-%m-%Y')}): ").strip()
+    if not tanggal:
+        tanggal = datetime.now().strftime("%d-%m-%Y")
 
-    # --- SUBJECTIVE (S) ---
-    print("\n[S] SUBJECTIVE - Keluhan Pasien")
-    subjective = input("Keluhan Pasien                     : ").strip()
+    nama     = input_wajib("Nama pasien       : ")
+    umur     = input_wajib("Umur              : ")
+    alamat   = input_wajib("Alamat            : ")
+    kategori = input("Kategori pasien   : ").strip()  # bebas isi, contoh: Ibu Hamil, Umum, Anak, KB, dll
 
-    # --- OBJECTIVE (O) ---
-    print("\n[O] OBJECTIVE - Pemeriksaan Fisik")
-    tekanan_darah   = input("Tekanan Darah (mmHg)               : ").strip()
-    berat_badan     = input("Berat Badan (kg)                   : ").strip()
-    tinggi_badan    = input("Tinggi Badan (cm)                  : ").strip()
-    lingkar_lengan  = input("Lingkar Lengan (cm)                : ").strip()
-    pemeriksaan_lain = input("Pemeriksaan Tambahan (opsional)    : ").strip()
+    # ── S : SUBJEKTIF ─────────────────────────────
+    print("\n── S : SUBJEKTIF (Keluhan) ──────────────────")
+    keluhan  = input_wajib("Keluhan           : ")
+    riwayat  = input("Riwayat penyakit  : ").strip()
 
-    # --- ASSESSMENT (A) ---
-    print("\n[A] ASSESSMENT - Diagnosa")
-    assessment = input("Diagnosa / Penilaian Klinis        : ").strip()
+    # ── O : OBJEKTIF ──────────────────────────────
+    print("\n── O : OBJEKTIF (Pemeriksaan Fisik) ─────────")
+    td       = input("Tekanan darah     : ").strip()
+    nadi     = input("Nadi (x/menit)    : ").strip()
+    suhu     = input("Suhu tubuh (°C)   : ").strip()
+    rr       = input("Respirasi (x/mnt) : ").strip()
+    bb       = input("Berat badan (kg)  : ").strip()
+    tb       = input("Tinggi badan (cm) : ").strip()
+    lila     = input("LILA (cm)         : ").strip()
+    catatan_o= input("Catatan lain      : ").strip()
 
-    # --- PLAN (P) ---
-    print("\n[P] PLAN - Rencana Tatalaksana")
-    print("Masukkan rencana tatalaksana (ketik 'selesai' untuk mengakhiri):")
-    plan_lines = []
-    while True:
-        line = input("  > ").strip()
-        if line.lower() == "selesai":
-            break
-        if line:
-            plan_lines.append(line)
+    # ── A : ASSESSMENT ────────────────────────────
+    print("\n── A : ASSESSMENT (Diagnosa) ────────────────")
+    diagnosa = input_wajib("Diagnosa          : ")
 
-    pasien = {
-        "tgl_kunjungan"  : tgl_kunjungan,
-        "nama"           : nama,
-        "umur"           : umur,
-        "alamat"         : alamat,
-        "subjective"     : subjective,
-        "objective": {
-            "tekanan_darah"   : tekanan_darah,
-            "berat_badan"     : berat_badan,
-            "tinggi_badan"    : tinggi_badan,
-            "lingkar_lengan"  : lingkar_lengan,
-            "pemeriksaan_lain": pemeriksaan_lain,
+    # ── P : PLANNING ──────────────────────────────
+    print("\n── P : PLANNING (Tindakan & Resep) ──────────")
+    tindakan = input_wajib("Tindakan/anjuran  : ")
+    resep    = input("Resep obat        : ").strip()
+    kontrol  = input("Jadwal kontrol    : ").strip()
+
+    # ── SUSUN DATA ────────────────────────────────
+    semua_data  = baca_file(FILE_PASIEN)
+    pasien_baru = {
+        "id"               : generate_id(semua_data),
+        "tanggal_kunjungan": tanggal,
+        "nama"             : nama,
+        "umur"             : umur,
+        "alamat"           : alamat,
+        "kategori"         : kategori,
+        "S": {
+            "keluhan" : keluhan,
+            "riwayat" : riwayat,
         },
-        "assessment"     : assessment,
-        "plan"           : plan_lines,
+        "O": {
+            "tekanan_darah" : td,
+            "nadi"          : nadi,
+            "suhu_c"        : suhu,
+            "respirasi"     : rr,
+            "bb_kg"         : bb,
+            "tb_cm"         : tb,
+            "lila_cm"       : lila,
+            "catatan"       : catatan_o,
+        },
+        "A": {
+            "diagnosa" : diagnosa,
+        },
+        "P": {
+            "tindakan"       : tindakan,
+            "resep"          : resep,
+            "jadwal_kontrol" : kontrol,
+        },
     }
-    return pasien
+
+    semua_data.append(pasien_baru)
+    simpan_file(semua_data, FILE_PASIEN)
+
+    print(f"\n{'=' * 50}")
+    print(f"[✓] Data '{nama}' berhasil disimpan. ID: {pasien_baru['id']}")
+    print(f"{'=' * 50}")
+    return pasien_baru
 
 
-def tambah_pasien() -> None:
-    """
-    Fungsi utama modul TambahPasien.
-    Mengambil input, menetapkan ID unik, lalu menyimpan ke database.
-    """
-    data = load_database()
-
-    pasien_baru = input_data_pasien()
-
-    # Tetapkan metadata
-    pasien_baru["id"]           = generate_id(data)
-    pasien_baru["dibuat_pada"]  = get_timestamp()
-    pasien_baru["diubah_pada"]  = get_timestamp()
-
-    # Konfirmasi sebelum simpan
-    print("\n" + "-" * 55)
-    print("RINGKASAN DATA YANG AKAN DISIMPAN:")
-    print("-" * 55)
-    print(f"  ID          : {pasien_baru['id']}")
-    print(f"  Tgl Kunjungan: {pasien_baru['tgl_kunjungan']}")
-    print(f"  Nama        : {pasien_baru['nama']}")
-    print(f"  Umur        : {pasien_baru['umur']} tahun")
-    print(f"  Alamat      : {pasien_baru['alamat']}")
-    print(f"  S           : {pasien_baru['subjective']}")
-    print(f"  O - TD      : {pasien_baru['objective']['tekanan_darah']}")
-    print(f"  A           : {pasien_baru['assessment']}")
-    print(f"  P           : {'; '.join(pasien_baru['plan'])}")
-    print("-" * 55)
-
-    konfirmasi = input("Simpan data pasien ini? (y/n): ").strip().lower()
-    if konfirmasi == "y":
-        data.append(pasien_baru)
-        save_database(data)
-        print(f"\n✅ Data pasien '{pasien_baru['nama']}' berhasil disimpan dengan ID {pasien_baru['id']}.")
-    else:
-        print("\n❌ Penyimpanan dibatalkan.")
-
-
-# ─── Jalankan langsung jika dipanggil sebagai skrip ───────────────────────────
+# ── Test langsung ──────────────────────────────────
 if __name__ == "__main__":
-    tambah_pasien()
+    TambahPasien()
