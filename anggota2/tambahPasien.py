@@ -1,10 +1,6 @@
 """
-===================================================
-  MEDWATCH - TambahPasien.py
-  Deskripsi: Input data pasien baru dengan
-             format SOAP (Subjektif, Objektif,
-             Assessment, Planning)
-===================================================
+  fungsi TambahPasien.py
+  Deskripsi: Input data pasien baru
 """
 
 from datetime import datetime
@@ -20,7 +16,7 @@ def TambahPasien() -> dict:
     print("   TAMBAH DATA PASIEN BARU - MEDWATCH")
     print("=" * 50)
 
-    # ── DATA IDENTITAS ────────────────────────────
+    #DATA IDENTITAS
     print("\n── DATA PASIEN ──────────────────────────────")
     tanggal = input(f"Tanggal kunjungan (default {datetime.now().strftime('%d-%m-%Y')}): ").strip()
     if not tanggal:
@@ -31,12 +27,12 @@ def TambahPasien() -> dict:
     alamat   = input_wajib("Alamat            : ")
     kategori = input("Kategori pasien   : ").strip()  # bebas isi, contoh: Ibu Hamil, Umum, Anak, KB, dll
 
-    # ── S : SUBJEKTIF ─────────────────────────────
+    # S : SUBJEKTIF
     print("\n── S : SUBJEKTIF (Keluhan) ──────────────────")
     keluhan  = input_wajib("Keluhan           : ")
     riwayat  = input("Riwayat penyakit  : ").strip()
 
-    # ── O : OBJEKTIF ──────────────────────────────
+    # O : OBJEKTIF
     print("\n── O : OBJEKTIF (Pemeriksaan Fisik) ─────────")
     td       = input("Tekanan darah     : ").strip()
     nadi     = input("Nadi (x/menit)    : ").strip()
@@ -47,17 +43,17 @@ def TambahPasien() -> dict:
     lila     = input("LILA (cm)         : ").strip()
     catatan_o= input("Catatan lain      : ").strip()
 
-    # ── A : ASSESSMENT ────────────────────────────
+    #  A : ASSESSMENT
     print("\n── A : ASSESSMENT (Diagnosa) ────────────────")
     diagnosa = input_wajib("Diagnosa          : ")
 
-    # ── P : PLANNING ──────────────────────────────
+    #  P : PLANNING 
     print("\n── P : PLANNING (Tindakan & Resep) ──────────")
     tindakan = input_wajib("Tindakan/anjuran  : ")
     resep    = input("Resep obat        : ").strip()
     kontrol  = input("Jadwal kontrol    : ").strip()
 
-    # ── SUSUN DATA ────────────────────────────────
+    # SUSUN DATA 
     semua_data  = baca_file(FILE_PASIEN)
     pasien_baru = {
         "id"               : generate_id(semua_data),
@@ -99,6 +95,6 @@ def TambahPasien() -> dict:
     return pasien_baru
 
 
-# ── Test langsung ──────────────────────────────────
+# Test langsung
 if __name__ == "__main__":
     TambahPasien()
