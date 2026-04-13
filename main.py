@@ -241,29 +241,7 @@ def tes_anggota4():
     if semua_ok:
         pencarian = mods["pencarian_obat"]
         print()
-        garis("─")
-        print("  Modul siap. Ketik nama obat untuk dicari.")
-        print("  Contoh: ibuprofen  |  amoxicillin  |  metformin")
-        print("  Ketik 'selesai' atau biarkan kosong untuk kembali.\n")
-
-        while True:
-            garis("─")
-            kata = input("  Cari obat: ").strip()
-            if not kata or kata.lower() in ("selesai", "exit", "0"):
-                break
-
-            print()
-            hasil = pencarian.cari_obat(kata)
-            print(pencarian.format_hasil_pencarian(hasil))
-
-            if hasil["jumlah_hasil"] > 0:
-                print()
-                tanya = input("  Tampilkan profil keamanan lengkap? [y/n]: ").strip().lower()
-                if tanya == "y":
-                    profil = pencarian.ambil_profil_keamanan_lengkap(kata)
-                    print()
-                    print(pencarian.format_profil_keamanan(profil))
-
+        pencarian._main()
     else:
         print("\n  Ada modul yang gagal. Periksa error di atas.")
 
