@@ -1,0 +1,32 @@
+[
+  {
+    "id": "PSN-001",
+    "tanggal_kunjungan": "20-04-2026",
+    "nama": "Siti Aminah",
+    "umur": "28",
+    "alamat": "Jl. Gegerkalong Hilir",
+    "kategori": "Ibu Hamil",
+    "S": {
+      "keluhan": "Mual dan pusing sejak pagi",
+      "riwayat": "Tidak ada riwayat alergi"
+    },
+    "O": {
+      "tekanan_darah": "110/70",
+      "nadi": "80",
+      "suhu_c": "36.5",
+      "respirasi": "20",
+      "bb_kg": "60",
+      "tb_cm": "155",
+      "lila_cm": "24",
+      "catatan": "Kondisi umum baik"
+    },
+    "A": {
+      "diagnosa": "G1P0A0 Hamil 12 Minggu"
+    },
+    "P": {
+      "tindakan": "Berikan edukasi nutrisi kehamilan",
+      "resep": "Asam Folat, Paracetamol",
+      "jadwal_kontrol": "20-05-2026"
+    }
+  }
+]
