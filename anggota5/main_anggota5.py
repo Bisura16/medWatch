@@ -1,26 +1,36 @@
+from auth import verifikasi_login
 from ambil_data import ambil_seluruh_data_pasien
-# PERBAIKAN: Import fungsi buat_laporan_pdf dari modul export_pdf
-from export_pdf import buat_laporan_pdf 
-
-# Catatan: Baris di bawah ini bisa dihapus jika tidak dipakai di file ini
-# from utils.json_handler_dummy import get_dummy_drug_data
+from export_pdf import buat_laporan_pdf
 
 def jalankan_fitur_anggota_5():
-    print("=== Menjalankan Modul Anggota 5 ===")
+    # 1. GERBANG PERTAMA: Login
+    is_logged_in, user_aktif = verifikasi_login()
+
+    # 2. CEK STATUS: Jika gagal, langsung usir (stop)
+    if not is_logged_in:
+        print("\n[X] Login Gagal. Anda tidak punya akses ke fitur Ekspor.")
+        return # Program berhenti di sini
+
+    # 3. JIKA SUKSES: Masuk ke menu
+    print(f"\n" + "="*30)
+    print(f" HALO, {user_aktif.upper()}!")
+    print("="*30)
+    print("1. Ekspor Rekam Medis ke PDF")
+    print("0. Keluar")
     
-    # ==========================================
-    # FITUR 2: EXPORT PDF REKAM MEDIS
-    # ==========================================
-    # Langkah A: Modul Ambil Data
-    data_pasien = ambil_seluruh_data_pasien()
-    
-    # Langkah B: Modul Export PDF
-    nama_file_pdf = "Laporan_RM_MedWatch.pdf"
-    print(f"[ExportPDF] Sedang menyusun dokumen {nama_file_pdf}...")
-    
-    # Fungsi ini sekarang bisa berjalan karena sudah di-import
-    buat_laporan_pdf(data_pasien, output_filename=nama_file_pdf)
-    print(f"[OK] Laporan PDF berhasil diekspor!")
+    pilihan = input("\nPilih tindakan: ")
+
+    if pilihan == '1':
+        print("\n[Wait] Sedang menarik data dan mencetak PDF...")
+        data = ambil_seluruh_data_pasien()
+        
+        if data:
+            buat_laporan_pdf(data)
+            print(f"[OK] Laporan PDF berhasil dibuat di folder anggota5.")
+        else:
+            print("[!] Data pasien kosong. Gagal membuat PDF.")
+    else:
+        print("Keluar dari fitur...")
 
 if __name__ == "__main__":
     jalankan_fitur_anggota_5()
