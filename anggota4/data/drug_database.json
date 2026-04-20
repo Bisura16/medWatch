@@ -1,0 +1,163 @@
+[
+  {
+    "nama_obat": "Paracetamol",
+    "alias": ["Acetaminophen"],
+    "kategori": "Analgesik dan antipiretik",
+    "bahan_aktif": ["Paracetamol"],
+    "indikasi": ["Demam", "Nyeri ringan sampai sedang"],
+    "dosis_umum": "500 mg setiap 4-6 jam bila perlu, maksimal 4 gram per hari.",
+    "kehamilan": "Kategori B, umumnya aman bila sesuai dosis.",
+    "peringatan": [
+      "Gunakan hati-hati pada pasien dengan gangguan fungsi hati.",
+      "Hindari konsumsi alkohol berlebihan saat menggunakan obat ini."
+    ],
+    "kontraindikasi": [
+      "Hipersensitivitas terhadap paracetamol.",
+      "Penyakit hati berat."
+    ],
+    "interaksi": [
+      "Warfarin dapat meningkatkan risiko perdarahan bila dipakai jangka panjang.",
+      "Alkohol meningkatkan risiko toksisitas hati."
+    ],
+    "efek_samping": [
+      "Mual",
+      "Ruam kulit",
+      "Peningkatan enzim hati",
+      "Reaksi alergi berat"
+    ]
+  },
+  {
+    "nama_obat": "Ibuprofen",
+    "alias": ["Brufen"],
+    "kategori": "OAINS / antiinflamasi nonsteroid",
+    "bahan_aktif": ["Ibuprofen"],
+    "indikasi": ["Nyeri otot", "Nyeri sendi", "Demam"],
+    "dosis_umum": "200-400 mg, 3 kali sehari setelah makan.",
+    "kehamilan": "Hindari pada trimester ketiga kecuali atas instruksi dokter.",
+    "peringatan": [
+      "Gunakan setelah makan untuk mengurangi iritasi lambung.",
+      "Perlu pemantauan pada pasien dengan riwayat maag atau gangguan ginjal."
+    ],
+    "kontraindikasi": [
+      "Ulkus peptikum aktif.",
+      "Gagal ginjal berat.",
+      "Alergi terhadap OAINS."
+    ],
+    "interaksi": [
+      "Antikoagulan meningkatkan risiko perdarahan.",
+      "ACE inhibitor dapat menurunkan efek antihipertensi."
+    ],
+    "efek_samping": [
+      "Mual",
+      "Nyeri lambung",
+      "Pusing",
+      "Tukak lambung",
+      "Gangguan ginjal"
+    ]
+  },
+  {
+    "nama_obat": "Amoxicillin",
+    "alias": ["Amoksisilin"],
+    "kategori": "Antibiotik penisilin",
+    "bahan_aktif": ["Amoxicillin"],
+    "indikasi": ["Infeksi saluran napas", "Infeksi THT", "Infeksi kulit"],
+    "dosis_umum": "500 mg, 3 kali sehari sesuai durasi terapi.",
+    "kehamilan": "Kategori B, gunakan sesuai resep.",
+    "peringatan": [
+      "Pastikan tidak ada riwayat alergi penisilin.",
+      "Obat harus dihabiskan sesuai durasi terapi."
+    ],
+    "kontraindikasi": [
+      "Riwayat alergi berat terhadap penisilin atau sefalosporin."
+    ],
+    "interaksi": [
+      "Allopurinol dapat meningkatkan risiko ruam kulit.",
+      "Pil kontrasepsi oral bisa menurun efektivitasnya pada sebagian pasien."
+    ],
+    "efek_samping": [
+      "Diare",
+      "Mual",
+      "Ruam kulit",
+      "Reaksi alergi berat"
+    ]
+  },
+  {
+    "nama_obat": "Captopril",
+    "alias": ["Capoten"],
+    "kategori": "ACE inhibitor",
+    "bahan_aktif": ["Captopril"],
+    "indikasi": ["Hipertensi", "Gagal jantung", "Nefropati diabetik"],
+    "dosis_umum": "12.5-25 mg, 2-3 kali sehari sesuai evaluasi tekanan darah.",
+    "kehamilan": "Kontraindikasi pada kehamilan karena berisiko pada janin.",
+    "peringatan": [
+      "Pantau tekanan darah terutama pada awal terapi.",
+      "Perhatikan fungsi ginjal dan kadar kalium pada penggunaan berkala."
+    ],
+    "kontraindikasi": [
+      "Kehamilan.",
+      "Riwayat angioedema terkait ACE inhibitor."
+    ],
+    "interaksi": [
+      "Diuretik dapat meningkatkan efek hipotensi.",
+      "NSAID dapat menurunkan efek antihipertensi."
+    ],
+    "efek_samping": [
+      "Pusing",
+      "Batuk kering",
+      "Hipotensi",
+      "Angioedema"
+    ]
+  },
+  {
+    "nama_obat": "Cetirizine",
+    "alias": ["Zyrtec"],
+    "kategori": "Antihistamin",
+    "bahan_aktif": ["Cetirizine"],
+    "indikasi": ["Alergi", "Rinitis alergi", "Urtikaria"],
+    "dosis_umum": "10 mg sekali sehari.",
+    "kehamilan": "Gunakan bila manfaat lebih besar daripada risiko.",
+    "peringatan": [
+      "Dapat menyebabkan kantuk pada sebagian pasien.",
+      "Hati-hati saat mengemudi atau mengoperasikan mesin."
+    ],
+    "kontraindikasi": [
+      "Hipersensitivitas terhadap cetirizine atau hydroxyzine."
+    ],
+    "interaksi": [
+      "Sedatif atau alkohol dapat meningkatkan rasa kantuk."
+    ],
+    "efek_samping": [
+      "Kantuk",
+      "Mulut kering",
+      "Pusing"
+    ]
+  },
+  {
+    "nama_obat": "Metformin",
+    "alias": ["Glucophage"],
+    "kategori": "Antidiabetik oral biguanid",
+    "bahan_aktif": ["Metformin"],
+    "indikasi": ["Diabetes melitus tipe 2"],
+    "dosis_umum": "500 mg 1-2 kali sehari setelah makan, dititrasi sesuai respons.",
+    "kehamilan": "Gunakan sesuai penilaian dokter.",
+    "peringatan": [
+      "Konsumsi bersama makanan untuk mengurangi keluhan saluran cerna.",
+      "Perlu evaluasi fungsi ginjal secara berkala."
+    ],
+    "kontraindikasi": [
+      "Gagal ginjal berat.",
+      "Asidosis metabolik."
+    ],
+    "interaksi": [
+      "Kontras iodin dapat meningkatkan risiko asidosis laktat.",
+      "Alkohol meningkatkan risiko hipoglikemia dan asidosis laktat."
+    ],
+    "efek_samping": [
+      "Mual",
+      "Diare",
+      "Kembung",
+      "Hipoglikemia",
+      "Asidosis laktat"
+    ]
+  }
+]

@@ -1,0 +1,104 @@
+[
+  {
+    "nama_efek": "Mual",
+    "kategori": "Gastrointestinal",
+    "tingkat_keparahan": "ringan",
+    "rekomendasi": "Pantau keluhan dan anjurkan konsumsi obat setelah makan bila memungkinkan."
+  },
+  {
+    "nama_efek": "Ruam kulit",
+    "kategori": "Dermatologis",
+    "tingkat_keparahan": "sedang",
+    "rekomendasi": "Evaluasi bila ruam meluas, gatal berat, atau disertai demam."
+  },
+  {
+    "nama_efek": "Peningkatan enzim hati",
+    "kategori": "Hepatik",
+    "tingkat_keparahan": "sedang",
+    "rekomendasi": "Pertimbangkan pemantauan fungsi hati pada penggunaan berulang."
+  },
+  {
+    "nama_efek": "Reaksi alergi berat",
+    "kategori": "Imunologis",
+    "tingkat_keparahan": "serius",
+    "rekomendasi": "Hentikan obat dan cari pertolongan medis segera."
+  },
+  {
+    "nama_efek": "Nyeri lambung",
+    "kategori": "Gastrointestinal",
+    "tingkat_keparahan": "sedang",
+    "rekomendasi": "Pantau nyeri perut dan pertimbangkan evaluasi bila gejala menetap."
+  },
+  {
+    "nama_efek": "Pusing",
+    "kategori": "Neurologis",
+    "tingkat_keparahan": "ringan",
+    "rekomendasi": "Anjurkan pasien bangun perlahan dan hindari aktivitas berisiko bila gejala muncul."
+  },
+  {
+    "nama_efek": "Tukak lambung",
+    "kategori": "Gastrointestinal",
+    "tingkat_keparahan": "serius",
+    "rekomendasi": "Butuh evaluasi dokter segera, terutama bila ada muntah darah atau BAB hitam."
+  },
+  {
+    "nama_efek": "Gangguan ginjal",
+    "kategori": "Renal",
+    "tingkat_keparahan": "serius",
+    "rekomendasi": "Pantau fungsi ginjal dan rujuk bila terjadi penurunan urine atau bengkak."
+  },
+  {
+    "nama_efek": "Diare",
+    "kategori": "Gastrointestinal",
+    "tingkat_keparahan": "ringan",
+    "rekomendasi": "Pastikan hidrasi cukup dan evaluasi bila diare berat atau berkepanjangan."
+  },
+  {
+    "nama_efek": "Batuk kering",
+    "kategori": "Respirasi",
+    "tingkat_keparahan": "ringan",
+    "rekomendasi": "Pantau frekuensi batuk; konsultasikan bila mengganggu tidur atau aktivitas."
+  },
+  {
+    "nama_efek": "Hipotensi",
+    "kategori": "Kardiovaskular",
+    "tingkat_keparahan": "sedang",
+    "rekomendasi": "Monitor tekanan darah, terutama pada awal terapi atau setelah perubahan dosis."
+  },
+  {
+    "nama_efek": "Angioedema",
+    "kategori": "Imunologis",
+    "tingkat_keparahan": "serius",
+    "rekomendasi": "Ini kondisi gawat darurat; hentikan obat dan cari bantuan medis segera."
+  },
+  {
+    "nama_efek": "Kantuk",
+    "kategori": "Neurologis",
+    "tingkat_keparahan": "ringan",
+    "rekomendasi": "Gunakan pada malam hari bila sesuai dan hindari mengemudi bila mengantuk."
+  },
+  {
+    "nama_efek": "Mulut kering",
+    "kategori": "Neurologis",
+    "tingkat_keparahan": "ringan",
+    "rekomendasi": "Anjurkan minum air cukup atau mengunyah permen bebas gula."
+  },
+  {
+    "nama_efek": "Kembung",
+    "kategori": "Gastrointestinal",
+    "tingkat_keparahan": "ringan",
+    "rekomendasi": "Pantau toleransi pasien dan sesuaikan waktu konsumsi obat dengan makanan."
+  },
+  {
+    "nama_efek": "Hipoglikemia",
+    "kategori": "Metabolik",
+    "tingkat_keparahan": "sedang",
+    "rekomendasi": "Pantau gula darah dan edukasi tanda hipoglikemia pada pasien."
+  },
+  {
+    "nama_efek": "Asidosis laktat",
+    "kategori": "Metabolik",
+    "tingkat_keparahan": "serius",
+    "rekomendasi": "Butuh penanganan darurat, terutama bila disertai napas cepat atau lemah berat."
+  }
+]
