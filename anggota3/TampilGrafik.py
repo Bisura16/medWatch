@@ -349,3 +349,66 @@ def _tampil_line_kunjungan_bulanan(output_filename=None):
         ylabel="Jumlah Kunjungan",
     )
     return _simpan_atau_tampil(fig, output_filename)
+
+
+# ======================================================
+# GRAFIK 6 - BAR CHART KUNJUNGAN BULANAN PER GENDER (Visualisasi)
+# ======================================================
+def _tampil_bar_kunjungan_gender(output_filename=None):
+    """
+    Grouped Bar Chart kunjungan per bulan dipecah by gender.
+    Laki-Laki (biru) dan Perempuan (pink) berdampingan per bulan.
+    Ditampilkan di bagian Visualisasi.
+    """
+    data      = get_data_kunjungan_bulanan()
+    bulan     = data["bulan"]
+    laki      = np.array(data["laki_laki"],  dtype=float)
+    perempuan = np.array(data["perempuan"],  dtype=float)
+
+    x     = np.arange(len(bulan))
+    width = 0.38
+
+    fig, ax = plt.subplots(figsize=(13, 6))
+    fig.patch.set_facecolor("#FFFFFF")
+
+    b_laki = ax.bar(x - width/2, laki, width,
+                    label="Laki-Laki", color=WARNA_LAKI,
+                    edgecolor="white", linewidth=0.8)
+    b_puan = ax.bar(x + width/2, perempuan, width,
+                    label="Perempuan", color=WARNA_PEREMPUAN,
+                    edgecolor="white", linewidth=0.8)
+
+    max_val = max(laki.max(), perempuan.max())
+    for bar in b_laki:
+        h = bar.get_height()
+        if h > 0:
+            ax.text(bar.get_x() + bar.get_width() / 2,
+                    h + max_val * 0.012, str(int(h)),
+                    ha="center", va="bottom",
+                    fontsize=8.5, color=WARNA_LAKI, fontweight="bold")
+    for bar in b_puan:
+        h = bar.get_height()
+        if h > 0:
+            ax.text(bar.get_x() + bar.get_width() / 2,
+                    h + max_val * 0.012, str(int(h)),
+                    ha="center", va="bottom",
+                    fontsize=8.5, color=WARNA_PEREMPUAN, fontweight="bold")
+
+    total = laki + perempuan
+    ax.plot(x, total, color="#9CA3AF", linewidth=1,
+            linestyle=":", marker="D", markersize=4,
+            markerfacecolor="#9CA3AF", label="Total", zorder=3)
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(bulan, fontsize=10)
+    ax.set_ylim(0, max(total) * 1.18)
+    ax.grid(axis="y", color="#E5E7EB", linestyle="--", linewidth=0.6)
+    ax.set_axisbelow(True)
+    ax.legend(fontsize=9.5, framealpha=0.88, loc="upper left")
+
+    _style_ax(ax,
+        title="Tren Kunjungan Pasien per Bulan berdasarkan Jenis Kelamin",
+        xlabel="Bulan",
+        ylabel="Jumlah Kunjungan",
+    )
+    return _simpan_atau_tampil(fig, output_filename)
