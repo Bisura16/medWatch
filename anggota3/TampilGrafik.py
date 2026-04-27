@@ -23,9 +23,9 @@ import numpy as np
 from BacaData        import get_data_distribusi_keluhan, get_data_top10_efek_samping
 from PerbandinganObat import siapkan_data_heatmap
 
-# ─────────────────────────────────────────────
+# ======================================================
 # PALET WARNA MEDWATCH
-# ─────────────────────────────────────────────
+# ======================================================
 WARNA_ANAK   = "#A78BFA"
 WARNA_DEWASA = "#7C3AED"
 WARNA_LANSIA = "#1E1B4B"
@@ -36,9 +36,9 @@ PALET_PIE = [
 ]
 
 
-# ─────────────────────────────────────────────
+# ======================================================
 # HELPER INTERNAL
-# ─────────────────────────────────────────────
+# ======================================================
 def _simpan_atau_tampil(fig, output_filename):
     fig.tight_layout()
     if output_filename:
@@ -61,9 +61,9 @@ def _style_ax(ax, title, xlabel="", ylabel=""):
         spine.set_edgecolor("#E5E7EB")
 
 
-# ══════════════════════════════════════════════════════
+# ======================================================
 # GRAFIK 2A – PIE CHART DISTRIBUSI KELUHAN
-# ══════════════════════════════════════════════════════
+# ======================================================
 def _tampil_pie_keluhan(output_filename=None):
     data    = get_data_distribusi_keluhan()
     keluhan = data["keluhan"]
@@ -101,9 +101,9 @@ def _tampil_pie_keluhan(output_filename=None):
     return _simpan_atau_tampil(fig, output_filename)
 
 
-# ══════════════════════════════════════════════════════
+# ======================================================
 # GRAFIK 2B – HORIZONTAL GROUPED BAR (3 RENTANG UMUR)
-# ══════════════════════════════════════════════════════
+# ======================================================
 def _tampil_hbar_keluhan_umur(output_filename=None):
     data    = get_data_distribusi_keluhan()
     keluhan = data["keluhan"]
@@ -164,9 +164,9 @@ def _tampil_hbar_keluhan_umur(output_filename=None):
     return _simpan_atau_tampil(fig, output_filename)
 
 
-# ══════════════════════════════════════════════════════
+# ======================================================
 # GRAFIK 3 – HEATMAP PERBANDINGAN EFEK SAMPING OBAT
-# ══════════════════════════════════════════════════════
+# ======================================================
 def _tampil_heatmap_efek_samping(output_filename=None):
     # Data diproses oleh PerbandinganObat
     data        = siapkan_data_heatmap(urutkan=True)
@@ -229,9 +229,9 @@ def _tampil_heatmap_efek_samping(output_filename=None):
     return _simpan_atau_tampil(fig, output_filename)
 
 
-# ══════════════════════════════════════════════════════
+# ======================================================
 # GRAFIK 4 – BAR CHART TOP 10 EFEK SAMPING
-# ══════════════════════════════════════════════════════
+# ======================================================
 def _tampil_bar_top10(output_filename=None):
     data = get_data_top10_efek_samping()
     efek = data["efek_samping"][:10]
@@ -272,20 +272,80 @@ def _tampil_bar_top10(output_filename=None):
     return _simpan_atau_tampil(fig, output_filename)
 
 
-# ══════════════════════════════════════════════════════
+# ======================================================
 # FUNGSI PUBLIK – dipanggil file grafik masing-masing
-# ══════════════════════════════════════════════════════
+# ======================================================
 def visgrafikkeluhan(output_pie=None, output_hbar=None):
     """Tampilkan Pie Chart + Horizontal Bar distribusi keluhan."""
     _tampil_pie_keluhan(output_pie)
     _tampil_hbar_keluhan_umur(output_hbar)
 
-
 def visgrafikEfek(output_filename=None):
     """Tampilkan Heatmap perbandingan efek samping obat."""
     return _tampil_heatmap_efek_samping(output_filename)
 
-
 def Vgrafik10topEfek(output_filename=None):
     """Tampilkan Bar Chart Top 10 efek samping."""
     return _tampil_bar_top10(output_filename)
+
+def visgrafikKunjunganDashboard(output_filename=None):
+    """Line Chart tren kunjungan bulanan untuk Dashboard."""
+    return _tampil_line_kunjungan_bulanan(output_filename)
+
+def visgrafikKunjunganGender(output_filename=None):
+    """Bar Chart kunjungan bulanan per gender untuk Visualisasi."""
+    return _tampil_bar_kunjungan_gender(output_filename)
+
+
+# ======================================================
+# GRAFIK 5 - LINE CHART TREN KUNJUNGAN BULANAN (Dashboard)
+# ======================================================
+def _tampil_line_kunjungan_bulanan(output_filename=None):
+    """
+    Line Chart tren kunjungan pasien per bulan.
+    2 garis: Total Kunjungan (ungu) dan Pasien Baru (ungu muda putus-putus).
+    Ditampilkan di Dashboard.
+    """
+    data  = get_data_kunjungan_bulanan()
+    bulan = data["bulan"]
+    total = data["total_kunjungan"]
+    baru  = data["pasien_baru"]
+    x     = range(len(bulan))
+
+    fig, ax = plt.subplots(figsize=(11, 5))
+    fig.patch.set_facecolor("#FFFFFF")
+
+    ax.plot(x, total, color="#7C3AED", linewidth=2.5,
+            marker="o", markersize=7, markerfacecolor="white",
+            markeredgewidth=2, markeredgecolor="#7C3AED",
+            label="Total Kunjungan", zorder=3)
+    ax.fill_between(x, total, alpha=0.10, color="#7C3AED")
+
+    ax.plot(x, baru, color="#A78BFA", linewidth=2,
+            marker="s", markersize=6, markerfacecolor="white",
+            markeredgewidth=1.8, markeredgecolor="#A78BFA",
+            linestyle="--", label="Pasien Baru", zorder=3)
+    ax.fill_between(x, baru, alpha=0.07, color="#A78BFA")
+
+    for xi, (tv, bv) in enumerate(zip(total, baru)):
+        ax.text(xi, tv + max(total) * 0.025, str(tv),
+                ha="center", va="bottom", fontsize=8,
+                color="#7C3AED", fontweight="bold")
+        ax.text(xi, bv - max(total) * 0.035, str(bv),
+                ha="center", va="top", fontsize=8,
+                color="#A78BFA", fontweight="bold")
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(bulan, fontsize=10)
+    ax.set_ylim(0, max(total) * 1.22)
+    ax.grid(axis="y", color="#E5E7EB", linestyle="--", linewidth=0.6)
+    ax.grid(axis="x", color="#F3F4F6", linestyle=":", linewidth=0.5)
+    ax.set_axisbelow(True)
+    ax.legend(fontsize=9.5, framealpha=0.88, loc="upper left")
+
+    _style_ax(ax,
+        title="Tren Kunjungan Pasien per Bulan",
+        xlabel="Bulan",
+        ylabel="Jumlah Kunjungan",
+    )
+    return _simpan_atau_tampil(fig, output_filename)
