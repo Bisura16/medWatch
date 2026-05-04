@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedWatch API</title>
+<style>
+  :root {
+    --bg: #0a0a14;
+    --fg: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #7c3aed;
+    --border: #2a2a3a;
+    --card: #14141f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { color: #fff; font-size: 2rem; margin-bottom: 0.25rem; }
+  .sub { color: var(--muted); margin-bottom: 2rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  code { background: #1a1a26; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88rem; color: #c4b5fd; }
+  .method { display: inline-block; min-width: 56px; font-weight: 700; font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 4px; }
+  .GET { background: rgba(59,130,246,0.18); color: #60a5fa; }
+  .POST { background: rgba(34,197,94,0.18); color: #4ade80; }
+  .PUT { background: rgba(245,158,11,0.18); color: #fbbf24; }
+  .DELETE { background: rgba(239,68,68,0.18); color: #f87171; }
+  .role { font-size: 0.78rem; color: var(--muted); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .footer { color: var(--muted); font-size: 0.85rem; margin-top: 2rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>MedWatch API</h1>
+  <div class="sub">Flask integration layer wrapping anggota1 sampai anggota5. Deployed on GCP Cloud Run, asia-southeast1.</div>
+
+  <div class="card">
+    <strong>Frontend:</strong> <a href="https://medwatch-frontend.vercel.app">https://medwatch-frontend.vercel.app</a><br>
+    <strong>Auth:</strong> JWT (HS256, 12h expiry) via httpOnly cookie set by Vercel proxy.<br>
+    <strong>Roles:</strong> tenaga_kesehatan, masyarakat, admin
+  </div>
+
+  <h2>Endpoints</h2>
+  <div class="card">
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Role</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/health</code></td><td class="role">public</td><td>Service health probe</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/info</code></td><td class="role">public</td><td>Loaded modules + config flags</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/api/auth/login</code></td><td class="role">public</td><td>Issue JWT for username + password</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/auth/me</code></td><td class="role">any</td><td>Current user profile from token</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/api/auth/logout</code></td><td class="role">public</td><td>Stateless logout (cookie cleared by proxy)</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/patients</code></td><td class="role">tenaga_kesehatan, admin</td><td>List patients</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/patients/&lt;id&gt;</code></td><td class="role">any (own only for masyarakat)</td><td>Get patient SOAP record</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/api/patients</code></td><td class="role">tenaga_kesehatan, admin</td><td>Create patient (auto P001 id)</td></tr>
+      <tr><td><span class="method PUT">PUT</span></td><td><code>/api/patients/&lt;id&gt;</code></td><td class="role">tenaga_kesehatan, admin</td><td>Update patient (deep-merge)</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/api/patients/&lt;id&gt;</code></td><td class="role">admin</td><td>Delete patient</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/drugs</code></td><td class="role">public</td><td>List drug catalog (?category=...)</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/drugs/search?q=</code></td><td class="role">public</td><td>Drug search by name + alias + indication</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/drugs/&lt;nama&gt;</code></td><td class="role">public</td><td>Drug profile</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/api/safety/check</code></td><td class="role">any</td><td>Multi-drug safety analysis</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/visualizations/kunjungan-trend</code></td><td class="role">tenaga_kesehatan, admin</td><td>Monthly visit trend</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/visualizations/keluhan-distribution</code></td><td class="role">tenaga_kesehatan, admin</td><td>Complaint distribution</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/visualizations/top-efek-samping</code></td><td class="role">any</td><td>Top side effects</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/visualizations/heatmap-efek</code></td><td class="role">any</td><td>Drug x effect matrix</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/api/pdf/generate-rekam-medis</code></td><td class="role">tenaga_kesehatan, admin</td><td>Generate PDF for one patient</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/api/pdf/generate-laporan-bulanan</code></td><td class="role">admin</td><td>Monthly aggregate PDF</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/api/admin/scrape</code></td><td class="role">admin</td><td>Trigger drug data scraper</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/admin/users</code></td><td class="role">admin</td><td>List all users</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td><code>/api/admin/users</code></td><td class="role">admin</td><td>Create user</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td><code>/api/admin/users/&lt;username&gt;</code></td><td class="role">admin</td><td>Delete user</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td><code>/api/admin/system-stats</code></td><td class="role">admin</td><td>System counters</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="footer">
+    MedWatch | Kelompok B5 | D4 Teknik Informatika POLBAN | Proyek 1 PPL Desktop 2025/2026
+  </div>
+</div>
+</body>
+</html>

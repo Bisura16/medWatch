@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="medwatch-generator" version="22.0.0">
+  <diagram id="09-activity-patient-flow" name="09-activity-patient-flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="a0" value="Start" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="40" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="Bidan login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="120" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="Decision: role == tenaga_kesehatan?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="200" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="Show error" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="280" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="Open patient form" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="360" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" value="Fill SOAP fields" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="440" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" value="Decision: required fields filled?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="520" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" value="Highlight errors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="600" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a8" value="Submit POST /api/patients" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="680" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a9" value="Backend assigns P001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="760" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a10" value="Show detail page" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="840" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="a11" value="End" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="920" width="200" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
