@@ -1,6 +1,6 @@
 # MedWatch Security Audit
 
-**Audited by:** Ghaisan Khoirul Badruzaman (with autonomous  Code pass)
+**Audited by:** Ghaisan Khoirul Badruzaman 
 **Date:** 2026-05-04
 **Scope:** Backend `api/` (Flask on Cloud Run), Frontend `FrontendMedwatch/` (Next.js on Vercel), GCP deployment, integration data flow.
 
