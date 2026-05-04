@@ -15,13 +15,25 @@ Fungsi publik (dipanggil file grafik masing-masing):
 
 Library: matplotlib, numpy
 """
+<<<<<<< HEAD
 
+=======
+import matplotlib
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import numpy as np
 
+<<<<<<< HEAD
 from BacaData        import get_data_distribusi_keluhan, get_data_top10_efek_samping
 from PerbandinganObat import siapkan_data_heatmap
+=======
+from BacaData import (
+    get_data_distribusi_keluhan,
+    get_data_top10_efek_samping,
+    get_data_kunjungan_bulanan   
+)
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 
 # ─────────────────────────────────────────────
 # PALET WARNA MEDWATCH
@@ -29,6 +41,11 @@ from PerbandinganObat import siapkan_data_heatmap
 WARNA_ANAK   = "#A78BFA"
 WARNA_DEWASA = "#7C3AED"
 WARNA_LANSIA = "#1E1B4B"
+<<<<<<< HEAD
+=======
+WARNA_LAKI       = "#3B82F6"   # biru
+WARNA_PEREMPUAN  = "#EC4899"   # pink
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 
 PALET_PIE = [
     "#7C3AED","#A78BFA","#C4B5FD","#6D28D9",
@@ -61,9 +78,43 @@ def _style_ax(ax, title, xlabel="", ylabel=""):
         spine.set_edgecolor("#E5E7EB")
 
 
+<<<<<<< HEAD
 # ══════════════════════════════════════════════════════
 # GRAFIK 2A – PIE CHART DISTRIBUSI KELUHAN
 # ══════════════════════════════════════════════════════
+=======
+# ======================================================
+# FUNGSI PUBLIK – dipanggil file grafik masing-masing
+# ======================================================
+def visgrafikkeluhan(output_pie=None, output_hbar=None):
+    """Tampilkan Pie Chart + Horizontal Bar distribusi keluhan."""
+    _tampil_pie_keluhan(output_pie)
+    _tampil_hbar_keluhan_umur(output_hbar)
+
+
+def visgrafikEfek(output_filename=None):
+    """Tampilkan Heatmap perbandingan efek samping obat."""
+    return _tampil_heatmap_efek_samping(output_filename)
+
+
+def Vgrafik10topEfek(output_filename=None):
+    """Tampilkan Bar Chart Top 10 efek samping."""
+    return _tampil_bar_top10(output_filename)
+
+
+def visgrafikKunjunganDashboard(output_filename=None):
+    """Line Chart tren kunjungan bulanan untuk Dashboard."""
+    return _tampil_line_kunjungan_bulanan(output_filename)
+
+
+def visgrafikKunjunganGender(output_filename=None):
+    """Bar Chart kunjungan bulanan per gender untuk Visualisasi."""
+    return _tampil_bar_kunjungan_gender(output_filename)
+
+# ======================================================
+# GRAFIK 2A – PIE CHART DISTRIBUSI KELUHAN
+# ======================================================
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 def _tampil_pie_keluhan(output_filename=None):
     data    = get_data_distribusi_keluhan()
     keluhan = data["keluhan"]
@@ -101,9 +152,15 @@ def _tampil_pie_keluhan(output_filename=None):
     return _simpan_atau_tampil(fig, output_filename)
 
 
+<<<<<<< HEAD
 # ══════════════════════════════════════════════════════
 # GRAFIK 2B – HORIZONTAL GROUPED BAR (3 RENTANG UMUR)
 # ══════════════════════════════════════════════════════
+=======
+# ======================================================
+# GRAFIK 2B – HORIZONTAL GROUPED BAR (3 RENTANG UMUR)
+# ======================================================
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 def _tampil_hbar_keluhan_umur(output_filename=None):
     data    = get_data_distribusi_keluhan()
     keluhan = data["keluhan"]
@@ -164,9 +221,15 @@ def _tampil_hbar_keluhan_umur(output_filename=None):
     return _simpan_atau_tampil(fig, output_filename)
 
 
+<<<<<<< HEAD
 # ══════════════════════════════════════════════════════
 # GRAFIK 3 – HEATMAP PERBANDINGAN EFEK SAMPING OBAT
 # ══════════════════════════════════════════════════════
+=======
+# ======================================================
+# GRAFIK 3 – HEATMAP PERBANDINGAN EFEK SAMPING OBAT
+# ======================================================
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 def _tampil_heatmap_efek_samping(output_filename=None):
     # Data diproses oleh PerbandinganObat
     data        = siapkan_data_heatmap(urutkan=True)
@@ -229,9 +292,15 @@ def _tampil_heatmap_efek_samping(output_filename=None):
     return _simpan_atau_tampil(fig, output_filename)
 
 
+<<<<<<< HEAD
 # ══════════════════════════════════════════════════════
 # GRAFIK 4 – BAR CHART TOP 10 EFEK SAMPING
 # ══════════════════════════════════════════════════════
+=======
+# ======================================================
+# GRAFIK 4 – BAR CHART TOP 10 EFEK SAMPING
+# ======================================================
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 def _tampil_bar_top10(output_filename=None):
     data = get_data_top10_efek_samping()
     efek = data["efek_samping"][:10]
@@ -272,6 +341,7 @@ def _tampil_bar_top10(output_filename=None):
     return _simpan_atau_tampil(fig, output_filename)
 
 
+<<<<<<< HEAD
 # ══════════════════════════════════════════════════════
 # FUNGSI PUBLIK – dipanggil file grafik masing-masing
 # ══════════════════════════════════════════════════════
@@ -289,3 +359,129 @@ def visgrafikEfek(output_filename=None):
 def Vgrafik10topEfek(output_filename=None):
     """Tampilkan Bar Chart Top 10 efek samping."""
     return _tampil_bar_top10(output_filename)
+=======
+# ======================================================
+# GRAFIK 5 - LINE CHART TREN KUNJUNGAN BULANAN (Dashboard)
+# ======================================================
+def _tampil_line_kunjungan_bulanan(output_filename=None):
+    """
+    Line Chart tren kunjungan pasien per bulan.
+    2 garis: Total Kunjungan (ungu) dan Pasien Baru (ungu muda putus-putus).
+    Ditampilkan di Dashboard.
+    """
+    data  = get_data_kunjungan_bulanan()
+    bulan = data["bulan"]
+    total = data["total_kunjungan"]
+    baru  = data["pasien_baru"]
+    x     = range(len(bulan))
+
+    fig, ax = plt.subplots(figsize=(11, 5))
+    fig.patch.set_facecolor("#FFFFFF")
+
+    ax.plot(x, total, color="#7C3AED", linewidth=2.5,
+            marker="o", markersize=7, markerfacecolor="white",
+            markeredgewidth=2, markeredgecolor="#7C3AED",
+            label="Total Kunjungan", zorder=3)
+    ax.fill_between(x, total, alpha=0.10, color="#7C3AED")
+
+    ax.plot(x, baru, color="#A78BFA", linewidth=2,
+            marker="s", markersize=6, markerfacecolor="white",
+            markeredgewidth=1.8, markeredgecolor="#A78BFA",
+            linestyle="--", label="Pasien Baru", zorder=3)
+    ax.fill_between(x, baru, alpha=0.07, color="#A78BFA")
+
+    for xi, (tv, bv) in enumerate(zip(total, baru)):
+        ax.text(xi, tv + max(total) * 0.025, str(tv),
+                ha="center", va="bottom", fontsize=8,
+                color="#7C3AED", fontweight="bold")
+        ax.text(xi, bv - max(total) * 0.035, str(bv),
+                ha="center", va="top", fontsize=8,
+                color="#A78BFA", fontweight="bold")
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(bulan, fontsize=10)
+    ax.set_ylim(0, max(total) * 1.22)
+    ax.grid(axis="y", color="#E5E7EB", linestyle="--", linewidth=0.6)
+    ax.grid(axis="x", color="#F3F4F6", linestyle=":", linewidth=0.5)
+    ax.set_axisbelow(True)
+    ax.legend(fontsize=9.5, framealpha=0.88, loc="upper left")
+
+    _style_ax(ax,
+        title="Tren Kunjungan Pasien per Bulan",
+        xlabel="Bulan",
+        ylabel="Jumlah Kunjungan",
+    )
+    return _simpan_atau_tampil(fig, output_filename)
+
+# ======================================================
+# GRAFIK 6 - STACKED BAR KUNJUNGAN BULANAN PER GENDER (Visualisasi)
+# ======================================================
+def _tampil_bar_kunjungan_gender(output_filename=None):
+    """
+    Stacked Bar Chart kunjungan per bulan dipecah by gender.
+    1 bar per bulan — Perempuan (pink) di bawah, Laki-Laki (biru) di atas.
+    Label angka di tengah masing-masing segmen.
+    Ditampilkan di bagian Visualisasi.
+    """
+    data      = get_data_kunjungan_bulanan()
+    bulan     = data["bulan"]
+    laki      = np.array(data["laki_laki"],  dtype=float)
+    perempuan = np.array(data["perempuan"],  dtype=float)
+    total     = laki + perempuan
+ 
+    x     = np.arange(len(bulan))
+    width = 0.55
+ 
+    fig, ax = plt.subplots(figsize=(13, 6))
+    fig.patch.set_facecolor("#FFFFFF")
+ 
+    # Perempuan (pink) — segmen bawah
+    b_puan = ax.bar(x, perempuan, width,
+                    label="Perempuan", color=WARNA_PEREMPUAN,
+                    edgecolor="white", linewidth=0.8)
+ 
+    # Laki-laki (biru) — segmen atas, mulai dari puncak perempuan
+    b_laki = ax.bar(x, laki, width,
+                    bottom=perempuan,
+                    label="Laki-Laki", color=WARNA_LAKI,
+                    edgecolor="white", linewidth=0.8)
+ 
+    # Label angka di tengah segmen perempuan
+    for i, (bar, val) in enumerate(zip(b_puan, perempuan)):
+        if val > 0:
+            ax.text(bar.get_x() + bar.get_width() / 2,
+                    val / 2,
+                    str(int(val)),
+                    ha="center", va="center",
+                    fontsize=8.5, color="white", fontweight="bold")
+ 
+    # Label angka di tengah segmen laki-laki
+    for i, (bar, val_l, val_p) in enumerate(zip(b_laki, laki, perempuan)):
+        if val_l > 0:
+            ax.text(bar.get_x() + bar.get_width() / 2,
+                    val_p + val_l / 2,
+                    str(int(val_l)),
+                    ha="center", va="center",
+                    fontsize=8.5, color="white", fontweight="bold")
+ 
+    # Label total di atas bar
+    for i, (xi, tot) in enumerate(zip(x, total)):
+        ax.text(xi, tot + max(total) * 0.015,
+                str(int(tot)),
+                ha="center", va="bottom",
+                fontsize=8, color="#374151", fontweight="bold")
+ 
+    ax.set_xticks(x)
+    ax.set_xticklabels(bulan, fontsize=10)
+    ax.set_ylim(0, max(total) * 1.18)
+    ax.grid(axis="y", color="#E5E7EB", linestyle="--", linewidth=0.6)
+    ax.set_axisbelow(True)
+    ax.legend(fontsize=9.5, framealpha=0.88, loc="upper left")
+ 
+    _style_ax(ax,
+        title="Tren Kunjungan Pasien per Bulan berdasarkan Jenis Kelamin",
+        xlabel="Bulan",
+        ylabel="Jumlah Kunjungan",
+    )
+    return _simpan_atau_tampil(fig, output_filename)
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)

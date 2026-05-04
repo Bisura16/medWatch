@@ -7,6 +7,7 @@
 """
 from pasien_helper import baca_file, FILE_PASIEN
 
+<<<<<<< HEAD
 
 def ReadDataPasien(id_pasien: str = None):
     """
@@ -29,15 +30,34 @@ def ReadDataPasien(id_pasien: str = None):
 
 
 def TampilDashboardDokter() -> None:
+=======
+def ReadDataPasien(id_pasien=None, id_faskes_aktif=None):
+    semua = baca_file(FILE_PASIEN)
+    # Filter data berdasarkan Faskes
+    data_faskes = [p for p in semua if p.get("id_faskes") == id_faskes_aktif]
+
+    if id_pasien is None:
+        return data_faskes
+
+    return next((p for p in data_faskes if p["id"] == id_pasien), None)
+
+def TampilDashboardDokter(id_faskes_aktif):
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
     """
     Tampilkan data pasien dalam 2 bagian:
     1. Tabel ringkasan (ID, Nama, Tgl, Kategori, Diagnosa)
     2. Detail lengkap tiap pasien (semua field SOAP)
     """
+<<<<<<< HEAD
     data = ReadDataPasien()
 
     if not data:
         print("Belum ada data pasien.")
+=======
+    data = ReadDataPasien(id_faskes_aktif=id_faskes_aktif)
+    if not data:
+        print("\n[!] Tidak ada data pasien di faskes ini.")
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
         return
 
     W = 90

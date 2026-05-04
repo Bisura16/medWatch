@@ -1,6 +1,42 @@
 [
+<<<<<<< HEAD
 {
     "username": "dal", 
     "password": "123"
 }
+=======
+    {
+        "username": "admin1",
+        "password": "123",
+        "role": "admin faskes",
+        "id_faskes": "FASKES_001",
+        "nama_faskes": "Klinik MedWatch Pusat"
+    },
+    {
+        "username": "dokter1",
+        "password": "123",
+        "role": "dokter",
+        "id_faskes": "FASKES_001",
+        "no_str": "87654321"
+    },
+    {
+        "username": "pasien1",
+        "password": "123",
+        "role": "pasien",
+        "id_faskes": "PUBLIC"
+    },
+    {
+        "username": "abhidal123",
+        "password": "abhidall177",
+        "role": "pasien",
+        "id_faskes": "PUBLIC"
+    },
+    {
+        "username": "budi",
+        "password": "123",
+        "role": "dokter",
+        "no_str": "123456",
+        "id_faskes": "F001"
+    }
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 ]

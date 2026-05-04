@@ -6,16 +6,26 @@ Semua data yang dibutuhkan grafik dibaca dari sini.
 
 Dibaca oleh : TampilGrafik.py, PerbandinganObat.py
 Sumber data : data/medicalrecords.json, data/drugs.json
+<<<<<<< HEAD
               (jika file tidak ada → pakai data dummy otomatis)
+=======
+                (jika file tidak ada → pakai data dummy otomatis)
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 """
 
 import json
 import os
 from collections import defaultdict, Counter
 
+<<<<<<< HEAD
 # ─────────────────────────────────────────────
 # PATH FILE JSON
 # ─────────────────────────────────────────────
+=======
+# =============================================
+# PATH FILE JSON
+# =============================================
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 RM_JSON  = os.path.join(BASE_DIR, "data", "medicalrecords.json")
 DRG_JSON = os.path.join(BASE_DIR, "data", "drugs.json")
@@ -38,21 +48,36 @@ def _kategori_umur(umur: int) -> str:
         return "lansia"
 
 
+<<<<<<< HEAD
 # ══════════════════════════════════════════════════════
 # 1. DATA DISTRIBUSI KELUHAN
 #    → dipakai grafik Pie Chart & Horizontal Bar
 # ══════════════════════════════════════════════════════
+=======
+# ======================================================
+# 1. DATA DISTRIBUSI KELUHAN
+#    → dipakai grafik Pie Chart & Horizontal Bar
+# ======================================================
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 def get_data_distribusi_keluhan() -> dict:
     """
     Menghitung distribusi keluhan pasien dipecah per rentang umur.
 
     Return:
         {
+<<<<<<< HEAD
           "keluhan" : ["Demam", "Batuk & Pilek", ...],
           "total"   : [87, 74, ...],
           "anak"    : [35, 30, ...],   # 0-18 th
           "dewasa"  : [32, 28, ...],   # 19-59 th
           "lansia"  : [20, 16, ...],   # >60 th
+=======
+            "keluhan" : ["Demam", "Batuk & Pilek", ...],
+            "total"   : [87, 74, ...],
+            "anak"    : [35, 30, ...],   # 0-18 th
+            "dewasa"  : [32, 28, ...],   # 19-59 th
+            "lansia"  : [20, 16, ...],   # >60 th
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
         }
     """
     records = _load_json(RM_JSON)
@@ -92,20 +117,34 @@ def get_data_distribusi_keluhan() -> dict:
             "anak": anak, "dewasa": dewasa, "lansia": lansia}
 
 
+<<<<<<< HEAD
 # ══════════════════════════════════════════════════════
 # 2. DATA PERBANDINGAN EFEK SAMPING OBAT
 #    → dipakai grafik Heatmap (via PerbandinganObat.py)
 # ══════════════════════════════════════════════════════
+=======
+# ======================================================
+# 2. DATA PERBANDINGAN EFEK SAMPING OBAT
+#    → dipakai grafik Heatmap (via PerbandinganObat.py)
+# ======================================================
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 def get_data_perbandingan_obat() -> dict:
     """
     Membaca data efek samping per obat dari drugs.json.
 
     Return:
         {
+<<<<<<< HEAD
           "obat"   : ["Aspirin", "Paracetamol", ...],
           "efek"   : ["Mual", "Pusing", ...],
           "matriks": [[55, 30, ...], [20, 15, ...], ...]
                       baris = obat, kolom = efek, nilai = frekuensi %
+=======
+            "obat"   : ["Aspirin", "Paracetamol", ...],
+            "efek"   : ["Mual", "Pusing", ...],
+            "matriks": [[55, 30, ...], [20, 15, ...], ...]
+                        baris = obat, kolom = efek, nilai = frekuensi %
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
         }
     """
     drugs = _load_json(DRG_JSON)
@@ -154,10 +193,17 @@ def get_data_perbandingan_obat() -> dict:
     return {"obat": obat, "efek": efek, "matriks": matriks}
 
 
+<<<<<<< HEAD
 # ══════════════════════════════════════════════════════
 # 3. DATA TOP 10 EFEK SAMPING
 #    → dipakai grafik Bar Chart Top 10
 # ══════════════════════════════════════════════════════
+=======
+# ======================================================
+# 3. DATA TOP 10 EFEK SAMPING
+#    → dipakai grafik Bar Chart Top 10
+# ======================================================
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
 def get_data_top10_efek_samping() -> dict:
     """
     Menghitung 10 efek samping obat yang paling banyak dilaporkan.
@@ -195,3 +241,76 @@ def get_data_top10_efek_samping() -> dict:
         ],
         "jumlah": [58, 47, 43, 39, 34, 28, 25, 22, 18, 15],
     }
+<<<<<<< HEAD
+=======
+
+
+# ======================================================
+# 4. DATA TREN KUNJUNGAN PASIEN
+# Menggunakan Line Chart dan Bar Chart
+# ======================================================
+def get_data_kunjungan_bulanan() -> dict;
+    """
+    Menghitung tren kunjungan pasien perbulan dalam 1 tahun terakhir
+
+    Data yang digunakan : 
+        - total_kunjungan   : semua pasien kunjungan perbulan 
+        - pasien_baru       : pasien yang pertama kali datang dalam 1 bulan
+        - laki_laki         : banyak pasien laki-laki dalam 1 bulan 
+        - perempuan         : banyak pasien perempuan dalam 1 bulan
+
+    """
+    records = _load_json(RM_JSON)
+
+    NAMA_BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+                   "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+    
+    if record:
+        total       = [0] * 12
+        baru        = [0] * 12
+        laki        = [0] * 12
+        perempuan   = [0] * 12
+        id_pertama_kali = set()
+
+        for r in records: 
+            tanggal = r.get("tanggal_kunjungan", "")
+            try: 
+                bulan_idx = int(tanggal.split("-")[1]) - 1
+            except (IndexError, ValueError):
+                continue
+            if not (0 <= bulan_idx <= 11):
+                continue
+
+            id_pasien       = r.get("id_pasien", "")
+            kunjungan_ke    = int(r.get("kunjungan_ke", 1))
+            jk           = r.get("jenis_kelamin", "").upper()
+
+            total[bulan_idx] += 1
+
+            if kunjungan_ke == 1 or id_pasien not in id_pertama_kali:
+                if id_pasien not in id_pertama_kali:
+                    baru[bulan_idx] += 1
+                    id_pertama_kali.add(id_pasien)
+
+            if jk == "L":
+                laki[bulan_idx] += 1
+            elif jk == "P":
+                perempuan[bulan_idx] += 1
+
+        return {
+            "bulan"          : NAMA_BULAN,
+            "total_kunjungan": total,
+            "pasien_baru"    : baru,
+            "laki_laki"      : laki,
+            "perempuan"      : perempuan,
+        }
+
+    # -- DATA DUMMY --
+    return {
+        "bulan"          : NAMA_BULAN,
+        "total_kunjungan": [45, 52, 60, 55, 70, 65, 80, 75, 68, 72, 85, 90],
+        "pasien_baru"    : [20, 18, 25, 22, 30, 27, 35, 28, 24, 26, 32, 38],
+        "laki_laki"      : [22, 25, 28, 26, 33, 30, 38, 36, 31, 34, 40, 42],
+        "perempuan"      : [23, 27, 32, 29, 37, 35, 42, 39, 37, 38, 45, 48],
+    }
+>>>>>>> 93c21ad (Mencoba sistem login sesuai dengan role)
