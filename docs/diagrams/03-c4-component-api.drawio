@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="medwatch-generator" version="22.0.0">
+  <diagram id="03-c4-component-api" name="03-c4-component-api">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="app" value="app.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="auth" value="auth.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="40" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="mw" value="middleware.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="40" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="st" value="storage.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="40" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bp0" value="auth_routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bp1" value="patient_routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="140" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bp2" value="drug_routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="140" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bp3" value="safety_routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="140" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bp4" value="visualization_routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="140" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bp5" value="pdf_routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="790" y="140" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bp6" value="admin_routes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="140" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ang0" value="anggota1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#757575;strokeColor=#424242;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ang1" value="anggota2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#757575;strokeColor=#424242;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="280" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ang2" value="anggota3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#757575;strokeColor=#424242;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="280" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ang3" value="anggota4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#757575;strokeColor=#424242;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="280" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ang4" value="anggota5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#757575;strokeColor=#424242;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="280" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="st1" value="users.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#388E3C;strokeColor=#1B5E20;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="420" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="st2" value="patients.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#388E3C;strokeColor=#1B5E20;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="420" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="sm" value="JWT Secret" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B1FA2;strokeColor=#4A148C;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="420" width="160" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

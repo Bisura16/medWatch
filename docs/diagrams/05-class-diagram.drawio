@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="medwatch-generator" version="22.0.0">
+  <diagram id="05-class-diagram" name="05-class-diagram">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c0" value="User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" value="Patient" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="40" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="SOAP_Record" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="40" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="Drug" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="40" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="AuthService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="240" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" value="StorageService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="240" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" value="SafetyChecker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="240" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" value="PDFGenerator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontColor=#212121;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="240" width="200" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
