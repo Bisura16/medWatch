@@ -1,65 +1,128 @@
-import sys
+"""
+Entry point modul anggota5.
+Login dulu, terus tampilin menu sesuai role.
+- Admin: scraper, CRUD tenaga kesehatan, ekspor PDF
+- Tenaga kesehatan: ekspor PDF (CRUD pasien diakses lewat anggota2)
+"""
 import os
+import sys
+import subprocess
 
-# Memastikan Python bisa mengimport modul di folder yang sama
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from auth import verifikasi_login, hanya_admin
+from tkesehatan_crud import menu_tkesehatan_crud
 
-from ambil_data import ambil_seluruh_data_pasien
-from export_pdf import buat_laporan_pdf
 
-def jalankan_fitur_anggota_5():
-    # 1. Autentikasi Sederhana (Sesuai akun demo di menu tester kamu)
-    print("\n" + "═"*40)
-    print("       LOGIN FITUR ANGGOTA 5")
-    print("═"*40)
-    username = input("  Username : ").strip()
-    password = input("  Password : ").strip()
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ANGGOTA1_DIR = os.path.join(BASE_DIR, "anggota1")
+ANGGOTA1_FILE = os.path.join(ANGGOTA1_DIR, "anggota1.py")
 
-    if username != "dal" or password != "123":
-        print("\n  [!] Login Gagal: Akses Ditolak.")
+
+def trigger_scraper():
+    """Admin jalanin scraper anggota1. Subprocess ke folder anggota1."""
+    if not os.path.exists(ANGGOTA1_FILE):
+        print(f"[!] File scraper tidak ditemukan di {ANGGOTA1_FILE}.")
         return
 
-    # 2. Ambil Data dari JSON (Sudah terformat melalui ambil_data.py)
-    data = ambil_seluruh_data_pasien()
-    if not data:
-        print("\n  [!] Gagal: Data pasien tidak ditemukan atau JSON kosong.")
+    print("\n[i] Menjalankan scraper anggota1.py. Butuh internet, estimasi 5 menit.")
+    print("    Tekan Ctrl+C kalau mau cancel.")
+    konfirmasi = input("Lanjut? (y/n): ").strip().lower()
+    if konfirmasi != "y":
         return
 
-    # 3. Menu Pilihan Ekspor
+    try:
+        subprocess.run([sys.executable, "anggota1.py"], cwd=ANGGOTA1_DIR)
+    except KeyboardInterrupt:
+        print("\n[i] Scraper dibatalkan.")
+    except Exception as e:
+        print(f"[!] Error jalanin scraper: {e}")
+
+
+def ekspor_pdf():
+    """Placeholder yang panggil fungsi export_pdf existing.
+
+    Kalau Abhidal udah punya fungsi ekspor PDF di export_pdf.py atau ambil_data.py,
+    panggil dari sini. Kalau belum, biarkan placeholder ini sebagai TODO.
+    """
+    try:
+        from export_pdf import buat_laporan_pdf
+        from ambil_data import ambil_seluruh_data_pasien
+        data = ambil_seluruh_data_pasien()
+        if not data:
+            print("[!] Data pasien kosong atau tidak ditemukan.")
+            return
+        buat_laporan_pdf(data, "Laporan_MedWatch.pdf")
+    except ImportError:
+        print("[!] Modul export_pdf belum ready. Cek anggota5/export_pdf.py.")
+    except Exception as e:
+        print(f"[!] Gagal ekspor PDF: {e}")
+
+
+def menu_admin():
+    """Menu utama untuk role admin."""
     while True:
-        print("\n" + "─"*40)
-        print("      MENU EKSPOR PDF MEDWATCH")
-        print("─"*40)
-        print("  [1] Cetak Semua Pasien (+ Grafik Analitik)")
-        print("  [2] Cetak Pasien Tertentu (Berdasarkan ID)")
-        print("  [0] Kembali ke Menu Utama")
-        print("─"*40)
-        
-        pilihan = input("  Pilih opsi: ").strip()
+        print("\n" + "=" * 50)
+        print("   MENU ADMIN MEDWATCH")
+        print("=" * 50)
+        print("  [1] Jalankan Scraper Data Obat (anggota1)")
+        print("  [2] CRUD Tenaga Kesehatan")
+        print("  [3] Ekspor Laporan PDF")
+        print("  [0] Logout")
+        print("-" * 50)
 
+        pilihan = input("Pilih menu: ").strip()
         if pilihan == "1":
-            print("\n  [*] Sedang memproses seluruh data...")
-            buat_laporan_pdf(data, "Laporan_Lengkap_MedWatch.pdf")
-            
+            trigger_scraper()
         elif pilihan == "2":
-            # Menampilkan daftar ID yang tersedia agar user tidak menebak
-            ids_tersedia = [p.get("identitas", {}).get("ID Pasien") for p in data]
-            print(f"\n  ID Tersedia: {', '.join(ids_tersedia)}")
-            
-            id_target = input("  Masukkan ID Pasien (contoh: P001): ").strip()
-            
-            print(f"  [*] Sedang memproses ID {id_target}...")
-            # Memanggil fungsi dengan parameter id_pasien_terpilih
-            buat_laporan_pdf(
-                data, 
-                output_filename=f"Laporan_Pasien_{id_target}.pdf", 
-                id_pasien_terpilih=id_target
-            )
-            
+            menu_tkesehatan_crud()
+        elif pilihan == "3":
+            ekspor_pdf()
         elif pilihan == "0":
+            print("Logout.")
             break
         else:
-            print("  [!] Pilihan tidak valid.")
+            print("[!] Pilihan tidak valid.")
+
+
+def menu_tkesehatan():
+    """Menu utama untuk role tenaga_kesehatan."""
+    while True:
+        print("\n" + "=" * 50)
+        print("   MENU TENAGA KESEHATAN MEDWATCH")
+        print("=" * 50)
+        print("  [1] Ekspor Laporan PDF")
+        print("  [0] Logout")
+        print("-" * 50)
+        print("\n  Catatan: CRUD pasien diakses lewat modul anggota2.")
+        print("           Pencarian obat dan safety check lewat modul anggota4.")
+        print("-" * 50)
+
+        pilihan = input("Pilih menu: ").strip()
+        if pilihan == "1":
+            ekspor_pdf()
+        elif pilihan == "0":
+            print("Logout.")
+            break
+        else:
+            print("[!] Pilihan tidak valid.")
+
+
+def main():
+    """Entry point. Login dulu, terus dispatch ke menu sesuai role."""
+    status, username, role = verifikasi_login()
+    if not status:
+        print("\n[!] Login gagal. Program berhenti.")
+        sys.exit(1)
+
+    print(f"\n[OK] Login berhasil. Selamat datang, {username} (role: {role}).")
+
+    if role == "admin":
+        menu_admin()
+    elif role == "tenaga_kesehatan":
+        menu_tkesehatan()
+    else:
+        print(f"[!] Role tidak dikenal: {role}")
+        sys.exit(1)
+
 
 if __name__ == "__main__":
-    jalankan_fitur_anggota_5()
+    main()
