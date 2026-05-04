@@ -1,0 +1,44 @@
+[
+  {
+    "username": "bidan_siti",
+    "password_plain": "siti2026",
+    "role": "tenaga_kesehatan",
+    "name": "Bidan Siti Aminah",
+    "phone": "081234567890"
+  },
+  {
+    "username": "bidan_putri",
+    "password_plain": "putri2026",
+    "role": "tenaga_kesehatan",
+    "name": "Bidan Putri Andini",
+    "phone": "081234567891"
+  },
+  {
+    "username": "umum_budi",
+    "password_plain": "budi2026",
+    "role": "masyarakat",
+    "name": "Budi Santoso",
+    "phone": "081234567892"
+  },
+  {
+    "username": "umum_dewi",
+    "password_plain": "dewi2026",
+    "role": "masyarakat",
+    "name": "Dewi Lestari",
+    "phone": "081234567893"
+  },
+  {
+    "username": "admin_ghaisan",
+    "password_plain": "admin2026",
+    "role": "admin",
+    "name": "Ghaisan Khoirul B.",
+    "phone": "081234567894"
+  },
+  {
+    "username": "admin_sistem",
+    "password_plain": "system2026",
+    "role": "admin",
+    "name": "Admin Sistem",
+    "phone": "081234567895"
+  }
+]
