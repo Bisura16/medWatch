@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="medwatch-generator" version="22.0.0">
+  <diagram id="01-c4-context" name="01-c4-context">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="a1" value="Tenaga Kesehatan" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;html=1;outlineConnect=0;strokeColor=#F57C00;fontColor=#E65100;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="40" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="Masyarakat" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;html=1;outlineConnect=0;strokeColor=#F57C00;fontColor=#E65100;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="220" width="40" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="Admin" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=none;verticalAlign=top;html=1;outlineConnect=0;strokeColor=#F57C00;fontColor=#E65100;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="360" width="40" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="MedWatch System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#0D47A1;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="200" width="240" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="drugs.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#757575;strokeColor=#424242;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="80" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="FDA Recall Feed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#757575;strokeColor=#424242;fontColor=white;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="220" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_a1_s" style="endArrow=classic;html=1;rounded=0;strokeColor=#424242;fontSize=10;" edge="1" parent="1" source="a1" target="s1">
+          <mxGeometry relative="1" as="geometry" />
+          
+        </mxCell>
+        <mxCell id="e_a2_s" style="endArrow=classic;html=1;rounded=0;strokeColor=#424242;fontSize=10;" edge="1" parent="1" source="a2" target="s1">
+          <mxGeometry relative="1" as="geometry" />
+          
+        </mxCell>
+        <mxCell id="e_a3_s" style="endArrow=classic;html=1;rounded=0;strokeColor=#424242;fontSize=10;" edge="1" parent="1" source="a3" target="s1">
+          <mxGeometry relative="1" as="geometry" />
+          
+        </mxCell>
+        <mxCell id="e_s_e1" style="endArrow=classic;html=1;rounded=0;strokeColor=#424242;fontSize=10;" edge="1" parent="1" source="s1" target="e1">
+          <mxGeometry relative="1" as="geometry" />
+          
+        </mxCell>
+        <mxCell id="e_s_e2" style="endArrow=classic;html=1;rounded=0;strokeColor=#424242;fontSize=10;" edge="1" parent="1" source="s1" target="e2">
+          <mxGeometry relative="1" as="geometry" />
+          
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

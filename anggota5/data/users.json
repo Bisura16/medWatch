@@ -1,6 +1,14 @@
 [
-{
-    "username": "dal", 
-    "password": "123"
-}
+    {
+        "username": "admin1",
+        "password": "admin123",
+        "role": "admin",
+        "name": "Admin Sistem"
+    },
+    {
+        "username": "bidan1",
+        "password": "bidan123",
+        "role": "tenaga_kesehatan",
+        "name": "Bidan Siti"
+    }
 ]
