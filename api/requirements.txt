@@ -1,0 +1,11 @@
+Flask==3.0.3
+Flask-Cors==5.0.0
+PyJWT==2.10.1
+bcrypt==4.2.1
+google-cloud-storage==2.18.2
+gunicorn==23.0.0
+requests==2.32.3
+beautifulsoup4==4.12.3
+matplotlib==3.9.2
+numpy==1.26.4
+fpdf2==2.8.1
