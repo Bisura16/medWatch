@@ -1,0 +1,177 @@
+[
+  {
+    "product_name": "Valsartan 80 mg Tablets, 30-count bottle",
+    "reason": "Recall sukarela karena ditemukan kontaminasi N-nitrosodimethylamine (NDMA) di atas batas yang dapat diterima FDA selama pengujian stabilitas. NDMA merupakan senyawa probable human carcinogen dan eksposur jangka panjang meningkatkan risiko kanker. Lot terdampak diproduksi di fasilitas Zhejiang.",
+    "recall_date": "2024-08-15",
+    "severity_class": "Class I",
+    "company": "Sandoz Inc."
+  },
+  {
+    "product_name": "Metformin Hydrochloride Extended-Release 500 mg Tablets",
+    "reason": "Recall sukarela karena pengujian batch menemukan kadar NDMA melebihi batas asupan harian yang dapat diterima. Konsumen disarankan tidak menghentikan terapi tanpa konsultasi dokter karena risiko diskontinuasi mendadak pada diabetes melebihi paparan jangka pendek terhadap impurity.",
+    "recall_date": "2024-03-22",
+    "severity_class": "Class II",
+    "company": "Teva Pharmaceuticals"
+  },
+  {
+    "product_name": "Losartan Potassium 50 mg Tablets",
+    "reason": "Kontaminasi azido impurity di atas batas yang ditetapkan regulator. Senyawa azido merupakan genotoxic impurity dengan potensi karsinogenik. Distribusi mencakup beberapa negara termasuk Asia Tenggara.",
+    "recall_date": "2024-11-04",
+    "severity_class": "Class I",
+    "company": "Sandoz Inc."
+  },
+  {
+    "product_name": "Amlodipine Besylate 5 mg Tablet",
+    "reason": "Recall karena pengujian kandungan menunjukkan beberapa batch berada di bawah spesifikasi potensi (95-105%). Pasien dengan hipertensi terkontrol pada batch terdampak berisiko mengalami kenaikan tekanan darah karena dosis aktif lebih rendah dari label.",
+    "recall_date": "2025-01-18",
+    "severity_class": "Class II",
+    "company": "Kalbe Farma Tbk"
+  },
+  {
+    "product_name": "Amoxicillin Trihydrate Suspensi Kering 125 mg/5 mL Botol 60 mL",
+    "reason": "Recall karena temuan kontaminasi mikroba (Burkholderia cepacia complex) pada sampel surveillans batch. Risiko infeksi serius terutama pada anak imunokompromais dan pasien dengan fibrosis kistik.",
+    "recall_date": "2025-04-09",
+    "severity_class": "Class I",
+    "company": "Kimia Farma Tbk"
+  },
+  {
+    "product_name": "Ranitidine HCl 150 mg Film-Coated Tablet",
+    "reason": "Recall lanjutan atas batch yang masih tersisa di pasaran karena pembentukan NDMA selama penyimpanan, khususnya pada suhu di atas 30 derajat Celsius. Produk dianjurkan tidak digunakan dan diganti dengan H2 blocker alternatif atau PPI.",
+    "recall_date": "2024-02-12",
+    "severity_class": "Class I",
+    "company": "Pharos Indonesia"
+  },
+  {
+    "product_name": "Salbutamol 100 mcg Metered-Dose Inhaler",
+    "reason": "Recall karena counter dosis pada beberapa unit menunjukkan jumlah aktuasi yang tidak akurat. Pasien dapat menggunakan inhaler hingga kosong tanpa peringatan, berpotensi mengakibatkan terapi tidak adekuat pada serangan asma.",
+    "recall_date": "2025-07-21",
+    "severity_class": "Class III",
+    "company": "GlaxoSmithKline Indonesia"
+  },
+  {
+    "product_name": "Ceftriaxone Sodium 1 g Powder for Injection",
+    "reason": "Recall karena ditemukan partikel kaca dalam vial pada inspeksi visual pasca-produksi. Pemberian intravena partikel kaca berisiko menyebabkan emboli, flebitis, atau reaksi inflamasi lokal yang serius.",
+    "recall_date": "2025-09-30",
+    "severity_class": "Class I",
+    "company": "Dexa Medica"
+  },
+  {
+    "product_name": "Levothyroxine Sodium 50 mcg Tablet",
+    "reason": "Recall karena pengujian potensi menunjukkan beberapa batch di bawah 95% klaim label. Penggantian terapi tiroid memerlukan titrasi ulang TSH, risiko kambuhnya gejala hipotiroidisme pada pasien yang sudah stabil.",
+    "recall_date": "2025-06-11",
+    "severity_class": "Class II",
+    "company": "Sanofi"
+  },
+  {
+    "product_name": "Atorvastatin Calcium 20 mg Film-Coated Tablet",
+    "reason": "Recall karena kegagalan uji disolusi pada studi stabilitas jangka panjang. Profil pelepasan in vitro menyimpang dari spesifikasi, berpotensi memengaruhi bioavailabilitas dan efektivitas penurunan LDL.",
+    "recall_date": "2026-01-25",
+    "severity_class": "Class II",
+    "company": "Tempo Scan Pacific Tbk"
+  },
+  {
+    "product_name": "Insulin Glargine 100 U/mL Solusi Injeksi Pen 3 mL",
+    "reason": "Recall karena kesalahan pelabelan pada karton sekunder yang mencantumkan konsentrasi salah. Penggunaan dosis berdasarkan label keliru dapat menyebabkan hipoglikemia berat atau hiperglikemia.",
+    "recall_date": "2025-08-14",
+    "severity_class": "Class I",
+    "company": "Sanofi"
+  },
+  {
+    "product_name": "Heparin Sodium 5000 IU/mL Injection",
+    "reason": "Recall karena ditemukan particulate matter berupa serat fiber dalam beberapa vial. Pemberian intravena particulate dapat menyebabkan reaksi tromboflebitis dan komplikasi lokal pada akses vena.",
+    "recall_date": "2024-05-30",
+    "severity_class": "Class II",
+    "company": "Pfizer Inc."
+  },
+  {
+    "product_name": "Bisoprolol Fumarate 5 mg Tablet",
+    "reason": "Recall karena pelabelan blister mengalami pengelupasan dan beberapa unit pasar tidak dapat dibaca dengan jelas tanggal kedaluwarsanya. Tidak ada gangguan terhadap kualitas obat itu sendiri.",
+    "recall_date": "2025-10-17",
+    "severity_class": "Class III",
+    "company": "Phapros Tbk"
+  },
+  {
+    "product_name": "Clopidogrel Bisulfate 75 mg Tablet",
+    "reason": "Recall karena pengujian rutin mendeteksi kadar genotoxic impurity di atas batas spesifikasi farmakope. Pasien disarankan menyelesaikan stok yang ada sebelum diganti untuk menghindari risiko trombosis akibat diskontinuasi mendadak.",
+    "recall_date": "2025-12-03",
+    "severity_class": "Class II",
+    "company": "Mylan Pharmaceuticals"
+  },
+  {
+    "product_name": "Methotrexate 50 mg/2 mL Solusi Injeksi",
+    "reason": "Recall karena ditemukan kesalahan konsentrasi pada beberapa batch sehingga konsentrasi aktual di atas klaim label. Risiko overdosis methotrexate dapat menyebabkan toksisitas berat termasuk myelosupresi dan mucositis fatal.",
+    "recall_date": "2025-03-22",
+    "severity_class": "Class I",
+    "company": "Pfizer Inc."
+  },
+  {
+    "product_name": "Cefixime Trihydrate Suspensi Kering 100 mg/5 mL",
+    "reason": "Recall karena uji potensi menunjukkan kadar antibiotik di bawah spesifikasi setelah rekonstitusi. Risiko kegagalan terapi pada infeksi bakteri dan kontribusi terhadap resistensi antimikroba.",
+    "recall_date": "2026-02-08",
+    "severity_class": "Class II",
+    "company": "Sanbe Farma"
+  },
+  {
+    "product_name": "Furosemide 40 mg Tablet, 100-count bottle",
+    "reason": "Recall karena ditemukan tablet asing (kemungkinan spironolactone) tercampur dalam beberapa botol selama inspeksi konsumen. Risiko interaksi obat dan efek tidak diinginkan pada pasien yang mengonsumsi tanpa menyadari.",
+    "recall_date": "2025-11-19",
+    "severity_class": "Class II",
+    "company": "Indofarma Tbk"
+  },
+  {
+    "product_name": "Albuterol Sulfate 2.5 mg/3 mL Nebulizer Solution",
+    "reason": "Recall karena temuan kontaminasi mikroba pada uji sterilitas batch tertentu. Nebulisasi solusi yang terkontaminasi dapat menyebabkan infeksi saluran napas bawah yang serius.",
+    "recall_date": "2024-12-05",
+    "severity_class": "Class I",
+    "company": "Teva Pharmaceuticals"
+  },
+  {
+    "product_name": "Paracetamol Drop 100 mg/mL Botol 15 mL",
+    "reason": "Recall karena kesalahan pelabelan konsentrasi pada karton pediatric drop. Risiko kesalahan dosis pada bayi dan anak kecil dapat menyebabkan hepatotoksisitas akut.",
+    "recall_date": "2025-05-27",
+    "severity_class": "Class I",
+    "company": "Soho Industri Pharmasi"
+  },
+  {
+    "product_name": "Allopurinol 100 mg Tablet, 60-count bottle",
+    "reason": "Recall karena beberapa botol ditemukan tanpa kantong desiccant yang seharusnya disertakan untuk menjaga stabilitas obat. Tidak ada bukti kerusakan produk pada saat distribusi.",
+    "recall_date": "2026-04-02",
+    "severity_class": "Class III",
+    "company": "Sandoz Inc."
+  },
+  {
+    "product_name": "Pantoprazole Sodium 40 mg Powder for Injection",
+    "reason": "Recall karena deviasi proses sterilisasi pada satu batch yang mungkin memengaruhi jaminan sterilitas. Pemberian intravena produk yang tidak steril berisiko menyebabkan bakteremia dan sepsis.",
+    "recall_date": "2024-09-18",
+    "severity_class": "Class I",
+    "company": "Pfizer Inc."
+  },
+  {
+    "product_name": "Phytomenadione (Vitamin K1) 10 mg/mL Injection",
+    "reason": "Recall karena ditemukan endapan dalam beberapa ampul yang tidak hilang dengan pengocokan. Endapan dapat menyebabkan obstruksi mikrovaskular bila diinjeksikan secara intravena.",
+    "recall_date": "2025-02-14",
+    "severity_class": "Class II",
+    "company": "Roche Indonesia"
+  },
+  {
+    "product_name": "Captopril 25 mg Tablet, Blister 10x10",
+    "reason": "Recall karena kesalahan cetak pada beberapa lot blister yang mencantumkan kekuatan 12.5 mg sementara isi sebenarnya 25 mg. Risiko dosis ganda dari yang diniatkan oleh resep.",
+    "recall_date": "2026-03-15",
+    "severity_class": "Class II",
+    "company": "Indofarma Tbk"
+  },
+  {
+    "product_name": "Levofloxacin 500 mg/100 mL Premixed Injection",
+    "reason": "Recall karena deviasi proses manufaktur menyebabkan kadar antibiotik di bawah spesifikasi pada uji rilis. Penggunaan dosis sub-potent berisiko kegagalan terapi pada infeksi serius.",
+    "recall_date": "2025-09-08",
+    "severity_class": "Class II",
+    "company": "AstraZeneca Indonesia"
+  },
+  {
+    "product_name": "Sertraline HCl 50 mg Film-Coated Tablet",
+    "reason": "Recall karena temuan cross-contamination dengan produk lain dari lini produksi sama selama validasi pembersihan. Risiko paparan obat tidak diinginkan terutama pada pasien dengan kontraindikasi terhadap kontaminan.",
+    "recall_date": "2024-10-29",
+    "severity_class": "Class I",
+    "company": "Novartis Pharmaceuticals"
+  }
+]

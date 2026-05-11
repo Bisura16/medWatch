@@ -1,0 +1,990 @@
+[
+  {
+    "drug_name": "Ibuprofen",
+    "category": "Analgesik",
+    "side_effects": [
+      "Nyeri ulu hati",
+      "Mual",
+      "Nyeri perut",
+      "Diare",
+      "Pusing",
+      "Sakit kepala",
+      "Edema perifer",
+      "Hipertensi",
+      "Tukak lambung",
+      "Perdarahan saluran cerna",
+      "Penurunan fungsi ginjal",
+      "Ruam kulit",
+      "Bronkospasme pada asma sensitif"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hindari pada pasien dengan riwayat tukak lambung, gangguan ginjal, gagal jantung, atau alergi NSAID. Gunakan bersama makanan untuk mengurangi iritasi lambung. Tidak dianjurkan pada trimester ketiga kehamilan.",
+    "source_url": "https://www.drugs.com/sfx/ibuprofen-side-effects.html"
+  },
+  {
+    "drug_name": "Paracetamol",
+    "category": "Analgesik",
+    "side_effects": [
+      "Mual ringan",
+      "Ruam kulit",
+      "Reaksi alergi",
+      "Peningkatan enzim hati",
+      "Hepatotoksisitas pada dosis tinggi",
+      "Trombositopenia",
+      "Sindrom Stevens-Johnson (jarang)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Jangan melebihi dosis 4 gram per hari untuk dewasa. Risiko kerusakan hati meningkat pada konsumsi alkohol kronis dan kombinasi dengan obat hepatotoksik lain. Hati-hati pada pasien dengan gangguan fungsi hati.",
+    "source_url": "https://www.drugs.com/sfx/paracetamol-side-effects.html"
+  },
+  {
+    "drug_name": "Aspirin",
+    "category": "Analgesik",
+    "side_effects": [
+      "Iritasi lambung",
+      "Nyeri ulu hati",
+      "Mual",
+      "Perdarahan saluran cerna",
+      "Tukak peptikum",
+      "Tinitus",
+      "Memar",
+      "Perpanjangan waktu perdarahan",
+      "Bronkospasme",
+      "Reaksi hipersensitivitas"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Kontraindikasi pada anak di bawah 16 tahun dengan infeksi virus karena risiko sindrom Reye. Hindari pada riwayat tukak lambung, gangguan perdarahan, dan asma yang dipicu NSAID.",
+    "source_url": "https://www.drugs.com/sfx/aspirin-side-effects.html"
+  },
+  {
+    "drug_name": "Naproxen",
+    "category": "Analgesik",
+    "side_effects": [
+      "Nyeri ulu hati",
+      "Mual",
+      "Dispepsia",
+      "Sakit kepala",
+      "Pusing",
+      "Mengantuk",
+      "Edema",
+      "Hipertensi",
+      "Tukak lambung",
+      "Perdarahan saluran cerna",
+      "Gangguan fungsi ginjal"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hindari pada gangguan ginjal sedang-berat, gagal jantung, dan riwayat tukak peptikum. Risiko kardiovaskular meningkat pada penggunaan jangka panjang dosis tinggi.",
+    "source_url": "https://www.drugs.com/sfx/naproxen-side-effects.html"
+  },
+  {
+    "drug_name": "Diclofenac",
+    "category": "Analgesik",
+    "side_effects": [
+      "Nyeri epigastrium",
+      "Mual",
+      "Diare",
+      "Sakit kepala",
+      "Pusing",
+      "Peningkatan enzim hati",
+      "Hipertensi",
+      "Edema",
+      "Tukak lambung",
+      "Reaksi kulit",
+      "Peningkatan risiko trombotik kardiovaskular"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Tidak direkomendasikan pada pasien dengan penyakit kardiovaskular berat. Risiko hepatotoksisitas memerlukan pemantauan fungsi hati pada penggunaan jangka panjang.",
+    "source_url": "https://www.drugs.com/sfx/diclofenac-side-effects.html"
+  },
+  {
+    "drug_name": "Tramadol",
+    "category": "Analgesik",
+    "side_effects": [
+      "Mual",
+      "Muntah",
+      "Pusing",
+      "Konstipasi",
+      "Mengantuk",
+      "Sakit kepala",
+      "Berkeringat",
+      "Mulut kering",
+      "Kejang (dosis tinggi)",
+      "Depresi napas",
+      "Sindrom serotonin",
+      "Ketergantungan",
+      "Bingung"
+    ],
+    "severity_level": "severe",
+    "warnings": "Risiko depresi napas, kejang, dan ketergantungan. Hindari kombinasi dengan SSRI/MAOI karena risiko sindrom serotonin. Tidak untuk pasien dengan epilepsi tidak terkontrol atau intoksikasi alkohol/sedatif.",
+    "source_url": "https://www.drugs.com/sfx/tramadol-side-effects.html"
+  },
+  {
+    "drug_name": "Meloxicam",
+    "category": "Analgesik",
+    "side_effects": [
+      "Dispepsia",
+      "Nyeri perut",
+      "Mual",
+      "Diare",
+      "Sakit kepala",
+      "Pusing",
+      "Edema",
+      "Hipertensi",
+      "Ruam kulit",
+      "Gangguan fungsi ginjal"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Lebih selektif terhadap COX-2 dibanding NSAID klasik, namun tetap memiliki risiko gastrointestinal dan kardiovaskular pada penggunaan jangka panjang. Hindari pada gagal jantung berat.",
+    "source_url": "https://www.drugs.com/sfx/meloxicam-side-effects.html"
+  },
+  {
+    "drug_name": "Mefenamic Acid",
+    "category": "Analgesik",
+    "side_effects": [
+      "Mual",
+      "Diare",
+      "Dispepsia",
+      "Sakit kepala",
+      "Mengantuk",
+      "Pusing",
+      "Ruam kulit",
+      "Fotosensitivitas",
+      "Iritasi lambung",
+      "Anemia hemolitik (jarang)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Tidak dianjurkan penggunaan lebih dari 7 hari karena risiko efek samping ginjal dan hematologi. Hindari pada inflammatory bowel disease aktif.",
+    "source_url": "https://www.drugs.com/sfx/mefenamic-acid-side-effects.html"
+  },
+  {
+    "drug_name": "Amoxicillin",
+    "category": "Antibiotik",
+    "side_effects": [
+      "Diare",
+      "Mual",
+      "Muntah",
+      "Ruam kulit",
+      "Kandidiasis oral",
+      "Kandidiasis vaginal",
+      "Urtikaria",
+      "Sakit kepala",
+      "Kolitis terkait Clostridioides difficile",
+      "Reaksi anafilaksis (jarang)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Kontraindikasi pada riwayat hipersensitivitas terhadap penisilin. Habiskan seluruh dosis sesuai resep meskipun gejala telah membaik untuk mencegah resistensi.",
+    "source_url": "https://www.drugs.com/sfx/amoxicillin-side-effects.html"
+  },
+  {
+    "drug_name": "Azithromycin",
+    "category": "Antibiotik",
+    "side_effects": [
+      "Diare",
+      "Mual",
+      "Nyeri perut",
+      "Muntah",
+      "Sakit kepala",
+      "Pusing",
+      "Perubahan rasa",
+      "Perpanjangan interval QT",
+      "Gangguan pendengaran sementara (dosis tinggi)",
+      "Peningkatan enzim hati"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hati-hati pada pasien dengan riwayat perpanjangan QT, hipokalemia, atau penggunaan obat lain yang memperpanjang QT. Pantau fungsi hati pada terapi jangka panjang.",
+    "source_url": "https://www.drugs.com/sfx/azithromycin-side-effects.html"
+  },
+  {
+    "drug_name": "Ciprofloxacin",
+    "category": "Antibiotik",
+    "side_effects": [
+      "Mual",
+      "Diare",
+      "Sakit kepala",
+      "Pusing",
+      "Insomnia",
+      "Tendinitis dan ruptur tendon",
+      "Perpanjangan QT",
+      "Fotosensitivitas",
+      "Neuropati perifer",
+      "Disglikemia",
+      "Kolitis pseudomembran"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hindari pada anak dan remaja kecuali indikasi mendesak karena risiko gangguan tendon dan tulang rawan. Tidak dikombinasi dengan produk yang mengandung kalsium, magnesium, atau besi dalam 2 jam.",
+    "source_url": "https://www.drugs.com/sfx/ciprofloxacin-side-effects.html"
+  },
+  {
+    "drug_name": "Doxycycline",
+    "category": "Antibiotik",
+    "side_effects": [
+      "Fotosensitivitas",
+      "Mual",
+      "Muntah",
+      "Diare",
+      "Iritasi esofagus",
+      "Sakit kepala",
+      "Pewarnaan gigi pada anak",
+      "Kandidiasis",
+      "Hipertensi intrakranial (jarang)",
+      "Ruam kulit"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Kontraindikasi pada kehamilan dan anak di bawah 8 tahun karena efek pewarnaan gigi dan gangguan pertumbuhan tulang. Minum dengan air cukup dan tetap tegak minimal 30 menit setelah pemberian.",
+    "source_url": "https://www.drugs.com/sfx/doxycycline-side-effects.html"
+  },
+  {
+    "drug_name": "Cephalexin",
+    "category": "Antibiotik",
+    "side_effects": [
+      "Diare",
+      "Mual",
+      "Nyeri perut",
+      "Muntah",
+      "Ruam kulit",
+      "Kandidiasis vaginal",
+      "Sakit kepala",
+      "Pusing",
+      "Reaksi hipersensitivitas",
+      "Peningkatan enzim hati"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hati-hati pada pasien dengan riwayat alergi penisilin karena kemungkinan reaksi silang sekitar 1%. Sesuaikan dosis pada gangguan ginjal.",
+    "source_url": "https://www.drugs.com/sfx/cephalexin-side-effects.html"
+  },
+  {
+    "drug_name": "Clindamycin",
+    "category": "Antibiotik",
+    "side_effects": [
+      "Diare",
+      "Mual",
+      "Muntah",
+      "Nyeri perut",
+      "Rasa logam di mulut",
+      "Ruam kulit",
+      "Kolitis pseudomembran berat",
+      "Peningkatan enzim hati",
+      "Disgeusia",
+      "Reaksi hipersensitivitas"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Risiko tinggi kolitis terkait Clostridioides difficile. Hentikan obat segera jika terjadi diare berat dan konsultasi tenaga kesehatan.",
+    "source_url": "https://www.drugs.com/sfx/clindamycin-side-effects.html"
+  },
+  {
+    "drug_name": "Metronidazole",
+    "category": "Antibiotik",
+    "side_effects": [
+      "Rasa logam di mulut",
+      "Mual",
+      "Sakit kepala",
+      "Pusing",
+      "Urin berwarna gelap",
+      "Diare",
+      "Neuropati perifer (penggunaan lama)",
+      "Reaksi disulfiram dengan alkohol",
+      "Glositis",
+      "Ruam kulit"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hindari konsumsi alkohol selama terapi dan 48 jam setelahnya karena risiko reaksi disulfiram-like (mual, muntah, takikardia, flushing). Hindari penggunaan jangka panjang.",
+    "source_url": "https://www.drugs.com/sfx/metronidazole-side-effects.html"
+  },
+  {
+    "drug_name": "Levofloxacin",
+    "category": "Antibiotik",
+    "side_effects": [
+      "Mual",
+      "Diare",
+      "Sakit kepala",
+      "Insomnia",
+      "Pusing",
+      "Tendinitis dan ruptur tendon Achilles",
+      "Neuropati perifer",
+      "Perpanjangan QT",
+      "Disglikemia",
+      "Fotosensitivitas",
+      "Gangguan psikiatri"
+    ],
+    "severity_level": "severe",
+    "warnings": "Black box warning FDA untuk risiko tendinitis, neuropati perifer permanen, dan efek SSP. Gunakan hanya bila tidak ada alternatif. Hindari pada miastenia gravis.",
+    "source_url": "https://www.drugs.com/sfx/levofloxacin-side-effects.html"
+  },
+  {
+    "drug_name": "Cetirizine",
+    "category": "Antihistamin",
+    "side_effects": [
+      "Mengantuk ringan",
+      "Mulut kering",
+      "Sakit kepala",
+      "Kelelahan",
+      "Pusing ringan",
+      "Sakit perut ringan"
+    ],
+    "severity_level": "mild",
+    "warnings": "Generasi kedua dengan sedasi minimal, namun tetap hati-hati saat mengemudi pada awal terapi. Sesuaikan dosis pada gangguan ginjal sedang-berat.",
+    "source_url": "https://www.drugs.com/sfx/cetirizine-side-effects.html"
+  },
+  {
+    "drug_name": "Loratadine",
+    "category": "Antihistamin",
+    "side_effects": [
+      "Sakit kepala",
+      "Mulut kering",
+      "Kelelahan",
+      "Mengantuk (jarang pada dosis terapeutik)",
+      "Mual ringan"
+    ],
+    "severity_level": "mild",
+    "warnings": "Generasi kedua non-sedatif pada dosis terapeutik. Sesuaikan dosis pada gangguan hati atau ginjal berat. Tidak dianjurkan untuk anak di bawah 2 tahun tanpa konsultasi dokter.",
+    "source_url": "https://www.drugs.com/sfx/loratadine-side-effects.html"
+  },
+  {
+    "drug_name": "Diphenhydramine",
+    "category": "Antihistamin",
+    "side_effects": [
+      "Sedasi berat",
+      "Mengantuk",
+      "Mulut kering",
+      "Pandangan kabur",
+      "Retensi urin",
+      "Konstipasi",
+      "Pusing",
+      "Eksitasi paradoksal pada anak",
+      "Bingung pada lansia",
+      "Takikardia"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Antihistamin generasi pertama dengan efek antikolinergik kuat. Hindari pada lansia, glaukoma sudut tertutup, hipertrofi prostat, dan retensi urin. Tidak untuk mengemudi.",
+    "source_url": "https://www.drugs.com/sfx/diphenhydramine-side-effects.html"
+  },
+  {
+    "drug_name": "Chlorpheniramine",
+    "category": "Antihistamin",
+    "side_effects": [
+      "Mengantuk",
+      "Mulut kering",
+      "Pusing",
+      "Pandangan kabur",
+      "Konstipasi",
+      "Retensi urin ringan",
+      "Sakit kepala"
+    ],
+    "severity_level": "mild",
+    "warnings": "Generasi pertama dengan sedasi cukup signifikan. Hindari saat mengemudi atau mengoperasikan mesin. Hati-hati pada lansia dan pasien dengan glaukoma atau hipertrofi prostat.",
+    "source_url": "https://www.drugs.com/sfx/chlorpheniramine-side-effects.html"
+  },
+  {
+    "drug_name": "Sertraline",
+    "category": "Antidepresan",
+    "side_effects": [
+      "Mual",
+      "Diare",
+      "Insomnia",
+      "Sakit kepala",
+      "Pusing",
+      "Disfungsi seksual",
+      "Berkeringat berlebih",
+      "Tremor",
+      "Hiponatremia",
+      "Pikiran bunuh diri (terutama dewasa muda)",
+      "Sindrom serotonin"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Black box warning untuk peningkatan risiko ide bunuh diri pada anak, remaja, dan dewasa muda. Hindari kombinasi dengan MAOI. Tappering perlu saat penghentian.",
+    "source_url": "https://www.drugs.com/sfx/sertraline-side-effects.html"
+  },
+  {
+    "drug_name": "Fluoxetine",
+    "category": "Antidepresan",
+    "side_effects": [
+      "Mual",
+      "Insomnia",
+      "Ansietas",
+      "Sakit kepala",
+      "Disfungsi seksual",
+      "Berkeringat",
+      "Penurunan nafsu makan",
+      "Perubahan berat badan",
+      "Tremor",
+      "Sindrom serotonin",
+      "Perpanjangan QT (jarang)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Half-life panjang memerlukan waktu washout 5 minggu sebelum memulai MAOI. Risiko aktivasi mania pada pasien bipolar tidak terdiagnosis.",
+    "source_url": "https://www.drugs.com/sfx/fluoxetine-side-effects.html"
+  },
+  {
+    "drug_name": "Escitalopram",
+    "category": "Antidepresan",
+    "side_effects": [
+      "Mual",
+      "Insomnia",
+      "Mengantuk",
+      "Sakit kepala",
+      "Disfungsi seksual",
+      "Kelelahan",
+      "Mulut kering",
+      "Berkeringat",
+      "Perpanjangan QT dose-dependent",
+      "Hiponatremia"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Dosis maksimal 20 mg/hari pada dewasa karena risiko perpanjangan QT dose-dependent. Hati-hati pada gagal jantung dan ketidakseimbangan elektrolit.",
+    "source_url": "https://www.drugs.com/sfx/escitalopram-side-effects.html"
+  },
+  {
+    "drug_name": "Amitriptyline",
+    "category": "Antidepresan",
+    "side_effects": [
+      "Mulut kering",
+      "Sedasi",
+      "Konstipasi",
+      "Pandangan kabur",
+      "Retensi urin",
+      "Hipotensi ortostatik",
+      "Peningkatan berat badan",
+      "Aritmia jantung",
+      "Kardiotoksisitas pada overdosis",
+      "Bingung pada lansia",
+      "Tremor"
+    ],
+    "severity_level": "severe",
+    "warnings": "Risiko kardiotoksisitas tinggi pada overdosis. Hindari pada pasien dengan blok jantung, gagal jantung berat, atau infark miokard akut. Tidak dianjurkan pada lansia karena beban antikolinergik.",
+    "source_url": "https://www.drugs.com/sfx/amitriptyline-side-effects.html"
+  },
+  {
+    "drug_name": "Alprazolam",
+    "category": "Umum",
+    "side_effects": [
+      "Sedasi",
+      "Mengantuk",
+      "Pusing",
+      "Gangguan koordinasi",
+      "Gangguan memori",
+      "Depresi napas (dengan opioid)",
+      "Disinhibisi paradoksal",
+      "Ketergantungan",
+      "Gejala putus obat",
+      "Kejang saat penghentian mendadak"
+    ],
+    "severity_level": "severe",
+    "warnings": "Benzodiazepin dengan potensi ketergantungan tinggi. Kontraindikasi pada miastenia gravis, glaukoma sudut tertutup akut, dan depresi napas berat. Hindari kombinasi dengan opioid atau alkohol.",
+    "source_url": "https://www.drugs.com/sfx/alprazolam-side-effects.html"
+  },
+  {
+    "drug_name": "Amlodipine",
+    "category": "Antihipertensi",
+    "side_effects": [
+      "Edema perifer",
+      "Sakit kepala",
+      "Flushing",
+      "Pusing",
+      "Palpitasi",
+      "Kelelahan",
+      "Mual",
+      "Hipertrofi gingiva (jarang)",
+      "Refluks gastroesofageal"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Edema perifer dose-dependent dan tidak responsif terhadap diuretik. Hati-hati pada gagal jantung berat dan stenosis aorta berat.",
+    "source_url": "https://www.drugs.com/sfx/amlodipine-side-effects.html"
+  },
+  {
+    "drug_name": "Lisinopril",
+    "category": "Antihipertensi",
+    "side_effects": [
+      "Batuk kering",
+      "Pusing",
+      "Hipotensi",
+      "Hiperkalemia",
+      "Gangguan fungsi ginjal",
+      "Sakit kepala",
+      "Kelelahan",
+      "Angioedema",
+      "Gangguan rasa",
+      "Ruam kulit"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Kontraindikasi pada kehamilan. Pantau fungsi ginjal dan kalium serum pada awal terapi dan setelah peningkatan dosis. Hentikan segera jika terjadi angioedema.",
+    "source_url": "https://www.drugs.com/sfx/lisinopril-side-effects.html"
+  },
+  {
+    "drug_name": "Losartan",
+    "category": "Antihipertensi",
+    "side_effects": [
+      "Pusing",
+      "Hiperkalemia",
+      "Hipotensi",
+      "Kelelahan",
+      "Infeksi saluran napas atas",
+      "Sakit kepala",
+      "Gangguan fungsi ginjal",
+      "Hipoglikemia (jarang)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "ARB dengan risiko batuk lebih rendah dibanding ACEi. Kontraindikasi pada kehamilan. Tidak dikombinasi rutin dengan ACEi karena risiko hiperkalemia dan gangguan ginjal.",
+    "source_url": "https://www.drugs.com/sfx/losartan-side-effects.html"
+  },
+  {
+    "drug_name": "Captopril",
+    "category": "Antihipertensi",
+    "side_effects": [
+      "Batuk kering",
+      "Hipotensi dosis pertama",
+      "Hiperkalemia",
+      "Gangguan rasa (metallic taste)",
+      "Ruam kulit",
+      "Proteinuria",
+      "Angioedema",
+      "Penurunan fungsi ginjal",
+      "Pusing",
+      "Neutropenia (jarang)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Kontraindikasi pada kehamilan dan stenosis arteri renalis bilateral. Risiko hipotensi pertama lebih tinggi dari ACEi lain karena onset cepat. Pantau kalium dan kreatinin.",
+    "source_url": "https://www.drugs.com/sfx/captopril-side-effects.html"
+  },
+  {
+    "drug_name": "Metoprolol",
+    "category": "Antihipertensi",
+    "side_effects": [
+      "Bradikardia",
+      "Hipotensi",
+      "Kelelahan",
+      "Pusing",
+      "Ekstremitas dingin",
+      "Bronkospasme",
+      "Gangguan tidur",
+      "Disfungsi seksual",
+      "Depresi",
+      "Menutupi gejala hipoglikemia"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hindari penghentian mendadak karena risiko rebound takikardia dan iskemia miokard. Hati-hati pada asma, PPOK berat, blok AV derajat lanjut, dan diabetes dengan risiko hipoglikemia.",
+    "source_url": "https://www.drugs.com/sfx/metoprolol-side-effects.html"
+  },
+  {
+    "drug_name": "Atenolol",
+    "category": "Antihipertensi",
+    "side_effects": [
+      "Bradikardia",
+      "Kelelahan",
+      "Ekstremitas dingin",
+      "Pusing",
+      "Hipotensi",
+      "Bronkospasme",
+      "Mimpi buruk",
+      "Disfungsi seksual",
+      "Depresi"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Beta-blocker kardioselektif hidrofilik. Sesuaikan dosis pada gangguan ginjal. Hindari penghentian mendadak.",
+    "source_url": "https://www.drugs.com/sfx/atenolol-side-effects.html"
+  },
+  {
+    "drug_name": "Bisoprolol",
+    "category": "Antihipertensi",
+    "side_effects": [
+      "Bradikardia",
+      "Kelelahan",
+      "Pusing",
+      "Ekstremitas dingin",
+      "Sakit kepala",
+      "Hipotensi",
+      "Mual",
+      "Disfungsi seksual",
+      "Gangguan tidur"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Beta-blocker kardioselektif. Pilihan untuk gagal jantung dengan fraksi ejeksi menurun (HFrEF) bersama ACEi/ARB. Tappering bertahap saat penghentian.",
+    "source_url": "https://www.drugs.com/sfx/bisoprolol-side-effects.html"
+  },
+  {
+    "drug_name": "Nifedipine",
+    "category": "Antihipertensi",
+    "side_effects": [
+      "Edema perifer",
+      "Sakit kepala",
+      "Flushing",
+      "Takikardia refleks",
+      "Pusing",
+      "Palpitasi",
+      "Hipertrofi gingiva",
+      "Konstipasi"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hanya formulasi extended-release yang direkomendasikan untuk hipertensi kronis. Pelepasan cepat dapat memicu iskemia miokard karena hipotensi mendadak. Hindari pada angina tidak stabil.",
+    "source_url": "https://www.drugs.com/sfx/nifedipine-side-effects.html"
+  },
+  {
+    "drug_name": "Furosemide",
+    "category": "Umum",
+    "side_effects": [
+      "Hipokalemia",
+      "Hiponatremia",
+      "Hipomagnesemia",
+      "Dehidrasi",
+      "Hipotensi",
+      "Hiperurisemia dan gout",
+      "Hiperglikemia",
+      "Ototoksisitas (IV dosis tinggi)",
+      "Peningkatan kreatinin",
+      "Fotosensitivitas",
+      "Alkalosis metabolik"
+    ],
+    "severity_level": "severe",
+    "warnings": "Diuretik loop poten dengan risiko gangguan elektrolit signifikan. Pantau kalium, natrium, magnesium, dan fungsi ginjal. Risiko ototoksisitas pada pemberian IV cepat atau dosis tinggi.",
+    "source_url": "https://www.drugs.com/sfx/furosemide-side-effects.html"
+  },
+  {
+    "drug_name": "Simvastatin",
+    "category": "Statin",
+    "side_effects": [
+      "Mialgia",
+      "Miopati",
+      "Peningkatan enzim hati",
+      "Rabdomiolisis (jarang)",
+      "Sakit kepala",
+      "Mual",
+      "Konstipasi",
+      "Insomnia",
+      "Peningkatan risiko diabetes baru",
+      "Disfungsi kognitif (reversibel)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Dosis maksimal 40 mg/hari pada sebagian besar pasien. Hindari kombinasi dengan gemfibrozil, siklosporin, dan inhibitor CYP3A4 kuat karena risiko rabdomiolisis. Pantau CK bila timbul nyeri otot.",
+    "source_url": "https://www.drugs.com/sfx/simvastatin-side-effects.html"
+  },
+  {
+    "drug_name": "Atorvastatin",
+    "category": "Statin",
+    "side_effects": [
+      "Mialgia",
+      "Atralgia",
+      "Peningkatan enzim hati",
+      "Sakit kepala",
+      "Diare",
+      "Insomnia",
+      "Miopati",
+      "Rabdomiolisis (jarang)",
+      "Peningkatan risiko diabetes baru"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Pantau fungsi hati sebelum dan selama terapi. Hentikan bila ALT >3x batas atas normal persisten. Hati-hati pada konsumsi alkohol berlebih.",
+    "source_url": "https://www.drugs.com/sfx/atorvastatin-side-effects.html"
+  },
+  {
+    "drug_name": "Rosuvastatin",
+    "category": "Statin",
+    "side_effects": [
+      "Mialgia",
+      "Sakit kepala",
+      "Mual",
+      "Konstipasi",
+      "Peningkatan enzim hati",
+      "Proteinuria dosis-dependent",
+      "Miopati",
+      "Rabdomiolisis (jarang)",
+      "Pusing"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Mulai dengan dosis rendah pada pasien Asia karena eksposur sistemik lebih tinggi. Pantau fungsi ginjal pada dosis tinggi. Hindari pada penyakit hati aktif.",
+    "source_url": "https://www.drugs.com/sfx/rosuvastatin-side-effects.html"
+  },
+  {
+    "drug_name": "Warfarin",
+    "category": "Umum",
+    "side_effects": [
+      "Perdarahan minor (gusi, hidung)",
+      "Memar mudah",
+      "Hematuria",
+      "Perdarahan saluran cerna",
+      "Perdarahan intrakranial",
+      "Nekrosis kulit (jarang)",
+      "Sindrom jari ungu",
+      "Peningkatan enzim hati",
+      "Alopesia",
+      "Reaksi alergi"
+    ],
+    "severity_level": "severe",
+    "warnings": "Antikoagulan dengan jendela terapeutik sempit. Pantau INR rutin sesuai target indikasi. Hindari interaksi dengan banyak obat dan makanan tinggi vitamin K. Kontraindikasi pada kehamilan.",
+    "source_url": "https://www.drugs.com/sfx/warfarin-side-effects.html"
+  },
+  {
+    "drug_name": "Clopidogrel",
+    "category": "Umum",
+    "side_effects": [
+      "Memar",
+      "Perdarahan saluran cerna",
+      "Epistaksis",
+      "Hematuria",
+      "Ruam kulit",
+      "Diare",
+      "Sakit kepala",
+      "Trombositopenia",
+      "Trombotik trombositopenik purpura (jarang)",
+      "Reaksi hipersensitivitas"
+    ],
+    "severity_level": "severe",
+    "warnings": "Hentikan 5-7 hari sebelum prosedur bedah elektif. Efektivitas berkurang pada pengguna PPI tertentu (omeprazole) karena interaksi CYP2C19. Risiko TTP memerlukan evaluasi segera bila timbul.",
+    "source_url": "https://www.drugs.com/sfx/clopidogrel-side-effects.html"
+  },
+  {
+    "drug_name": "Metformin",
+    "category": "Antidiabetik",
+    "side_effects": [
+      "Diare",
+      "Mual",
+      "Muntah",
+      "Nyeri perut",
+      "Rasa logam di mulut",
+      "Penurunan nafsu makan",
+      "Defisiensi vitamin B12 (penggunaan lama)",
+      "Asidosis laktat (jarang)",
+      "Penurunan berat badan ringan"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Kontraindikasi pada eGFR <30 mL/menit/1.73m². Hentikan sementara sebelum prosedur dengan kontras iodine. Risiko asidosis laktat meningkat pada gangguan ginjal, hati, dan hipoksia akut.",
+    "source_url": "https://www.drugs.com/sfx/metformin-side-effects.html"
+  },
+  {
+    "drug_name": "Glipizide",
+    "category": "Antidiabetik",
+    "side_effects": [
+      "Hipoglikemia",
+      "Peningkatan berat badan",
+      "Mual",
+      "Diare",
+      "Ruam kulit",
+      "Fotosensitivitas",
+      "Hiponatremia",
+      "Sakit kepala",
+      "Pusing"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Sulfonilurea generasi kedua dengan risiko hipoglikemia signifikan. Hati-hati pada lansia, gangguan ginjal, dan asupan makan tidak teratur.",
+    "source_url": "https://www.drugs.com/sfx/glipizide-side-effects.html"
+  },
+  {
+    "drug_name": "Glimepiride",
+    "category": "Antidiabetik",
+    "side_effects": [
+      "Hipoglikemia",
+      "Peningkatan berat badan",
+      "Mual",
+      "Pusing",
+      "Sakit kepala",
+      "Ruam kulit",
+      "Fotosensitivitas",
+      "Hiponatremia",
+      "Anemia hemolitik (defisiensi G6PD)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Hipoglikemia berkepanjangan mungkin terjadi karena half-life panjang. Sesuaikan dosis pada gangguan ginjal. Hati-hati pada defisiensi G6PD.",
+    "source_url": "https://www.drugs.com/sfx/glimepiride-side-effects.html"
+  },
+  {
+    "drug_name": "Insulin",
+    "category": "Antidiabetik",
+    "side_effects": [
+      "Hipoglikemia",
+      "Peningkatan berat badan",
+      "Lipodistrofi di tempat injeksi",
+      "Reaksi alergi lokal",
+      "Hipokalemia (dosis tinggi)",
+      "Edema",
+      "Reaksi anafilaksis (jarang)",
+      "Hipoglikemia nokturnal"
+    ],
+    "severity_level": "severe",
+    "warnings": "Risiko hipoglikemia berat yang dapat menyebabkan kejang dan kerusakan SSP. Rotasi tempat injeksi untuk mencegah lipodistrofi. Pantau glukosa darah berkala dan latih pasien mengenali tanda hipoglikemia.",
+    "source_url": "https://www.drugs.com/sfx/insulin-side-effects.html"
+  },
+  {
+    "drug_name": "Omeprazole",
+    "category": "Saluran Cerna",
+    "side_effects": [
+      "Sakit kepala",
+      "Diare",
+      "Nyeri perut",
+      "Mual",
+      "Flatulen",
+      "Defisiensi vitamin B12 (penggunaan lama)",
+      "Hipomagnesemia",
+      "Peningkatan risiko fraktur",
+      "Kolitis terkait C. difficile",
+      "Pneumonia komunitas"
+    ],
+    "severity_level": "mild",
+    "warnings": "Hindari penggunaan jangka panjang tanpa indikasi jelas. Tinjau ulang indikasi setiap 8-12 minggu. Risiko interaksi dengan klopidogrel melalui inhibisi CYP2C19.",
+    "source_url": "https://www.drugs.com/sfx/omeprazole-side-effects.html"
+  },
+  {
+    "drug_name": "Lansoprazole",
+    "category": "Saluran Cerna",
+    "side_effects": [
+      "Sakit kepala",
+      "Diare",
+      "Mual",
+      "Konstipasi",
+      "Nyeri perut",
+      "Defisiensi vitamin B12 jangka panjang",
+      "Hipomagnesemia",
+      "Peningkatan risiko fraktur osteoporotik"
+    ],
+    "severity_level": "mild",
+    "warnings": "Profil efek samping serupa omeprazole. Penggunaan jangka panjang membutuhkan evaluasi periodik manfaat dan risiko, terutama pada lansia.",
+    "source_url": "https://www.drugs.com/sfx/lansoprazole-side-effects.html"
+  },
+  {
+    "drug_name": "Famotidine",
+    "category": "Saluran Cerna",
+    "side_effects": [
+      "Sakit kepala",
+      "Pusing",
+      "Konstipasi",
+      "Diare",
+      "Kelelahan",
+      "Bingung pada lansia",
+      "Mual"
+    ],
+    "severity_level": "mild",
+    "warnings": "H2 blocker dengan profil keamanan baik. Sesuaikan dosis pada gangguan ginjal. Pilihan setelah penarikan ranitidine karena kontaminasi NDMA.",
+    "source_url": "https://www.drugs.com/sfx/famotidine-side-effects.html"
+  },
+  {
+    "drug_name": "Ondansetron",
+    "category": "Saluran Cerna",
+    "side_effects": [
+      "Sakit kepala",
+      "Konstipasi",
+      "Kelelahan",
+      "Pusing",
+      "Perpanjangan interval QT",
+      "Peningkatan enzim hati transien",
+      "Reaksi hipersensitivitas",
+      "Sindrom serotonin (jarang)"
+    ],
+    "severity_level": "mild",
+    "warnings": "Hindari pada pasien dengan perpanjangan QT bawaan atau penggunaan obat lain yang memperpanjang QT. Tidak melebihi 16 mg dosis tunggal IV.",
+    "source_url": "https://www.drugs.com/sfx/ondansetron-side-effects.html"
+  },
+  {
+    "drug_name": "Domperidone",
+    "category": "Saluran Cerna",
+    "side_effects": [
+      "Hiperprolaktinemia",
+      "Galaktorea",
+      "Ginekomastia",
+      "Gangguan menstruasi",
+      "Sakit kepala",
+      "Mulut kering",
+      "Perpanjangan QT",
+      "Aritmia ventrikular (jarang)"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Risiko aritmia jantung memerlukan dosis terendah efektif dan durasi singkat. Kontraindikasi pada pasien dengan perpanjangan QT, gangguan elektrolit signifikan, dan penggunaan inhibitor CYP3A4 kuat.",
+    "source_url": "https://www.drugs.com/sfx/domperidone-side-effects.html"
+  },
+  {
+    "drug_name": "Prednisone",
+    "category": "Umum",
+    "side_effects": [
+      "Peningkatan berat badan",
+      "Hiperglikemia",
+      "Hipertensi",
+      "Retensi cairan",
+      "Insomnia",
+      "Perubahan mood",
+      "Osteoporosis (penggunaan lama)",
+      "Imunosupresi",
+      "Supresi adrenal",
+      "Tukak peptikum",
+      "Wajah moonface",
+      "Buffalo hump",
+      "Atrofi kulit",
+      "Glaukoma",
+      "Katarak"
+    ],
+    "severity_level": "severe",
+    "warnings": "Penggunaan jangka panjang memerlukan tappering bertahap untuk mencegah krisis adrenal. Tambahkan profilaksis lambung dan pertimbangkan suplemen kalsium/vitamin D. Pantau gula darah, tekanan darah, dan kepadatan tulang.",
+    "source_url": "https://www.drugs.com/sfx/prednisone-side-effects.html"
+  },
+  {
+    "drug_name": "Dexamethasone",
+    "category": "Umum",
+    "side_effects": [
+      "Hiperglikemia",
+      "Peningkatan tekanan darah",
+      "Retensi cairan",
+      "Perubahan mood",
+      "Insomnia",
+      "Tukak lambung",
+      "Imunosupresi",
+      "Supresi adrenal",
+      "Osteoporosis",
+      "Miopati",
+      "Hiperkortikoidisme iatrogenik"
+    ],
+    "severity_level": "severe",
+    "warnings": "Glukokortikoid poten dengan efek mineralokortikoid minimal. Tappering wajib pada penggunaan >2-3 minggu. Risiko reaktivasi infeksi laten (TB, hepatitis B).",
+    "source_url": "https://www.drugs.com/sfx/dexamethasone-side-effects.html"
+  },
+  {
+    "drug_name": "Salbutamol",
+    "category": "Umum",
+    "side_effects": [
+      "Tremor",
+      "Palpitasi",
+      "Takikardia",
+      "Sakit kepala",
+      "Kram otot",
+      "Hipokalemia (dosis tinggi)",
+      "Hiperglikemia ringan",
+      "Ansietas",
+      "Bronkospasme paradoksal (jarang)"
+    ],
+    "severity_level": "mild",
+    "warnings": "Penggunaan reliever berlebih (>1 inhaler/bulan) menandakan kontrol asma buruk dan memerlukan reevaluasi terapi controller. Tidak untuk monoterapi pada asma kronis.",
+    "source_url": "https://www.drugs.com/sfx/salbutamol-side-effects.html"
+  },
+  {
+    "drug_name": "Levothyroxine",
+    "category": "Umum",
+    "side_effects": [
+      "Palpitasi (overdosis)",
+      "Takikardia",
+      "Insomnia",
+      "Penurunan berat badan",
+      "Tremor",
+      "Berkeringat berlebih",
+      "Gangguan menstruasi",
+      "Fibrilasi atrium (lansia)",
+      "Osteoporosis (penggunaan lama overdose)",
+      "Sakit kepala"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Pantau TSH 6-8 minggu setelah inisiasi dan setelah perubahan dosis. Minum saat perut kosong, terpisah minimal 4 jam dari suplemen kalsium, besi, dan antasida.",
+    "source_url": "https://www.drugs.com/sfx/levothyroxine-side-effects.html"
+  },
+  {
+    "drug_name": "Allopurinol",
+    "category": "Umum",
+    "side_effects": [
+      "Ruam kulit",
+      "Mual",
+      "Diare",
+      "Sakit kepala",
+      "Peningkatan enzim hati",
+      "Flare gout pada awal terapi",
+      "Sindrom hipersensitivitas allopurinol (DRESS)",
+      "Sindrom Stevens-Johnson",
+      "Nekrolisis epidermal toksik",
+      "Nefropati"
+    ],
+    "severity_level": "moderate",
+    "warnings": "Risiko reaksi kulit berat (SJS/TEN) lebih tinggi pada pembawa HLA-B*58:01, etnis Asia. Pertimbangkan skrining HLA pada populasi berisiko. Mulai dengan dosis rendah dan titrasi bertahap.",
+    "source_url": "https://www.drugs.com/sfx/allopurinol-side-effects.html"
+  }
+]
