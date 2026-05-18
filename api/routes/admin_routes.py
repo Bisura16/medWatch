@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 bp = Blueprint("admin_routes", __name__)
 
 _LAST_SCRAPE: dict = {}
+# Process start time captured once at module import. Used to compute real
+# backend uptime for the admin dashboard KPI (B10).
+_PROCESS_STARTED_AT = datetime.now(timezone.utc)
 
 
 @bp.route("/api/admin/scrape", methods=["POST"])
@@ -107,6 +110,8 @@ def system_stats():
     patients = load_patients()
     dl = get_module("anggota4", "data_loader")
     drugs_count = len(dl.muat_database_obat()) if dl else 0
+    now = datetime.now(timezone.utc)
+    uptime_seconds = int((now - _PROCESS_STARTED_AT).total_seconds())
     return ok({
         "users_count": len(users),
         "patients_count": len(patients),
@@ -117,4 +122,6 @@ def system_stats():
             "masyarakat": sum(1 for u in users if u.get("role") == "masyarakat"),
             "admin": sum(1 for u in users if u.get("role") == "admin"),
         },
+        "process_started_at": _PROCESS_STARTED_AT.isoformat(),
+        "uptime_seconds": uptime_seconds,
     })
