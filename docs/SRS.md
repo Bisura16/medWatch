@@ -173,7 +173,7 @@ MedWatch versi submission adalah produk komposit tiga tier:
    sebagai showcase. Frontend memuat berbagai rute (lihat tabel pada
    bagian 3.2.1) dan memproxy permintaan ke backend melalui Next.js API
    route. Pola proksi ini menjaga URL backend Cloud Run agar tidak
-   pernah terekspos pada browser klien (lihat `docs/adr/0001-vercel-cloudrun-split.md`).
+   pernah terekspos pada browser klien (lihat `docs/adr/0001-vercel-cloud-run-security-pattern.md`).
 
 Diagram konteks (C4 Level 1) berada di `docs/diagrams/png/c4-l1-context.png`;
 sumber Mermaid pada `docs/diagrams/src/c4-l1-context.mmd`.
@@ -217,7 +217,7 @@ MedWatch melayani tiga persona dengan profil sebagai berikut.
 
 Persona admin merupakan ekstensi melampaui PRD asli (yang mengeluarkan
 otentikasi dari scope), sehingga keberadaannya didokumentasikan sebagai
-suplemen presentasi pada `docs/adr/0002-jwt-bcrypt-httpcookie.md` dan
+suplemen presentasi pada `docs/adr/0002-jwt-bcrypt-httponly.md` dan
 diakui sebagai deviasi pada tabel deviasi `docs/AS-BUILT.md`.
 
 ### 2.4 Batasan
@@ -675,9 +675,10 @@ Annex B.
 ### 3.4 Persyaratan Database (Persistensi Data)
 
 Sistem MedWatch versi presentasi tidak menggunakan basis data relasional;
-semua state disimpan dalam berkas JSON. Pilihan ini didokumentasikan
-sebagai ADR (`docs/adr/0007-json-storage.md`). Sumber-truth dan layout
-field dijelaskan terperinci dalam `docs/DATA-DICTIONARY.md`. Ringkasan
+semua state disimpan dalam berkas JSON. Pilihan dan struktur skema
+dijelaskan terperinci dalam `docs/DATA-DICTIONARY.md` (lihat bagian
+"Arsitektur Penyimpanan") dan akan direvisi menuju SQLite pada fase
+production-grade per `ProductionGrade-ImplementationPlan/02-offline-implementation-plan.md`. Ringkasan
 penyimpanan:
 
 | Entitas | Lokasi (Desktop) | Lokasi (Backend) | Source-of-truth |

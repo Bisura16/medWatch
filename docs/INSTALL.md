@@ -489,7 +489,7 @@ Vercel hosting tidak terdampak karena memakai Node 22 LTS by default.
 Gejala: setiap request scraping ke `drugs.com` mengembalikan HTTP 403.
 Bukti di `anggota1/scraper.log`.
 
-Solusi: pakai pipeline openFDA per ADR-0004 (`docs/adr/0004-openfda-pivot.md`).
+Solusi: pakai pipeline openFDA per ADR-0004 (`docs/adr/0004-drugs-com-akamai-to-openfda-pivot.md`).
 Tidak melakukan bypass anti-bot karena melanggar ToS drugs.com.
 
 ### 9.3 pyenv / Homebrew Python collision
@@ -613,7 +613,7 @@ python integrasi/app_terpadu.py
 - `src/app/api/[...slug]/route.ts`: Vercel API proxy ke Cloud Run.
 - `integrasi/README.md`: deskripsi orchestrator desktop.
 - `.mission/state.json`: state mission, termasuk blocker B-WAVE1-BUILD-1.
-- `docs/adr/0004-openfda-pivot.md`: ADR pivot scraping ke openFDA.
+- `docs/adr/0004-drugs-com-akamai-to-openfda-pivot.md`: ADR pivot scraping ke openFDA.
 - `docs/SECURITY.md`: threat model lengkap (W2-D10).
 - `docs/API.md`: kontrak endpoint backend (W2-D06).
 - `docs/AS-BUILT.md`: dokumen As-Built post-Wave-1 (W2-D11).
