@@ -1,9 +1,13 @@
 {
-  "note": "Mirror of mission state. Authoritative state lives in /Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json. This file is updated at every wave checkpoint so the backend repo can resume independently.",
+  "note": "Mirror of mission state. Authoritative state lives in /Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json. Refreshed at every wave checkpoint.",
   "mission_id": "medwatch-2026-05-18T00-00-00Z",
-  "last_checkpoint_at": "2026-05-18T00:00:00Z",
+  "last_checkpoint_at": "2026-05-18T16:00:00Z",
   "status": "in_progress",
-  "current_wave": 0,
+  "current_wave": 2,
   "waves_total": 5,
+  "last_completed_wave": 1,
+  "frontend_last_commit": "2ffad19",
+  "backend_last_commit": "64513e6",
+  "wave_1_summary": "8 PASS / 1 PARTIAL (T1-LOGIN). 1 open_blocker (B-WAVE1-BUILD-1 Next.js 16.2.1 + Node 25 incompat). Real openFDA data: 1850 events / 6000 recalls. anggota3/NewestVisualization additive 5 PNGs.",
   "authoritative_state_path": "/Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json"
 }
