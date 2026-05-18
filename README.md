@@ -352,9 +352,31 @@ python api/tests/smoke_test.py http://localhost:8080
 python api/tests/smoke_test.py https://medwatch-api-517694123086.asia-southeast1.run.app
 ```
 
-### Test plan lengkap
+Suite telah diperluas di Wave 5 W5-FIX-CRITICAL dengan assertion baru yang memverifikasi gating role pada endpoint `POST /api/safety/check`: sebagai `umum_budi` (role `masyarakat`), supply `pasien_id=P001` harus mengembalikan `pasien_context: null` dan `pasien_active_meds: []`; sebagai `bidan_siti` (role `tenaga_kesehatan`), supply `pasien_id=P001` harus tetap mengembalikan field tersebut terisi. Sumber: closure H07-1 W4-HUNT.
 
-Rencana pengujian formal black-box dengan teknik Equivalence Partitioning, Boundary Value Analysis, dan Decision Table mengikuti standar IEEE 829 akan diselesaikan di Wave 5 mission (lihat plan di [`.mission/waves/`](./.mission/) bila tersedia). Test plan dan Test Case TC-MOD-NNN akan didistribusikan attribusinya ke seluruh anggota tim dengan NIM.
+### Pengujian Black-Box Formal (Wave 5)
+
+Dokumentasi pengujian black-box mengikuti standar IEEE 829 dan ISO/IEC/IEEE 29119 (Software Testing) di-tulis di Wave 5 mission (12-18 Mei 2026) dan tersedia di [`docs/testing/`](./docs/testing/):
+
+| Berkas | Deskripsi |
+|---|---|
+| [`docs/testing/test-plan.md`](./docs/testing/test-plan.md) | Master test plan: scope, strategy, environment, schedule 12-18 Mei 2026, exit criteria, role-based tester assignment. |
+| [`docs/testing/test-cases.md`](./docs/testing/test-cases.md) | TC-MOD-NNN test cases (>=50) covering AUTH, PASIEN, SAFETY, DRUG, VIZ, PDF, ADMIN, SCRAPE, HEATMAP, SCREEN modules. Setiap kasus memuat ID, modul, fitur, technique (EP/BVA/Decision Table/State Transition/Use Case/Error Guessing), prasyarat, langkah, data input, hasil yang diharapkan, hasil aktual, status (Pass/Fail/Blocked), tester (NIM + nama), tanggal eksekusi. |
+| [`docs/testing/rtm.md`](./docs/testing/rtm.md) | Requirement Traceability Matrix menghubungkan SRS FR-ID ke TC-MOD-NNN ID. |
+| [`docs/testing/defect-log.md`](./docs/testing/defect-log.md) | Defect log eksekusi Wave 5 termasuk W4-HUNT H-ID sebagai entri historis dan W5-RT-NNN entri baru. |
+| [`docs/testing/test-summary.md`](./docs/testing/test-summary.md) | Test summary dengan formula `Persentase Validasi = (Sum pass / Sum total) * 100%` plus verdikt Arikunto scale (86-100 sangat baik, 71-85 baik, 56-70 cukup, 41-55 kurang, <=40 sangat kurang). |
+
+Versi `.docx` masing-masing tersedia di [`docs/deliverable/`](./docs/deliverable/) sebagai deliverable submission dosen.
+
+Tester attribution lintas anggota tim:
+
+- Bimo Surya Anggara (NIM 251524040, QA): master plan owner + AUTH/PASIEN execution.
+- Alia Ardani (NIM 251524035, System Analyst): RTM + VIZ/HEATMAP execution.
+- Muhammad Iqbal (NIM 251524057, Programmer): SAFETY/DRUG execution.
+- Abhidal Muhammad Gazza (NIM 251524032, UI/UX): PDF/SCREEN execution.
+- Ghaisan Khoirul Badruzaman (NIM 251524048, Project Leader): SCRAPE/ADMIN execution.
+
+Real execution evidence disimpan di `docs/testing/evidence/` per TC-ID (transcript curl untuk endpoint, screenshot Playwright untuk UI saat tersedia). Status `Blocked` dieksposisikan eksplisit dengan rujukan ke open blocker (mis. B-WAVE1-BUILD-1 untuk klikthrough SSR).
 
 ---
 
