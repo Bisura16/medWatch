@@ -1,0 +1,9 @@
+==== TC-PASIEN-018 ====
+Tanggal eksekusi: 2026-05-18T17:46:54+07:00
+Deskripsi: POST pasien sukses sebagai bidan
+Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaWRhbl9zaXRpIiwicm9sZSI6InRlbmFnYV9rZXNlaGF0YW4iLCJuYW1lIjoiQmlkYW4gU2l0aSBBbWluYWgiLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.pwMZptL35vnEKZ4gXnc56WydapEV3jj-LcbFnZJBeoI -H Content-Type: application/json -d {"nama":"Ny W5Test","umur":"30","alamat":"Cibiru","kategori":"Ibu Hamil","S":{"keluhan":"mual"},"O":{"bb_kg":"55"},"A":{"diagnosa":"G1P0A0"},"P":{"tindakan":"Istirahat","resep":"Asam folat 1x1"}}
+-- BEGIN RESPONSE --
+{"A":{"diagnosa":"G1P0A0"},"O":{"bb_kg":"55"},"P":{"resep":"Asam folat 1x1","tindakan":"Istirahat"},"S":{"keluhan":"mual"},"alamat":"Cibiru","created_by":"bidan_siti","id":"P024","kategori":"Ibu Hamil","nama":"Ny W5Test","umur":"30"}
+
+-- HTTP_STATUS:201 TIME:0.005092s --
+-- END RESPONSE --

@@ -1,0 +1,9 @@
+==== TC-AUTH-014 ====
+Tanggal eksekusi: 2026-05-18T17:48:32+07:00
+Deskripsi: RBAC: admin dapat akses admin-only
+Perintah: curl http://127.0.0.1:8080/api/admin/system-stats -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbl9naGFpc2FuIiwicm9sZSI6ImFkbWluIiwibmFtZSI6IkdoYWlzYW4gS2hvaXJ1bCBCLiIsImlhdCI6MTc3OTEwMTEyNSwiZXhwIjoxNzc5MTQ0MzI1LCJpc3MiOiJtZWR3YXRjaC1hcGkifQ.hrvH-MH9apome0lAelOrueRtRL3EuGLd2awIvNYJ4_4
+-- BEGIN RESPONSE --
+{"drugs_count":6,"last_scrape":{"drugs_updated":6,"recalls_added":0,"source":"cached","status":"completed","timestamp":"2026-05-18T10:46:57.741838+00:00"},"patients_count":25,"process_started_at":"2026-05-18T10:46:06.703737+00:00","uptime_seconds":145,"users_by_role":{"admin":2,"masyarakat":2,"tenaga_kesehatan":2},"users_count":6}
+
+-- HTTP_STATUS:200 TIME:0.000870s --
+-- END RESPONSE --

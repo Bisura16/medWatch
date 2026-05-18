@@ -1,0 +1,39 @@
+---
+title: "State Machine - Visit Lifecycle"
+---
+stateDiagram-v2
+  [*] --> Draft : bidan membuka form
+
+  Draft --> Saved : submit form valid / save_patients()
+  Draft --> Draft : edit field belum submit
+  Draft --> Cancelled : tombol Batal / discard
+
+  Saved --> Updated : edit existing visit / _deep_merge dan save
+  Updated --> Updated : edit tambahan / save berulang
+  Updated --> Saved : tidak ada perubahan baru
+  Saved --> Archived : hapus catatan (admin) / DELETE
+  Updated --> Archived : hapus catatan (admin) / DELETE
+  Archived --> [*]
+  Cancelled --> [*]
+
+  state Draft {
+    [*] --> Empty
+    Empty --> Filling : input nama
+    Filling --> Validating : klik Simpan
+    Validating --> Filling : validasi gagal (B03)
+    Validating --> [*] : validasi OK
+  }
+
+  note right of Saved
+    LEGENDA NOTASI STATE MACHINE
+    --
+    [*] -> S : initial transition ke state S
+    S -> [*] : transisi ke final state
+    label transisi : trigger [guard] / action
+    state S { ... } : komposisi state (nested)
+    Self-loop S -> S : event yang tidak ubah state utama
+    State Saved adalah hasil sukses POST patient (201).
+    State Updated adalah hasil sukses PUT patient (200).
+    State Archived adalah hasil DELETE patient (204, admin only).
+    Sumber kode api/routes/patient_routes.py POST/PUT/DELETE.
+  end note

@@ -1,0 +1,9 @@
+==== TC-HEATMAP-002 ====
+Tanggal eksekusi: 2026-05-18T17:46:54+07:00
+Deskripsi: Heatmap data shape drugs+effects+values
+Perintah: curl http://127.0.0.1:8080/api/visualizations/heatmap-efek -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1bXVtX2J1ZGkiLCJyb2xlIjoibWFzeWFyYWthdCIsIm5hbWUiOiJCdWRpIFNhbnRvc28iLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.n2GJt9i1JD4VHENCSQabQ3wmHxx287yaycSm6ON39ok
+-- BEGIN RESPONSE --
+{"drugs":["Paracetamol","Ibuprofen","Amoxicillin","Captopril","Cetirizine","Metformin"],"effects":["Angioedema","Asidosis laktat","Batuk kering","Diare","Gangguan ginjal","Hipoglikemia","Hipotensi","Kantuk","Kembung","Mual","Mulut kering","Nyeri lambung","Peningkatan enzim hati","Pusing","Reaksi alergi berat","Ruam kulit","Tukak lambung"],"values":[[0,0,0,0,0,0,0,0,0,1,0,0,1,0,1,1,0],[0,0,0,0,1,0,0,0,0,1,0,1,0,1,0,0,1],[0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,1,0],[1,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0],[0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0],[0,1,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0]]}
+
+-- HTTP_STATUS:200 TIME:0.000832s --
+-- END RESPONSE --

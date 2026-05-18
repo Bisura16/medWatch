@@ -1,0 +1,50 @@
+---
+title: "Sequence Diagram - Scraping Pipeline openFDA"
+---
+sequenceDiagram
+  autonumber
+  actor AD as Admin
+  participant UI as Frontend AdminScraper
+  participant PX as Vercel Proxy
+  participant API as admin_routes trigger_scrape
+  participant BS as bootstrap get_module
+  participant ANG as anggota1 openfda fetch
+  participant FDA as openFDA API
+  participant DL as anggota4 data_loader
+  participant FS as Filesystem anggota1 data
+
+  AD->>UI: Klik tombol Picu Scrape di /admin/scraper
+  UI->>PX: POST /api/admin/scrape
+  PX->>API: POST dengan Bearer JWT role admin
+  Note over API: require_role admin atau 403 jika bukan admin
+  activate API
+
+  par Live (manual atau cron eksternal)
+    API->>BS: get_module anggota1 openfda fetch
+    BS-->>API: module handle
+    ANG->>FDA: GET drug event dengan api_key dan limit 100
+    activate FDA
+    FDA-->>ANG: 200 results
+    ANG->>FDA: GET drug enforcement dengan api_key dan limit 100
+    FDA-->>ANG: 200 results
+    deactivate FDA
+    ANG->>FS: tulis openfda_events.json dan openfda_recalls.json
+    FS-->>ANG: ok
+  end
+
+  Note over API: Endpoint /api/admin/scrape memakai jalur cached lalu memuat ulang drug_database lewat data_loader
+
+  API->>BS: get_module anggota4 data_loader
+  BS-->>API: module handle
+  API->>DL: muat_database_obat()
+  DL->>FS: baca drug_database.json
+  FS-->>DL: list drug
+  DL-->>API: list drug
+  API->>API: drugs_count diisi panjang list dan set _LAST_SCRAPE timestamp
+
+  API-->>PX: 200 OK status completed drugs_updated recalls_added source cached timestamp
+  deactivate API
+  PX-->>UI: 200
+  UI->>AD: Toast sukses dan tampilkan ringkasan
+
+  Note over AD,FS: LEGENDA NOTASI SEQUENCE - par adalah blok parallel (langkah live ke openFDA dapat berjalan terpisah). autonumber memberi nomor langkah. activate dan deactivate adalah activation bar. Note over X Y adalah catatan rentang lifeline. Tidak ada credential value pada label, api_key direpresentasi sebagai placeholder. Endpoint sebenarnya di api/routes/admin_routes.py:21.
