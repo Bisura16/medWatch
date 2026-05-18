@@ -1,13 +1,14 @@
 {
-  "note": "Mirror of mission state. Authoritative state lives in /Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json. Refreshed at every wave checkpoint.",
+  "note": "Mirror of mission state. Authoritative state lives in /Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json. Final close snapshot.",
   "mission_id": "medwatch-2026-05-18T00-00-00Z",
-  "last_checkpoint_at": "2026-05-18T19:30:00Z",
-  "status": "in_progress",
-  "current_wave": 4,
+  "last_checkpoint_at": "2026-05-18T20:00:00Z",
+  "status": "complete",
+  "current_wave": 5,
   "waves_total": 5,
-  "last_completed_wave": 3,
-  "wave_1_summary": "8 PASS / 1 PARTIAL. 1 open_blocker B-WAVE1-BUILD-1. Real openFDA 1850 events 6000 recalls. anggota3/NewestVisualization 5 PNGs.",
-  "wave_2_summary": "14 docs delivered. 10 PASS + 4 PARTIAL fixed via slug rename d33577d.",
-  "wave_3_summary": "Code commenting (29 Py + 88 TS files) + repo tidying (7 files each repo); 3 PASS + 1 PARTIAL fixed via em-dash purge across pre-existing UI strings.",
+  "last_completed_wave": 5,
+  "ready_to_close": true,
+  "open_blockers_remaining": ["B-WAVE1-BUILD-1 (environmental, deferred)"],
+  "submission_package": "/Users/ghaisan/Documents/MedWatchIntegration/medWatch/ArtifactReadySubmit/ (214 files in 10 subfolders)",
+  "final_report": "/Users/ghaisan/Documents/FrontendMedWatch/.mission/outbox/FINAL-REPORT.md",
   "authoritative_state_path": "/Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json"
 }
