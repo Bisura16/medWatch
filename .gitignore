@@ -16,3 +16,13 @@ Thumbs.db
 
 # Scraper run artefacts (logs from local module runs)
 anggota1/scraper.log
+
+# Secrets and credentials (never commit values; use Secret Manager / env)
+.env
+.env.*
+.env.local
+!.env.example
+*.pem
+*.key
+service-account*.json
+gcp-key*.json
