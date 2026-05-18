@@ -3,25 +3,45 @@ anggota1/.venv/
 **/.venv/
 **/venv/
 
-# Python bytecode
+# Python
+__pycache__/
 **/__pycache__/
 *.pyc
 *.pyo
+build/
+dist/
+*.egg-info/
+*.so
 
-# OS & editor cruft
+# Node (if any subdir uses it)
+node_modules/
+
+# OS
 .DS_Store
 Thumbs.db
-.vscode/
+
+# IDE
 .idea/
+.vscode/
+
+# Logs (except anggota1/scraper.log which is preserved teammate evidence per ADR-0004)
+*.log
+!anggota1/scraper.log
 
 # Scraper run artefacts (logs from local module runs)
 anggota1/scraper.log
 
-# Secrets and credentials (never commit values; use Secret Manager / env)
+# Env files (except example)
 .env
 .env.*
 .env.local
 !.env.example
+
+# Build artifacts
+*.spec
+!ProductionGrade-ImplementationPlan/build/medwatch.spec
+
+# Secrets and credentials (never commit values; use Secret Manager / env)
 *.pem
 *.key
 service-account*.json
