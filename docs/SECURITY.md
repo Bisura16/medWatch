@@ -303,6 +303,14 @@ Ringkasan capaian terhadap acceptance keamanan mission:
 - Tidak ada nilai kredensial di repo (verified secret-scan; lihat Section 8).
 - Service account JSON keys tidak pernah di-commit (gunakan default Cloud Run SA / Workload Identity di Vercel).
 
+Update pasca Wave 4 + Wave 5:
+
+- **H07-1 Critical RBAC PII leak RESOLVED dalam Wave 5** (commit SHA TBD pada sync time, lihat backend git log `W5-FIX-CRITICAL`). Sebelumnya: `umum_budi` dapat POST `/api/safety/check` dengan `pasien_id=P001` dan menerima `pasien_context: {nama, diagnosa, kategori, kondisi_umum}` plus `pasien_active_meds: [...]`. Sekarang: untuk role `masyarakat`, kedua field selalu null/empty regardless of pasien_id; bidan dan admin tetap menerima konteks pasien sebagaimana semula. Verifikasi: smoke test baru di `api/tests/smoke_test.py` assertion pasca-fix; auditor independen W5-AUDIT memverifikasi. Asersi inti: **masyarakat-cannot-access-pasien-via-safety-check**.
+- **H07-2 Major bidan-to-bidan SOAP read di-document sebagai single-faskes assumption** (Section 7.5 di bawah). Tidak dilakukan code change; rasionalisasi formal di-tulis untuk dosen sebagai design choice.
+- **H10-1 Major race POST/PUT/DELETE pasien** ditutup dengan `threading.Lock` di `api/routes/patient_routes.py`. Mengkomplementasi R6 (atomic write).
+- **H01-1 Major umur validation** ditutup dengan range check 0..150 di backend plus client-side mirror.
+- **H06 hardcoded UI data** ditutup di frontend (admin dashboard auditLog dihapus, /dashboard KPIs disourced atau dihapus).
+
 ---
 
 ## 7. Batasan dan Hutang Keamanan (Residual Risk Register)
@@ -314,9 +322,39 @@ Ringkasan capaian terhadap acceptance keamanan mission:
 | R3 | Tidak ada CSRF token untuk state-changing route | CSRF attack via same-origin theoretical | Rendah | SameSite=Lax cookie + same-origin proxy Vercel | Frontend | Production: double-submit cookie atau header `X-Requested-With` validation. |
 | R4 | Rotasi JWT secret manual | Compromise kunci akan mempengaruhi seluruh token aktif sampai expiry 12 jam | Rendah | Secret di Secret Manager; bukan inline kode | Sysadmin | Production: rotasi quarterly via Secret Manager versions + dual-key window. |
 | R5 | Dependency scanning belum di CI | CVE baru hanya terdeteksi saat audit manual | Rendah | `pip-audit` + `npm audit` jalan saat security-analyst agent | DevOps | Tambah GitHub Actions `pip-audit` + `npm audit --omit=dev` per PR. |
-| R6 | Penulisan JSON tidak atomic (`api/storage.py:38`) | Crash di tengah write -> file korup | Rendah | GCS object versioning untuk recovery | Backend | Implementasi `write-to-temp + os.replace` pattern. |
+| R6 | Penulisan JSON tidak atomic (`api/storage.py:38`) | Crash di tengah write -> file korup | Rendah | GCS object versioning untuk recovery + `threading.Lock` di create/update/delete (Wave 5 W5-FIX-CRITICAL untuk H10-1) | Backend | Implementasi `write-to-temp + os.replace` pattern. |
 | R7 | Direct backend Cloud Run `--allow-unauthenticated` | Bypass proxy memungkinkan secara teknis | Rendah | Backend RBAC tetap menolak token absen/invalid (defense in depth) | Sysadmin | Production: Cloud Run IAM `roles/run.invoker` hanya untuk Vercel IP range atau private VPC peering. |
 | R8 | Frontend high-severity deps di `_archived/` paths (H5, H6) | Tidak runtime; risiko jika archived route di-restore | Rendah | Tidak ada route aktif yang me-load paket bermasalah | Frontend | `npm uninstall react-simple-maps react-force-graph-2d ...` setelah konfirmasi pages tidak di-restore. |
+| ~~R9~~ (sebelumnya direncanakan untuk H07-1) | Masyarakat dapat memanen patient PII via POST /api/safety/check dengan pasien_id arbitrer | **RESOLVED dalam Wave 5 (commit SHA TBD pada sync time, lihat backend git log untuk W5-FIX-CRITICAL)** | N/A pasca-fix | Role gating pada `pasien_context` dan `pasien_active_meds` di `api/routes/safety_routes.py`: jika `g.user['role'] == 'masyarakat'`, kedua field selalu di-set `null` dan `[]` regardless of pasien_id supplied; assertion baru di `api/tests/smoke_test.py` memverifikasi behavior pasca-fix. Bukti reproduction pre-fix di `.mission/findings/bugs/W4-HUNT.md` Bagian 7 H07-1 dan auditor verification di `.mission/findings/audits/wave-04-audit.md` baris 91-117. | Backend (Ghaisan) | Closed pasca W5-AUDIT verification. Tidak ada residual; masyarakat tetap dapat memanggil safety check untuk obat-saja (drugs[]) tanpa menerima konteks pasien apapun. |
+
+### 7.5 Asumsi Kepemilikan Pasien Lintas Bidan (Single-Faskes Assumption)
+
+Wave 4 W4-HUNT H07-2 Major mengidentifikasi bahwa `bidan_putri` dapat membaca SOAP record yang `created_by: bidan_siti` melalui `GET /api/patients/P001`. Reproduksi: `auditor` Wave 4 melakukan login dua bidan terpisah dan mengonfirmasi HTTP 200 dengan body `created_by: bidan_siti, nama: Ny. Dewi Lestari` ketika `bidan_putri` memanggil `GET /api/patients/P001` (sumber: `.mission/findings/audits/wave-04-audit.md` baris 133).
+
+**Keputusan Wave 5: dokumentasikan sebagai asumsi desain, bukan defect.**
+
+Rasionalisasi:
+
+1. **Cakupan academic submission.** MedWatch Wave 0-5 mission disusun untuk submission akademik (D4 Teknik Informatika POLBAN Kelas 1B-D4 Kelompok B5 deadline 25 Mei 2026) dengan satu Faskes simulasi dan 6 akun demo (`bidan_siti`, `bidan_putri`, `umum_budi`, `umum_dewi`, `admin_ghaisan`, `admin_sistem`). Tenancy lintas-Faskes tidak menjadi requirement PRD asli (`docs/PRD.md` Bagian 4.3) maupun supplementary integration mission.
+2. **Token claim model saat ini.** JWT memuat klaim `{username, role, iat, exp, iss}` saja (`api/auth.py:23-34`); tidak ada `faskes_id` atau `bidan_id`. Penambahan klaim baru memerlukan migrasi `users.json` schema, re-issue token semua user, dan filter di `list_patients`/`get_patient` di `api/routes/patient_routes.py:135-195`. Beban implementasi vs hasil tidak proporsional untuk submission akademik dengan dataset 21 pasien sintetik.
+3. **Ekspos data.** Semua data pasien adalah sintetik (lihat A2 di Section 2). Tidak ada PHI nyata yang bocor jika `bidan_putri` membaca record `bidan_siti`. Bidan tetap menyaksikan record sesama Faskes dalam realitas kolaborasi klinik bidan, sehingga semantik UI tidak misleading.
+4. **Defense in depth tetap berlaku.** `masyarakat` tetap di-block oleh ownership check `owner_username` di `api/routes/patient_routes.py:193-194`; non-auth tetap di-block oleh `@require_auth`; admin scope tidak berubah. Yang di-permit hanya cross-bidan read intra-tenaga-kesehatan dalam Faskes yang sama.
+
+**Rencana production (bukan dalam scope Wave 5):**
+
+Lihat `ProductionGrade-ImplementationPlan/04-hardening-plan.md` Bagian "Multi-tenant RBAC enhancement". Solusi:
+
+- Tambah `faskes_id` field ke `users.json` user record.
+- Tambah `faskes_id` claim ke JWT payload (re-encode `api/auth.py:23-34`).
+- Filter `list_patients` (`api/routes/patient_routes.py:135-170`) untuk hanya mengembalikan record yang `faskes_id` cocok dengan claim caller.
+- Filter `get_patient` (`api/routes/patient_routes.py:175-195`) dengan check tambahan `record.faskes_id == g.user['faskes_id']`.
+- Migrate seed pasien dengan `faskes_id` derivable dari `created_by` user record.
+
+**STRIDE update untuk H07-2 (Elevation of Privilege ekspans):**
+
+Dari tabel 5.2 A2 Patient PII SOAP, kolom E (Elevation of Privilege) saat ini mencatat "Masyarakat mengakses pasien orang lain | Ownership check eksplisit | 403". Ekstensi:
+
+- **Tenaga kesehatan A mengakses pasien yang di-create oleh tenaga kesehatan B di Faskes berbeda (hipotetis multi-Faskes deployment):** mitigasi saat ini = tidak ada (single-faskes assumption). Mitigasi production = JWT `faskes_id` claim + filter di `list_patients`/`get_patient`. Residual saat submission akademik: accepted-and-documented karena scope mission. Tidak ada PII real terbocor karena dataset sintetik.
 
 ---
 
