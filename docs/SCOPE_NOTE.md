@@ -32,11 +32,11 @@ This stack is **a polish layer over the existing modular design**, not a replace
 ## Where the desktop modules live
 
 All modular code per PRD remains untouched:
-- `anggota1/anggota1.py` — Ghaisan, scraper drugs.com + FDA
-- `anggota2/PasienCRUD.py` (and submodules) — Bimo, CRUD pasien SOAP
-- `anggota3/TampilGrafik.py` (and submodules) — Alia, visualisasi matplotlib
-- `anggota4/safety_checker.py` (and submodules) — Iqbal, drug safety check
-- `anggota5/main_anggota5.py` (and submodules) — Abhidal, PDF export + role-based auth
+- `anggota1/anggota1.py` - Ghaisan, scraper drugs.com + FDA
+- `anggota2/PasienCRUD.py` (and submodules) - Bimo, CRUD pasien SOAP
+- `anggota3/TampilGrafik.py` (and submodules) - Alia, visualisasi matplotlib
+- `anggota4/safety_checker.py` (and submodules) - Iqbal, drug safety check
+- `anggota5/main_anggota5.py` (and submodules) - Abhidal, PDF export + role-based auth
 
 The merge layer at `integrasi/app_terpadu.py` composes them into a unified CLI app per the team's "merge masing-masing modul" weekly target.
 

@@ -16,24 +16,24 @@ The system is **NOT production-ready for handling real patient PHI** without the
 
 None.
 
-### High (backend) — REMEDIATED
+### High (backend) - REMEDIATED
 
 | # | Title | Location | Status |
 |---|---|---|---|
-| H1 | CVE-2026-27205 Flask 3.0.3 | `api/requirements.txt` | FIXED — upgraded to Flask 3.1.3 |
-| H2 | CVE-2024-6866, 6844, 6839 Flask-Cors 5.0.0 | `api/requirements.txt` | FIXED — upgraded to Flask-Cors 6.0.0 |
-| H3 | CVE-2026-32597 PyJWT 2.10.1 | `api/requirements.txt` | FIXED — upgraded to PyJWT 2.12.0 |
-| H4 | CVE-2024-47081, CVE-2026-25645 requests 2.32.3 | `api/requirements.txt` | FIXED — upgraded to requests 2.33.0 |
+| H1 | CVE-2026-27205 Flask 3.0.3 | `api/requirements.txt` | FIXED - upgraded to Flask 3.1.3 |
+| H2 | CVE-2024-6866, 6844, 6839 Flask-Cors 5.0.0 | `api/requirements.txt` | FIXED - upgraded to Flask-Cors 6.0.0 |
+| H3 | CVE-2026-32597 PyJWT 2.10.1 | `api/requirements.txt` | FIXED - upgraded to PyJWT 2.12.0 |
+| H4 | CVE-2024-47081, CVE-2026-25645 requests 2.32.3 | `api/requirements.txt` | FIXED - upgraded to requests 2.33.0 |
 
 Verified after redeploy: `pip-audit -r api/requirements.txt` reports "No known vulnerabilities found".
 
-### High (frontend) — ACCEPTED
+### High (frontend) - ACCEPTED
 
 | # | Title | Location | Status |
 |---|---|---|---|
-| H5 | d3-color ReDoS (GHSA-36jr-mh4h-2g58) | transitive of `react-simple-maps` | ACCEPTED — react-simple-maps is only used by `_archived/indonesia-map`, no longer routable |
-| H6 | lodash code injection via `_.template` (GHSA-r5fr-rjxr-66jc) | transitive of `react-force-graph-2d` | ACCEPTED — react-force-graph-2d only used by `_archived/drug-network`, no longer routable |
-| H7 | Next.js DoS with Server Components (GHSA-q4gf-8mx6-v5v3) | next 16.2.1 | TO BE FIXED — `npm audit fix --force` to next 16.2.4. Patch-level upgrade considered safe but deferred to post-mission to avoid mid-flight Next.js version churn. Demo deployment is publicly accessible and Vercel applies platform-level DDoS mitigations. |
+| H5 | d3-color ReDoS (GHSA-36jr-mh4h-2g58) | transitive of `react-simple-maps` | ACCEPTED - react-simple-maps is only used by `_archived/indonesia-map`, no longer routable |
+| H6 | lodash code injection via `_.template` (GHSA-r5fr-rjxr-66jc) | transitive of `react-force-graph-2d` | ACCEPTED - react-force-graph-2d only used by `_archived/drug-network`, no longer routable |
+| H7 | Next.js DoS with Server Components (GHSA-q4gf-8mx6-v5v3) | next 16.2.1 | TO BE FIXED - `npm audit fix --force` to next 16.2.4. Patch-level upgrade considered safe but deferred to post-mission to avoid mid-flight Next.js version churn. Demo deployment is publicly accessible and Vercel applies platform-level DDoS mitigations. |
 
 H5 and H6 are isolated to archived page code paths. Even though the dependencies remain in `node_modules`, they are not loaded at runtime because the page files live under `src/app/_archived/` (private folder, no route). To fully eliminate, run `npm uninstall react-simple-maps react-force-graph-2d topojson-client d3-* three @react-three/*` after confirming the archived pages will not be restored.
 
@@ -41,17 +41,17 @@ H5 and H6 are isolated to archived page code paths. Even though the dependencies
 
 | # | Title | Location | Status |
 |---|---|---|---|
-| M1 | No login rate limiting | `api/routes/auth_routes.py` | DOCUMENTED — accepted for demo. Production fix: add `flask-limiter` with 5/15min per username. |
-| M2 | Stateless JWT cannot be revoked server-side | `api/auth.py` | DOCUMENTED — mitigated by short 12h expiry + httpOnly cookie cleared on logout. Production fix: implement JWT denylist in Cloud Storage or Memorystore. |
-| M3 | postcss XSS via unescaped `</style>` | transitive of next 16.2.1 | DOCUMENTED — fixed by H7 upgrade. |
-| M4 | `@hono/node-server` middleware bypass | transitive | DOCUMENTED — package is dev-time, not runtime, no production impact. |
+| M1 | No login rate limiting | `api/routes/auth_routes.py` | DOCUMENTED - accepted for demo. Production fix: add `flask-limiter` with 5/15min per username. |
+| M2 | Stateless JWT cannot be revoked server-side | `api/auth.py` | DOCUMENTED - mitigated by short 12h expiry + httpOnly cookie cleared on logout. Production fix: implement JWT denylist in Cloud Storage or Memorystore. |
+| M3 | postcss XSS via unescaped `</style>` | transitive of next 16.2.1 | DOCUMENTED - fixed by H7 upgrade. |
+| M4 | `@hono/node-server` middleware bypass | transitive | DOCUMENTED - package is dev-time, not runtime, no production impact. |
 
 ### Low
 
 | # | Title | Location | Status |
 |---|---|---|---|
-| L1 | Demo credentials are public | `api/data/users.json`, `README.md`, `/login` page | ACCEPTED — by design for demo accessibility. Production would never seed plaintext credentials. |
-| L2 | Cloud Run service is `--allow-unauthenticated` | `gcloud run deploy` flag | ACCEPTED — Vercel proxy is the auth boundary. Direct backend access is rate-limited by Cloud Run platform. |
+| L1 | Demo credentials are public | `api/data/users.json`, `README.md`, `/login` page | ACCEPTED - by design for demo accessibility. Production would never seed plaintext credentials. |
+| L2 | Cloud Run service is `--allow-unauthenticated` | `gcloud run deploy` flag | ACCEPTED - Vercel proxy is the auth boundary. Direct backend access is rate-limited by Cloud Run platform. |
 
 ### Informational
 

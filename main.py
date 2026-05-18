@@ -1,5 +1,5 @@
 """
-main.py  —  MedWatch Terminal UI
+main.py  -  MedWatch Terminal UI
 Tes semua modul anggota 1-5 dari satu titik.
 Jalankan dari folder medWatch-main:  python main.py
 """
@@ -94,17 +94,17 @@ def test_modul(folder: Path, nama_list: list[str]) -> tuple[bool, dict]:
             ok(nama)
             hasil[nama] = obj
         else:
-            gagal(f"{nama}  —  {obj}")
+            gagal(f"{nama}  -  {obj}")
             semua_ok = False
     return semua_ok, hasil
 
 
 # ══════════════════════════════════════════════
-# ANGGOTA 1  —  SCRAPER
+# ANGGOTA 1  -  SCRAPER
 # ══════════════════════════════════════════════
 
 def tes_anggota1():
-    header("ANGGOTA 1  —  Scraper Data Obat (drugs.com + FDA)")
+    header("ANGGOTA 1  -  Scraper Data Obat (drugs.com + FDA)")
     folder = ROOT / "anggota1"
     file   = folder / "anggota1.py"
 
@@ -135,11 +135,11 @@ def tes_anggota1():
 
 
 # ══════════════════════════════════════════════
-# ANGGOTA 2  —  CRUD PASIEN
+# ANGGOTA 2  -  CRUD PASIEN
 # ══════════════════════════════════════════════
 
 def tes_anggota2():
-    header("ANGGOTA 2  —  CRUD Data Pasien")
+    header("ANGGOTA 2  -  CRUD Data Pasien")
     folder = ROOT / "anggota2"
     modul  = ["pasien_helper", "TambahPasien", "ReadDataPasien",
               "HapusDataPasien", "EditDataPasien", "PasienCRUD"]
@@ -169,11 +169,11 @@ def tes_anggota2():
 
 
 # ══════════════════════════════════════════════
-# ANGGOTA 3  —  VISUALISASI GRAFIK
+# ANGGOTA 3  -  VISUALISASI GRAFIK
 # ══════════════════════════════════════════════
 
 def tes_anggota3():
-    header("ANGGOTA 3  —  Visualisasi Grafik")
+    header("ANGGOTA 3  -  Visualisasi Grafik")
     folder = ROOT / "anggota3"
     modul  = ["BacaData", "PerbandinganObat", "TampilGrafik",
               "grafik_efek", "grafik_penyakit", "grafik_top_efek"]
@@ -227,11 +227,11 @@ def tes_anggota3():
 
 
 # ══════════════════════════════════════════════
-# ANGGOTA 4  —  PENCARIAN OBAT
+# ANGGOTA 4  -  PENCARIAN OBAT
 # ══════════════════════════════════════════════
 
 def tes_anggota4():
-    header("ANGGOTA 4  —  Pencarian Obat & Safety Check")
+    header("ANGGOTA 4  -  Pencarian Obat & Safety Check")
     folder = ROOT / "anggota4"
     modul  = ["data_loader", "safety_checker", "pencarian_obat"]
 
@@ -275,11 +275,11 @@ def tes_anggota4():
 
 
 # ══════════════════════════════════════════════
-# ANGGOTA 5  —  LAPORAN PDF
+# ANGGOTA 5  -  LAPORAN PDF
 # ══════════════════════════════════════════════
 
 def tes_anggota5():
-    header("ANGGOTA 5  —  Ekspor Laporan PDF")
+    header("ANGGOTA 5  -  Ekspor Laporan PDF")
     folder = ROOT / "anggota5"
     modul  = ["auth", "ambil_data", "export_pdf"]
 
@@ -317,18 +317,18 @@ def tes_anggota5():
 # ══════════════════════════════════════════════
 
 MENU = [
-    ("1", "Anggota 1  —  Scraper Data Obat (drugs.com + FDA)", tes_anggota1),
-    ("2", "Anggota 2  —  CRUD Data Pasien",                    tes_anggota2),
-    ("3", "Anggota 3  —  Visualisasi Grafik (Matplotlib)",     tes_anggota3),
-    ("4", "Anggota 4  —  Pencarian Obat & Safety Check",       tes_anggota4),
-    ("5", "Anggota 5  —  Ekspor Laporan PDF",                  tes_anggota5),
+    ("1", "Anggota 1  -  Scraper Data Obat (drugs.com + FDA)", tes_anggota1),
+    ("2", "Anggota 2  -  CRUD Data Pasien",                    tes_anggota2),
+    ("3", "Anggota 3  -  Visualisasi Grafik (Matplotlib)",     tes_anggota3),
+    ("4", "Anggota 4  -  Pencarian Obat & Safety Check",       tes_anggota4),
+    ("5", "Anggota 5  -  Ekspor Laporan PDF",                  tes_anggota5),
 ]
 
 def menu_utama():
     while True:
         clear()
         garis()
-        print("         M E D W A T C H  —  Tes Modul Sistem")
+        print("         M E D W A T C H  -  Tes Modul Sistem")
         garis()
         print()
         for kode, label, _ in MENU:
