@@ -1,0 +1,9 @@
+{
+  "note": "Mirror of mission state. Authoritative state lives in /Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json. This file is updated at every wave checkpoint so the backend repo can resume independently.",
+  "mission_id": "medwatch-2026-05-18T00-00-00Z",
+  "last_checkpoint_at": "2026-05-18T00:00:00Z",
+  "status": "in_progress",
+  "current_wave": 0,
+  "waves_total": 5,
+  "authoritative_state_path": "/Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json"
+}
