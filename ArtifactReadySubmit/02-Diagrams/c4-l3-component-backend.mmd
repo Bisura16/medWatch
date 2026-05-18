@@ -1,0 +1,92 @@
+---
+title: "C4 Level 3 - Component Backend api/"
+---
+C4Component
+  title Diagram Komponen Backend Flask api/ (C4 L3)
+
+  Container(frontend, "Frontend Next.js Proxy", "TS", "Forward request /api/* dengan JWT.")
+
+  Container_Boundary(backend, "Backend Flask api/") {
+    Component(app, "App Factory", "api/app.py", "create_app() membuat Flask, daftar blueprint, konfig CORS, error handler 404/500.")
+    Component(middleware, "Auth Middleware", "api/middleware.py", "Decorator @require_auth dan @require_role. Baca Bearer token, verifikasi JWT, isi flask.g.user.")
+    Component(authmod, "Auth Primitives", "api/auth.py", "hash_password bcrypt cost 12, issue_token JWT, verify_token JWT issuer=medwatch-api.")
+    Component(storage, "Storage Layer", "api/storage.py", "load_users dan save_users + load_patients dan save_patients. Switch GCS atau local berdasarkan USE_CLOUD_STORAGE.")
+    Component(helpers, "Helpers", "api/helpers.py", "ok(), err(), strip_password_fields(), parse_resep_to_meds() untuk B05.")
+    Component(bootstrap, "Bootstrap", "api/bootstrap.py", "get_module() melakukan dynamic import ke modul anggota1..5 sebagai dependency lunak.")
+
+    Component(bp_auth, "Auth Blueprint", "api/routes/auth_routes.py", "/api/auth/login, /api/auth/me, /api/auth/logout.")
+    Component(bp_patient, "Patient Blueprint", "api/routes/patient_routes.py", "/api/patients GET POST PUT DELETE. Validasi B03 dan sort desc B07.")
+    Component(bp_drug, "Drug Blueprint", "api/routes/drug_routes.py", "/api/drug/info dan /api/drug/search atas drug_database.json.")
+    Component(bp_safety, "Safety Blueprint", "api/routes/safety_routes.py", "/api/safety/check membungkus anggota4.safety_checker.cek_keamanan_obat dengan konteks pasien (B05).")
+    Component(bp_viz, "Visualization Blueprint", "api/routes/visualization_routes.py", "/api/viz/* matplotlib PNG base64.")
+    Component(bp_pdf, "PDF Blueprint", "api/routes/pdf_routes.py", "/api/pdf/* fpdf2 untuk SOAP, efek samping, inventaris, laporan bulanan (B04).")
+    Component(bp_admin, "Admin Blueprint", "api/routes/admin_routes.py", "/api/admin/scrape, /api/admin/users, /api/admin/system-stats (B10).")
+    Component(bp_health, "Health Blueprint", "api/routes/health.py", "/api/health untuk Cloud Run probe.")
+  }
+
+  Container_Boundary(anggota, "Modul anggota (read-only)") {
+    Component(ang1, "anggota1.openfda.fetch", "Python", "Tarik data openFDA event dan enforcement, tulis ke anggota1/data/openfda_*.json.")
+    Component(ang2, "anggota2.pasien_helper", "Python", "generate_id Pxxx dan helper SOAP.")
+    Component(ang4_loader, "anggota4.data_loader", "Python", "muat_database_obat dan muat_database_efek.")
+    Component(ang4_sc, "anggota4.safety_checker", "Python", "cek_keamanan_obat menghitung interaksi dan skor risiko.")
+    Component(ang5, "anggota5.export_pdf", "Python", "Render SOAP per pasien dan rekap bulanan dengan fpdf2.")
+  }
+
+  ContainerDb(state, "GCS Bucket / api/data/", "JSON", "users.json, patients.json.")
+  System_Ext(openfda_ext, "openFDA API", "Source eksternal.")
+
+  Rel(frontend, app, "HTTP request /api/*", "HTTPS+Bearer")
+  Rel(app, bp_auth, "register_blueprint")
+  Rel(app, bp_patient, "register_blueprint")
+  Rel(app, bp_drug, "register_blueprint")
+  Rel(app, bp_safety, "register_blueprint")
+  Rel(app, bp_viz, "register_blueprint")
+  Rel(app, bp_pdf, "register_blueprint")
+  Rel(app, bp_admin, "register_blueprint")
+  Rel(app, bp_health, "register_blueprint")
+
+  Rel(bp_patient, middleware, "@require_role")
+  Rel(bp_admin, middleware, "@require_role(admin)")
+  Rel(bp_safety, middleware, "@require_auth")
+  Rel(middleware, authmod, "verify_token")
+  Rel(bp_auth, authmod, "hash_password, issue_token")
+
+  Rel(bp_patient, storage, "load_patients, save_patients")
+  Rel(bp_admin, storage, "load_users, save_users")
+  Rel(bp_safety, storage, "load_patients (untuk B05)")
+  Rel(bp_safety, helpers, "parse_resep_to_meds")
+  Rel(storage, state, "I/O")
+
+  Rel(bp_admin, bootstrap, "get_module(anggota4.data_loader)")
+  Rel(bp_safety, bootstrap, "get_module(anggota4.safety_checker)")
+  Rel(bp_pdf, bootstrap, "get_module(anggota5.export_pdf)")
+  Rel(bp_patient, bootstrap, "get_module(anggota2.pasien_helper)")
+
+  Rel(bootstrap, ang1, "import")
+  Rel(bootstrap, ang2, "import")
+  Rel(bootstrap, ang4_loader, "import")
+  Rel(bootstrap, ang4_sc, "import")
+  Rel(bootstrap, ang5, "import")
+
+  Rel(ang1, openfda_ext, "GET event, enforcement", "HTTPS")
+
+  UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")
+
+  %% LEGENDA NOTASI C4 LEVEL 3
+  %% Bentuk:
+  %%   Component         = modul kode atau berkas Python
+  %%   Container_Boundary= batas container (backend dan modul anggota)
+  %%   ContainerDb       = data store
+  %%   System_Ext        = sistem eksternal
+  %% Garis hubung:
+  %%   Solid arrow + label = panggilan fungsi atau register_blueprint
+  %% Anggota1..5 di dalam boundary "Modul anggota (read-only)" sesuai
+  %% aturan project: backend hanya WRITE wrapper, baca-saja ke anggota/.
+  %% Sumber kode (file:line):
+  %%   app.py:27   create_app
+  %%   middleware.py:17 require_auth, :37 require_role
+  %%   auth.py:11  hash_password (bcrypt cost 12), :22 issue_token
+  %%   patient_routes.py:135 list (sort desc B07), :162 create (B03)
+  %%   safety_routes.py:16 safety_check (+B05 pasien_active_meds)
+  %%   admin_routes.py:21 trigger_scrape, :106 system_stats (B10)
+  %% Caption legenda dirender dari c4-l3-component-backend.legend.md di sisi PNG.

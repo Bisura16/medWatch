@@ -1,0 +1,194 @@
+---
+title: "Class Diagram - Backend MedWatch"
+---
+classDiagram
+  direction LR
+
+  class FlaskApp {
+    +static_folder: Path
+    +static_url_path: str
+    +create_app() Flask
+    +register_blueprint(bp) None
+  }
+
+  class AuthBlueprint {
+    +login() Response
+    +me() Response
+    +logout() Response
+  }
+
+  class PatientBlueprint {
+    +list_patients() Response
+    +get_patient(pid) Response
+    +create_patient() Response
+    +update_patient(pid) Response
+    +delete_patient(pid) Response
+    -_validate_medical_ranges(body) list~str~
+    -_parse_visit_date(s) tuple
+  }
+
+  class SafetyBlueprint {
+    +safety_check() Response
+  }
+
+  class AdminBlueprint {
+    +trigger_scrape() Response
+    +list_users() Response
+    +create_user() Response
+    +delete_user(username) Response
+    +system_stats() Response
+  }
+
+  class PdfBlueprint {
+    +rekam_medis() Response
+    +laporan_bulanan() Response
+    +efek_samping() Response
+    +inventaris() Response
+  }
+
+  class AuthService {
+    +hash_password(plain) str
+    +verify_password(plain, hash) bool
+    +issue_token(username, role, name) str
+    +verify_token(token) dict
+  }
+
+  class StorageService {
+    -USERS_KEY: str
+    -PATIENTS_KEY: str
+    +load_users() list~User~
+    +save_users(users) None
+    +load_patients() list~Patient~
+    +save_patients(patients) None
+    -_load_gcs(key) Any
+    -_load_local(filename) Any
+  }
+
+  class Middleware {
+    +require_auth(fn) callable
+    +require_role(*roles) callable
+    -_extract_token() str
+  }
+
+  class User {
+    +username: str
+    +password_hash: str
+    +role: str
+    +name: str
+    +phone: str
+  }
+
+  class Patient {
+    +id: str
+    +nama: str
+    +umur: int
+    +alamat: str
+    +tanggal_kunjungan: str
+    +kategori: str
+    +S: SOAP_S
+    +O: SOAP_O
+    +A: SOAP_A
+    +P: SOAP_P
+    +owner_username: str
+    +created_by: str
+  }
+
+  class SOAP_S {
+    +keluhan: str
+    +riwayat: str
+  }
+
+  class SOAP_O {
+    +tekanan_darah: str
+    +nadi: str
+    +suhu_c: str
+    +respirasi: str
+    +bb_kg: str
+    +tb_cm: str
+    +lila_cm: str
+    +catatan: str
+  }
+
+  class SOAP_A {
+    +diagnosa: str
+  }
+
+  class SOAP_P {
+    +tindakan: str
+    +resep: str
+    +jadwal_kontrol: str
+  }
+
+  class Drug {
+    +nama_obat: str
+    +alias: list~str~
+    +kategori: str
+    +bahan_aktif: list~str~
+    +indikasi: list~str~
+    +dosis_umum: str
+    +kehamilan: str
+    +peringatan: list~str~
+    +kontraindikasi: list~str~
+    +interaksi: list~str~
+    +efek_samping: list~str~
+  }
+
+  class SideEffect {
+    +nama_efek: str
+    +kategori: str
+    +tingkat_keparahan: str
+    +rekomendasi: str
+  }
+
+  class AdverseEvent {
+    +safetyreportid: str
+    +receivedate: str
+    +reactionmeddrapt: list~str~
+    +medicinalproduct: list~str~
+  }
+
+  class Recall {
+    +recall_number: str
+    +product_description: str
+    +reason_for_recall: str
+    +classification: str
+    +recall_initiation_date: str
+  }
+
+  class AuthToken {
+    +sub: str
+    +role: str
+    +name: str
+    +iat: int
+    +exp: int
+    +iss: str
+  }
+
+  FlaskApp "1" o-- "*" AuthBlueprint : register
+  FlaskApp "1" o-- "*" PatientBlueprint : register
+  FlaskApp "1" o-- "*" SafetyBlueprint : register
+  FlaskApp "1" o-- "*" AdminBlueprint : register
+  FlaskApp "1" o-- "*" PdfBlueprint : register
+
+  AuthBlueprint ..> AuthService : uses
+  AuthBlueprint ..> StorageService : uses
+  PatientBlueprint ..> Middleware : uses
+  PatientBlueprint ..> StorageService : uses
+  SafetyBlueprint ..> Middleware : uses
+  SafetyBlueprint ..> StorageService : uses
+  AdminBlueprint ..> Middleware : uses
+  AdminBlueprint ..> StorageService : uses
+  AdminBlueprint ..> AuthService : uses
+  PdfBlueprint ..> StorageService : uses
+  Middleware ..> AuthService : verify_token
+
+  Patient *-- SOAP_S : composition
+  Patient *-- SOAP_O : composition
+  Patient *-- SOAP_A : composition
+  Patient *-- SOAP_P : composition
+
+  StorageService "1" --> "*" User : loads
+  StorageService "1" --> "*" Patient : loads
+  AuthService ..> AuthToken : creates
+
+  note for AuthToken "LEGENDA NOTASI CLASS DIAGRAM\n--\nAsosiasi  -->   : referensi biasa antar kelas\nAgregasi  o--   : 'has-a' lemah, lifecycle independen\nKomposisi *--   : 'has-a' kuat, lifecycle terikat\nInheritance <|-- : pewarisan (extends)\nRealization ..|>  : implementasi interface\nDependency  ..>   : pemakaian (sementara)\nMultiplisitas pada ujung relasi ('1','*','0..1','1..*').\n+ public  - private  # protected.\nKlas dengan stereotype <<...>> tidak digunakan di sini.\nSumber kode: api/app.py, api/routes/*.py, api/auth.py, api/storage.py, api/middleware.py."

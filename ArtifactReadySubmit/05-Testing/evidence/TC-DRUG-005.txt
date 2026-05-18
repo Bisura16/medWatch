@@ -1,0 +1,9 @@
+==== TC-DRUG-005 ====
+Tanggal eksekusi: 2026-05-18T17:46:54+07:00
+Deskripsi: Search obat tanpa q (EP empty)
+Perintah: curl http://127.0.0.1:8080/api/drugs/search?q=
+-- BEGIN RESPONSE --
+[]
+
+-- HTTP_STATUS:200 TIME:0.000609s --
+-- END RESPONSE --

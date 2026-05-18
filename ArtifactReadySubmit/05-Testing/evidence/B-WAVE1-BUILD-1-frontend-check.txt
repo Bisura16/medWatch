@@ -1,0 +1,14 @@
+==== B-WAVE1-BUILD-1 Reachability check ====
+Tanggal eksekusi: 2026-05-18T17:48:04+07:00
+Perintah: curl http://localhost:3000/ -m 3
+Internal Server Error
+-- HTTP_STATUS:500 TIME:1.212063s --
+==== B-WAVE1-BUILD-1 Frontend proxy check ====
+Tanggal eksekusi: 2026-05-18T17:48:12+07:00
+Perintah: curl http://localhost:3000/api/health -m 3
+Internal Server Error
+-- HTTP_STATUS:500 TIME:0.641558s --
+
+Perintah: curl http://localhost:3000/login -m 3
+Internal Server Error
+-- HTTP_STATUS:500 TIME:0.069550s --

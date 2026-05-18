@@ -1,0 +1,82 @@
+---
+title: "ERD Chen Conceptual - MedWatch"
+---
+flowchart LR
+  classDef entity fill:#FFFFFF,stroke:#1F4E79,color:#1F4E79,stroke-width:2px
+  classDef weakEntity fill:#F2F2F2,stroke:#1F4E79,color:#1F4E79,stroke-width:2px,stroke-dasharray:5 3
+  classDef rel fill:#FFE082,stroke:#8C7B00,color:#5C5200,stroke-width:1px
+  classDef attr fill:#E8F1FA,stroke:#1F4E79,color:#1F4E79,stroke-width:1px
+  classDef keyattr fill:#1F4E79,stroke:#0F2A47,color:#FFFFFF,stroke-width:2px
+  classDef multivalued fill:#E8F1FA,stroke:#1F4E79,color:#1F4E79,stroke-width:2px,stroke-dasharray:3 3
+  classDef legend fill:#FFF8E1,stroke:#8C7B00,color:#5C5200
+
+  USER["USER"]:::entity
+  PATIENT["PATIENT"]:::entity
+  VISIT["VISIT (weak entity)"]:::weakEntity
+  DRUG["DRUG"]:::entity
+  SIDE_EFFECT["SIDE_EFFECT"]:::entity
+  RECALL["RECALL"]:::entity
+  ADVERSE_EVENT["ADVERSE_EVENT"]:::entity
+
+  OWNS{{"owns 1:N"}}:::rel
+  CREATES{{"creates 1:N"}}:::rel
+  HAS_VISIT{{"has 1:N (identifying)"}}:::rel
+  PRESCRIBES{{"prescribes M:N"}}:::rel
+  HAS_SE{{"has 1:N"}}:::rel
+  RECALLED_AS{{"recalled_as 1:N"}}:::rel
+  REPORTED_IN{{"reported_in 1:N"}}:::rel
+
+  U_username(("username PK")):::keyattr
+  U_role(("role")):::attr
+  U_phone(("phone")):::attr
+  P_id(("id PK")):::keyattr
+  P_nama(("nama")):::attr
+  P_umur(("umur")):::attr
+  P_alamat(("alamat")):::attr
+  P_kategori(("kategori")):::attr
+  V_tgl(("tanggal_kunjungan PK part")):::keyattr
+  V_S(("S keluhan, riwayat")):::attr
+  V_O(("O TD, nadi, suhu, resp, BB, TB, LILA, catatan")):::attr
+  V_A(("A diagnosa")):::attr
+  V_P(("P tindakan, resep, jadwal_kontrol")):::attr
+  D_nama(("nama_obat PK")):::keyattr
+  D_bahan(("bahan_aktif")):::multivalued
+  D_indikasi(("indikasi")):::multivalued
+  SE_nama(("nama_efek PK")):::keyattr
+  SE_tk(("tingkat_keparahan")):::attr
+  R_no(("recall_number PK")):::keyattr
+  R_cls(("classification")):::attr
+  AE_id(("safetyreportid PK")):::keyattr
+  AE_reaction(("reactionmeddrapt")):::multivalued
+
+  USER --- U_username
+  USER --- U_role
+  USER --- U_phone
+  USER --- OWNS --- PATIENT
+  USER --- CREATES --- PATIENT
+  PATIENT --- P_id
+  PATIENT --- P_nama
+  PATIENT --- P_umur
+  PATIENT --- P_alamat
+  PATIENT --- P_kategori
+  PATIENT --- HAS_VISIT --- VISIT
+  VISIT --- V_tgl
+  VISIT --- V_S
+  VISIT --- V_O
+  VISIT --- V_A
+  VISIT --- V_P
+  VISIT --- PRESCRIBES --- DRUG
+  DRUG --- D_nama
+  DRUG --- D_bahan
+  DRUG --- D_indikasi
+  DRUG --- HAS_SE --- SIDE_EFFECT
+  SIDE_EFFECT --- SE_nama
+  SIDE_EFFECT --- SE_tk
+  DRUG --- RECALLED_AS --- RECALL
+  RECALL --- R_no
+  RECALL --- R_cls
+  DRUG --- REPORTED_IN --- ADVERSE_EVENT
+  ADVERSE_EVENT --- AE_id
+  ADVERSE_EVENT --- AE_reaction
+
+  LegendNote["LEGENDA NOTASI CHEN ERD<br/>------------------------------<br/>Rectangle solid = entity reguler.<br/>Rectangle putus = weak entity (VISIT bergantung pada PATIENT).<br/>Diamond (hexagon di sini) = relationship.<br/>Oval = attribute. Oval filled biru = key attribute (PK).<br/>Oval putus-putus = multivalued attribute (bahan_aktif, indikasi, reactionmeddrapt).<br/>Cardinality dituliskan dalam label relationship (1:1, 1:N, M:N).<br/>VISIT diidentifikasi gabungan PATIENT.id + tanggal_kunjungan (saat skema dipisah).<br/>Catatan: dalam implementasi flat-JSON saat ini, VISIT adalah field nested di PATIENT.<br/>Diagram ini adalah model konseptual (Chen 1976) sebelum normalisasi ke skema fisik (lihat erd-crowsfoot.mmd)."]:::legend

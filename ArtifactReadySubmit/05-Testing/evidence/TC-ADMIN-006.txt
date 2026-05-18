@@ -1,0 +1,9 @@
+==== TC-ADMIN-006 ====
+Tanggal eksekusi: 2026-05-18T17:46:54+07:00
+Deskripsi: Trigger scrape (admin only)
+Perintah: curl -X POST http://127.0.0.1:8080/api/admin/scrape -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbl9naGFpc2FuIiwicm9sZSI6ImFkbWluIiwibmFtZSI6IkdoYWlzYW4gS2hvaXJ1bCBCLiIsImlhdCI6MTc3OTEwMTEyNSwiZXhwIjoxNzc5MTQ0MzI1LCJpc3MiOiJtZWR3YXRjaC1hcGkifQ.hrvH-MH9apome0lAelOrueRtRL3EuGLd2awIvNYJ4_4
+-- BEGIN RESPONSE --
+{"drugs_updated":6,"recalls_added":0,"source":"cached","status":"completed","timestamp":"2026-05-18T10:46:57.741838+00:00"}
+
+-- HTTP_STATUS:200 TIME:3.002545s --
+-- END RESPONSE --
