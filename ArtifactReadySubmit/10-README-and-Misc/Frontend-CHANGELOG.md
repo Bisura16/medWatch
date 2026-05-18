@@ -23,6 +23,12 @@ All notable changes to this project will be documented here. Format per Keep a C
 ### Deferred
 - B-WAVE1-BUILD-1: Next.js 16.2.1 plus Node 25.6 build chunk-emit race condition. The webpack build sometimes fails the first time then succeeds on a clean retry. Tracked for Wave 5 follow-up.
 
+### Closeout reconciliation (2026-05-19)
+- Frontend mission-commit count corrected from earlier 16 estimate to verified 19 (inclusive of bootstrap commit `8ce3e59`, measured via `git log 8ce3e59^..HEAD | wc -l`).
+- Repository path standardized to `~/Documents/MedWatchIntegration/FrontendMedwatch` (the symlink path) in user-facing documentation. The canonical filesystem path `/Users/ghaisan/Documents/FrontendMedWatch` still resolves identically; both refer to the same repository.
+- Confirmed Vercel deployment `https://medwatch-frontend.vercel.app/login` returns HTTP 200; protected routes correctly redirect via `src/proxy.ts` middleware. Once the closeout branch lands on `main`, Vercel will auto-deploy the post-mission build (B01..B11 fixes plus heatmap rebuild plus FormData login plus active-meds safety panel).
+- No application source logic edited. No commits rewritten. See `.mission/outbox/CLOSEOUT-EVIDENCE.md` for the raw evidence.
+
 ## [0.1.0] - 2026-05-18
 
 Initial release for Proyek 1 Pengembangan Perangkat Lunak Desktop submission (Kelompok B5, D4 Teknik Informatika, Politeknik Negeri Bandung, semester 2 TA 2025/2026).

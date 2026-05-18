@@ -29,6 +29,13 @@ All notable changes to this project will be documented here. Format per Keep a C
 - B-WAVE1-BUILD-1: Next.js 16.2.1 + Node 25.6 build chunk-emit race (deferred to Wave 5).
 - Wave 5 (2026-05-18): four W4-HUNT Inconclusive items remain gated on B-WAVE1-BUILD-1 swap to Node 22 LTS: Browser/responsive sweep (Category 11), focus rings audit (H12-1), bundle size sweep (Category 14), dark-mode contrast sweep. Documented in `docs/AS-BUILT.md` Section 15.2 as Wave-5-followup.
 
+### Closeout reconciliation (2026-05-19)
+- Reconciled the inconsistent commit-count statements in FINAL-REPORT (chat summary 52, Section 1 wave-table sum 49, Section 8 text 47) to the single measured truth: backend 33, frontend 19, grand total 52 (inclusive of bootstrap commits, verified via `git log <scaffold>^..HEAD | wc -l`). Per-wave breakdown updated to W0=2, W1=15, W2=17, W3=9, W4=0, W5=9.
+- Test summary `docs/testing/test-summary.md` and `docs/deliverable/test-summary.docx` updated so Persentase Validasi headline is Pass/Total = 79/88 = 89.77 percent (sangat baik per Arikunto), with 100.00 percent (Pass/(Pass+Fail), Blocked excluded per ISO/IEC/IEEE 29119-3) kept as labeled secondary metric. Per-module table now shows both columns side-by-side. No underlying Pass/Fail/Blocked counts changed; this is a presentation-only honesty fix.
+- ArtifactReadySubmit/05-Testing/test-summary.md and .docx refreshed from the same source.
+- AS-BUILT.md Section 16 Deviations table and Section 15 Known Issues unchanged (already accurate).
+- No application source logic edited. No commits rewritten. Raw evidence at `.mission/outbox/CLOSEOUT-EVIDENCE.md`.
+
 ## [0.1.0] - 2026-05-18
 
 Initial release for Proyek 1 Pengembangan Perangkat Lunak Desktop submission (Kelompok B5, D4 Teknik Informatika, Politeknik Negeri Bandung, semester 2 TA 2025/2026).

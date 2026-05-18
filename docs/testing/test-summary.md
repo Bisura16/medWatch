@@ -1,10 +1,18 @@
 # MedWatch Test Summary Report
 
 Dokumen: Ringkasan Eksekusi Pengujian Black-Box
-Versi: 1.0
+Versi: 1.1 (rekonsiliasi closeout 19 Mei 2026)
 Tanggal: 18 Mei 2026 (penutup sesi pengujian 12-18 Mei 2026)
 Penanggung jawab: Bimo Surya Anggara, NIM 251524040, QA Kelompok B5
 Pemilik mission: Ghaisan Khoirul Badruzaman, NIM 251524048, Project Leader
+
+Catatan revisi 1.1: angka utama Persentase Validasi diubah menjadi
+Pass dibagi Total (89.77 persen) agar transparan terhadap 9 TC Blocked yang
+tidak dieksekusi karena blocker lingkungan B-WAVE1-BUILD-1. Angka konvensi
+ISO/IEC/IEEE 29119-3 (Pass dibagi Pass tambah Fail, Blocked tidak dihitung
+= 100.00 persen) dipertahankan sebagai konteks sekunder yang diberi label
+eksplisit. Tidak ada perubahan data Pass, Fail, Blocked. Lihat
+`.mission/outbox/CLOSEOUT-EVIDENCE.md` untuk bukti dan rasionalisasi.
 
 Dokumen ini merangkum hasil eksekusi 88 test case TC-MOD-NNN terhadap aplikasi
 MedWatch yang berjalan nyata di lingkungan lokal. Hasil dijabarkan per modul,
@@ -26,55 +34,70 @@ ISO/IEC/IEEE 29119-3:2013 clause 6.4.2.
 
 ## 2. Hasil Per Modul
 
-| Modul | Total | Pass | Fail | Blocked | Persentase Lulus |
-|---|---|---|---|---|---|
-| AUTH | 14 | 14 | 0 | 0 | 100.00 % |
-| PASIEN | 22 | 22 | 0 | 0 | 100.00 % |
-| SAFETY | 9 | 9 | 0 | 0 | 100.00 % |
-| DRUG | 8 | 8 | 0 | 0 | 100.00 % |
-| VIZ | 5 | 5 | 0 | 0 | 100.00 % |
-| HEATMAP | 5 | 2 | 0 | 3 | 100.00 % (Blocked tidak dihitung) |
-| PDF | 7 | 7 | 0 | 0 | 100.00 % |
-| ADMIN | 9 | 9 | 0 | 0 | 100.00 % |
-| SCRAPE | 3 | 3 | 0 | 0 | 100.00 % |
-| SCREEN | 6 | 0 | 0 | 6 | N/A (semua Blocked oleh B-WAVE1-BUILD-1) |
-| Total | 88 | 79 | 0 | 9 | 100.00 % |
+Per modul, angka utama adalah Pass dibagi Total (Blocked dihitung di
+denominator); angka dalam tanda kurung adalah konvensi sekunder Pass dibagi
+(Pass tambah Fail) yang mengeluarkan Blocked.
 
-Catatan: Blocked excluded dari denominator persentase per kesepakatan pada
-test-plan.md bagian 3.4. Konvensi ini dieksplisitkan kembali di bawah.
+| Modul | Total | Pass | Fail | Blocked | Pass/Total (utama) | Pass/(Pass+Fail) (sekunder) |
+|---|---|---|---|---|---|---|
+| AUTH | 14 | 14 | 0 | 0 | 100.00 % | 100.00 % |
+| PASIEN | 22 | 22 | 0 | 0 | 100.00 % | 100.00 % |
+| SAFETY | 9 | 9 | 0 | 0 | 100.00 % | 100.00 % |
+| DRUG | 8 | 8 | 0 | 0 | 100.00 % | 100.00 % |
+| VIZ | 5 | 5 | 0 | 0 | 100.00 % | 100.00 % |
+| HEATMAP | 5 | 2 | 0 | 3 | 40.00 % | 100.00 % |
+| PDF | 7 | 7 | 0 | 0 | 100.00 % | 100.00 % |
+| ADMIN | 9 | 9 | 0 | 0 | 100.00 % | 100.00 % |
+| SCRAPE | 3 | 3 | 0 | 0 | 100.00 % | 100.00 % |
+| SCREEN | 6 | 0 | 0 | 6 | 0.00 % | N/A (denominator nol) |
+| Total | 88 | 79 | 0 | 9 | **89.77 %** | 100.00 % |
+
+Mengapa 9 TC Blocked: blocker B-WAVE1-BUILD-1 menyebabkan Next.js 16.2.1
+build pada Node 25.6 gagal mengemit `client reference manifest` sehingga
+halaman SSR mengembalikan HTTP 500 di lingkungan lokal. Tiga TC HEATMAP UI
+dan enam TC SCREEN tidak dapat diklik melalui Playwright, sehingga
+dicatat Blocked alih-alih dipalsukan Pass. Remediasi: jalankan Node 22 LTS
+(`nvm use 22` atau pasang `node@22` via Homebrew lalu `npm ci && npm run build`).
+Vercel deploy `medwatch-frontend.vercel.app` tidak terdampak karena
+lingkungan build Vercel sudah memakai Node 22 LTS.
+
+Tidak ada TC yang berstatus Fail. Angka 89.77 persen muncul karena Blocked
+turut dihitung di denominator (Pass dibagi Total), bukan karena ada kegagalan
+fungsional aplikasi.
 
 ## 3. Persentase Validasi
 
-### 3.1 Rumus
+### 3.1 Rumus Utama (Pass dibagi Total)
 
-Persentase Validasi = (Sum status Pass / (Sum status Pass + Sum status Fail)) x 100 persen
+Persentase Validasi Utama = (Sum status Pass / Sum status Total) x 100 persen
 
-Status Blocked dikeluarkan dari denominator karena Blocked menandakan
-ketidakmampuan untuk mengeksekusi, bukan ketidakberhasilan aplikasi.
-Justifikasi konvensi ini mengikuti ISO/IEC/IEEE 29119-3:2013 clause 6.4.2
-yang membedakan "tested" dari "not executed".
+Konvensi ini menyertakan Blocked di denominator agar pembaca melihat secara
+transparan berapa banyak test case yang benar-benar dieksekusi. 88 test case
+direncanakan, 79 dieksekusi sebagai Pass, 9 tidak dapat dieksekusi karena
+blocker lingkungan B-WAVE1-BUILD-1.
 
-### 3.2 Perhitungan
+### 3.2 Perhitungan Utama
 
 - Sum Pass = 79.
 - Sum Fail = 0.
 - Sum Blocked = 9.
-- Denominator = 79 + 0 = 79.
+- Sum Total = Pass + Fail + Blocked = 88.
 
-Persentase Validasi = (79 / 79) x 100 persen = 100.00 persen.
+Persentase Validasi Utama = (79 / 88) x 100 persen = **89.77 persen**.
 
-### 3.3 Skenario Alternatif (Blocked Dihitung sebagai Fail)
+### 3.3 Rumus Sekunder (Pass dibagi Pass+Fail, Blocked dikeluarkan)
 
-Untuk transparansi, jika Blocked dihitung sebagai Fail per konvensi ISTQB
-alternatif:
+Konvensi ISO/IEC/IEEE 29119-3:2013 clause 6.4.2 membedakan "tested" dari
+"not executed". Apabila Blocked dikeluarkan dari denominator sebagai
+"not executed" maka:
 
-Persentase Validasi alternatif = (79 / (79 + 0 + 9)) x 100 persen
-                              = (79 / 88) x 100 persen
-                              = 89.77 persen.
+Persentase Validasi Sekunder = (Sum Pass / (Sum Pass + Sum Fail)) x 100 persen
+                             = (79 / 79) x 100 persen
+                             = 100.00 persen.
 
-Bahkan dengan konvensi paling ketat (Blocked = Fail), MedWatch masih berada
-pada skala Arikunto sangat baik (>= 86 persen). Konvensi resmi laporan ini
-adalah Persentase Validasi = 100.00 persen (Blocked excluded).
+Angka sekunder dilaporkan sebagai konteks tambahan, bukan headline utama.
+Kedua angka konsisten dengan data yang sama: tidak ada TC yang gagal, hanya
+9 TC yang tidak dapat dieksekusi karena blocker lingkungan terdokumentasi.
 
 ## 4. Verdikt Skala Arikunto
 
@@ -86,10 +109,11 @@ Praktik, Rineka Cipta):
 - 41 sampai 55 persen: kurang.
 - kurang dari atau sama dengan 40 persen: sangat kurang.
 
-Hasil 100.00 persen masuk rentang 86 sampai 100 persen. Verdikt:
-sangat baik.
+Hasil utama 89.77 persen masuk rentang 86 sampai 100 persen. Verdikt:
+**sangat baik**.
 
-Hasil alternatif 89.77 persen juga masuk rentang sangat baik.
+Hasil sekunder 100.00 persen (Blocked excluded) juga masuk rentang sangat
+baik. Kedua angka memberikan verdikt yang sama: sangat baik.
 
 ## 5. Distribusi Eksekusi Per Anggota Tim
 
@@ -152,9 +176,12 @@ Verifikasi Critical fix Wave 5 berhasil terbukti melalui:
 ## 9. Kesimpulan
 
 MedWatch versi 1.0.0 telah lulus pengujian black-box dengan Persentase
-Validasi 100.00 persen pada konvensi resmi (Blocked excluded) dan 89.77
-persen pada konvensi alternatif. Kedua angka memenuhi rentang Arikunto
-sangat baik. Aplikasi siap untuk submission deadline 25 Mei 2026.
+Validasi utama **89.77 persen** (Pass dibagi Total, Blocked turut dihitung
+di denominator) dan 100.00 persen pada konvensi sekunder ISO 29119-3
+(Blocked dikeluarkan). Kedua angka memenuhi rentang Arikunto sangat baik.
+Tidak ada TC yang berstatus Fail; sembilan TC yang Blocked dapat dijalankan
+ulang setelah migrasi ke Node 22 LTS. Aplikasi siap untuk submission
+deadline 25 Mei 2026.
 
 ## 10. Persetujuan
 
