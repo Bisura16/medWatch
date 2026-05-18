@@ -1,0 +1,39 @@
+---
+title: "C4 Level 1 - System Context MedWatch"
+---
+C4Context
+  title Diagram Konteks Sistem MedWatch (C4 L1)
+
+  Person(tenagaKesehatan, "Tenaga Kesehatan", "Bidan atau perawat Faskes 1 yang mengelola SOAP pasien dan melakukan cek interaksi obat.")
+  Person(masyarakat, "Masyarakat", "Pengguna umum yang melihat informasi obat dan keamanan obat.")
+  Person(admin, "Admin", "Koordinator klinik yang mengelola akun pengguna dan memicu scraping data obat.")
+
+  System(medwatch, "Sistem MedWatch", "Aplikasi web pemantauan keamanan obat dan manajemen klinik Faskes 1. Hosting Vercel (frontend) plus Cloud Run (backend).")
+
+  System_Ext(openfda, "openFDA API", "Sumber data drug event, recall, label, enforcement dari U.S. FDA. Free tier 120000 request per hari.")
+  System_Ext(secretmgr, "GCP Secret Manager", "Menyimpan JWT signing key (medwatch-jwt-secret) yang diakses Cloud Run via IAM.")
+
+  Rel(tenagaKesehatan, medwatch, "CRUD pasien SOAP, cek interaksi obat, lihat dashboard", "HTTPS")
+  Rel(masyarakat, medwatch, "Lihat info obat dan visualisasi", "HTTPS")
+  Rel(admin, medwatch, "Kelola pengguna, memicu scraping", "HTTPS")
+
+  Rel(medwatch, openfda, "Tarik event obat dan enforcement (api_key sebagai query)", "HTTPS/JSON")
+  Rel(medwatch, secretmgr, "Ambil JWT secret saat boot", "gRPC/IAM")
+
+  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+
+  UpdateElementStyle(medwatch, $bgColor="#1F4E79", $fontColor="#FFFFFF")
+  UpdateElementStyle(openfda, $bgColor="#7F7F7F", $fontColor="#FFFFFF")
+  UpdateElementStyle(secretmgr, $bgColor="#7F7F7F", $fontColor="#FFFFFF")
+
+  %% LEGENDA NOTASI C4 LEVEL 1
+  %% Bentuk:
+  %%   Person   = aktor manusia (persegi panjang)
+  %%   System   = sistem yang sedang dibahas (warna biru)
+  %%   System_Ext = sistem eksternal (warna abu)
+  %% Garis hubung:
+  %%   Solid arrow + label teknologi = hubungan runtime
+  %%   Label berisi "what" + "how" (protokol)
+  %% Boundary tidak digambar di L1 karena hanya satu sistem yang dibahas.
+  %% Sumber notasi: C4 Brown (https://c4model.com).
+  %% Caption legenda dirender dari c4-l1-context.legend.md di sisi PNG.

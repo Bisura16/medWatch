@@ -1,0 +1,43 @@
+---
+title: "C4 Level 2 - Container Diagram MedWatch"
+---
+C4Container
+  title Diagram Container MedWatch (C4 L2)
+
+  Person(user, "Pengguna", "Tenaga kesehatan, masyarakat, atau admin.")
+
+  System_Boundary(medwatch, "Sistem MedWatch") {
+    Container(browser, "Browser Pengguna", "HTML, CSS, JS", "SPA Next.js dijalankan di browser. Memanggil same-origin path /api/* lewat fetch.")
+    Container(frontend, "Frontend Next.js", "Next.js 15, TypeScript, Tailwind v4, App Router", "SSR untuk SEO. Hosting Vercel. Proxy /api/[...slug] meneruskan request ke Cloud Run dengan JWT dari httpOnly cookie.")
+    Container(backend, "Backend Flask API", "Python 3.13, Flask 3, gunicorn", "Endpoint /api/auth, /api/patients, /api/safety, /api/drug, /api/viz, /api/pdf, /api/admin. Cloud Run asia-southeast1.")
+    ContainerDb(state, "State Storage", "GCS bucket medwatch-polban-2026-state", "Menyimpan users.json dan patients.json. Fallback ke api/data/ saat USE_CLOUD_STORAGE=false.")
+    ContainerDb(seed, "Seed Data anggota1 dan anggota4", "JSON files (read-only)", "drug_database.json, effect_database.json, openfda_*.json.")
+  }
+
+  System_Ext(secretmgr, "GCP Secret Manager", "JWT signing key.")
+  System_Ext(openfda, "openFDA API", "Sumber data drug event dan enforcement.")
+
+  Rel(user, browser, "Memuat halaman", "HTTPS")
+  Rel(browser, frontend, "GET halaman + fetch /api/*", "HTTPS same-origin")
+  Rel(frontend, backend, "Forward /api/* dengan JWT", "HTTPS+Bearer Authorization")
+  Rel(backend, state, "Baca dan tulis users.json, patients.json", "GCS JSON SDK")
+  Rel(backend, seed, "Baca data obat dan side-effect", "filesystem")
+  Rel(backend, secretmgr, "Ambil JWT secret (sekali saat boot)", "gRPC/IAM")
+  Rel(backend, openfda, "Pull event dan enforcement", "HTTPS GET")
+
+  UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+
+  %% LEGENDA NOTASI C4 LEVEL 2
+  %% Container shapes:
+  %%   Container    = unit deploy terpisah (proses, browser)
+  %%   ContainerDb  = data store
+  %%   System_Boundary = batas sistem MedWatch
+  %%   Person       = aktor
+  %%   System_Ext   = sistem eksternal
+  %% Garis hubung mencantumkan teknologi atau protokol.
+  %% Sumber file:
+  %%   Frontend Next.js: FrontendMedWatch/src/app/**
+  %%   Proxy            : FrontendMedWatch/src/middleware/proxy.ts
+  %%   Backend Flask    : api/app.py + api/routes/*.py
+  %%   State bucket     : medwatch-polban-2026-state
+  %% Caption legenda dirender dari c4-l2-container.legend.md di sisi PNG.

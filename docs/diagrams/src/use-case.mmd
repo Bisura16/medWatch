@@ -1,0 +1,53 @@
+---
+title: "Diagram Use Case MedWatch"
+---
+flowchart LR
+  classDef actor fill:#FFFFFF,stroke:#1F4E79,stroke-width:2px,color:#1F4E79
+  classDef uc fill:#E8F1FA,stroke:#1F4E79,stroke-width:1px,color:#1F4E79,rx:40,ry:40
+  classDef sysboundary fill:#FBFBFB,stroke:#404040,stroke-width:1px,color:#404040
+  classDef legend fill:#FFF8E1,stroke:#8C7B00,stroke-width:1px,color:#5C5200
+
+  TK(["(akt) Tenaga Kesehatan"]):::actor
+  MS(["(akt) Masyarakat"]):::actor
+  AD(["(akt) Admin"]):::actor
+
+  subgraph SYS["Sistem MedWatch"]
+    direction TB
+    UC1(["UC1<br/>Login"]):::uc
+    UC2(["UC2<br/>Lihat Drug Info"]):::uc
+    UC3(["UC3<br/>Lihat Visualisasi"]):::uc
+    UC4(["UC4<br/>CRUD Pasien SOAP"]):::uc
+    UC5(["UC5<br/>Cek Interaksi Obat"]):::uc
+    UC6(["UC6<br/>Export PDF Rekam Medis"]):::uc
+    UC7(["UC7<br/>Export PDF Laporan Bulanan"]):::uc
+    UC8(["UC8<br/>Manage Users"]):::uc
+    UC9(["UC9<br/>Trigger Scrape openFDA"]):::uc
+    UC10(["UC10<br/>Lihat Stats Sistem"]):::uc
+    UC11(["UC11<br/>Validasi Range Medis"]):::uc
+    UC12(["UC12<br/>Surface Active Meds Pasien"]):::uc
+  end
+
+  TK --> UC1
+  MS --> UC1
+  AD --> UC1
+
+  MS --> UC2
+  MS --> UC3
+  TK --> UC2
+  TK --> UC3
+
+  TK --> UC4
+  TK --> UC5
+  TK --> UC6
+
+  AD --> UC8
+  AD --> UC9
+  AD --> UC10
+  AD --> UC4
+  AD --> UC7
+
+  UC4 -. "<<include>>" .-> UC11
+  UC5 -. "<<include>>" .-> UC12
+  UC6 -. "<<extend>>" .-> UC4
+
+  legend["LEGENDA NOTASI USE CASE<br/>------------------------------<br/>(akt) = aktor (stickman UML, di sini direpresentasi kotak persegi).<br/>Oval = use case (kapabilitas sistem dari sudut pandang aktor).<br/>Kotak besar 'Sistem MedWatch' = system boundary.<br/>Garis tegas aktor -> oval = asosiasi aktor.<br/>Garis putus + <<include>> = use case wajib disertakan (UC4 selalu validasi rentang).<br/>Garis putus + <<extend>> = use case opsional yang memperluas alur dasar.<br/>Generalisasi --|> tidak digunakan di diagram ini (tiga aktor independen).<br/>Sumber kode: backend permissions di api/middleware.py (require_role)."]:::legend

@@ -1,0 +1,46 @@
+---
+title: "Sequence Diagram - Cek Interaksi Obat dengan Konteks Pasien"
+---
+sequenceDiagram
+  autonumber
+  actor TK as Tenaga Kesehatan
+  participant UI as Frontend SafetyCheck
+  participant PX as Vercel Proxy
+  participant API as safety_routes
+  participant STG as load_patients
+  participant HLP as parse_resep_to_meds
+  participant SC as anggota4 safety_checker
+
+  TK->>UI: Pilih pasien P002 dari dropdown
+  UI->>PX: GET /api/patients/P002
+  PX->>API: GET (forward)
+  API->>STG: load_patients() lalu cari id
+  STG-->>API: patient record
+  API-->>UI: 200 body patient
+  UI->>TK: Pre-fill obat dari P resep
+
+  TK->>UI: Tambah obat manual lalu klik Cek
+  UI->>PX: POST /api/safety/check body drugs dan pasien_id
+  PX->>API: POST /api/safety/check dengan Bearer JWT
+  activate API
+  API->>SC: cek_keamanan_obat(drugs)
+  SC-->>API: hasil_obat efek_tumpang_tindih peringatan_prioritas obat_tidak_ditemukan
+  Note over API: hitung max skor_risiko dan label_risiko lalu map ke low medium high (safety_routes.py:36)
+
+  alt pasien_id ada
+    API->>STG: load_patients()
+    STG-->>API: list patient
+    API->>API: cari target berdasarkan pasien_id
+    API->>HLP: parse_resep_to_meds(target P resep)
+    HLP-->>API: list nama obat aktif
+    Note over API: B05 surface pasien_active_meds di response
+  else pasien_id null
+    API->>API: pasien_context null dan pasien_active_meds kosong
+  end
+
+  API-->>PX: 200 OK body drugs interactions severity_score severity_level warnings pasien_active_meds pasien_context
+  deactivate API
+  PX-->>UI: 200 OK
+  UI->>TK: Render verdict dan Obat aktif pasien (B08 inline explanation)
+
+  Note over TK,SC: LEGENDA NOTASI SEQUENCE - activate dan deactivate adalah activation bar (kotak vertikal). Panah sinkron menunggu balasan, panah putus adalah return. alt else adalah percabangan eksklusif (pasien_id null versus tersedia). autonumber memberi nomor urut pesan. Anotasi B05 dan B08 merujuk bug register .mission/bugs.md.
