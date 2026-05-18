@@ -1,4 +1,13 @@
-"""Flask entry point. Registers blueprints, configures CORS, error handlers."""
+"""Flask entry point for the MedWatch backend.
+
+Builds the Flask application, registers every route blueprint,
+applies the CORS allowlist, wires global error handlers, and
+strips the ``Server`` response header to reduce fingerprinting.
+
+The module exposes both a ``create_app`` factory (used by tests
+and by Cloud Run gunicorn workers) and a module-level ``app``
+instance that legacy entry points still import directly.
+"""
 import logging
 import os
 import sys
@@ -25,6 +34,16 @@ logger = logging.getLogger(__name__)
 
 
 def create_app() -> Flask:
+    """Build and return a fully wired Flask application.
+
+    Registers the eight route blueprints, attaches CORS with the
+    configured allowlist, defines the static index route, and
+    installs 404 / 500 JSON error handlers plus an ``after_request``
+    hook that removes the ``Server`` header.
+
+    Returns:
+        Configured ``flask.Flask`` instance ready to serve requests.
+    """
     app = Flask(__name__, static_folder=str(API_DIR / "static"), static_url_path="/static")
 
     CORS(app,
@@ -44,19 +63,23 @@ def create_app() -> Flask:
 
     @app.route("/")
     def root():
+        """Serve the bundled static landing page from ``api/static/``."""
         return send_from_directory(str(API_DIR / "static"), "index.html")
 
     @app.errorhandler(404)
     def not_found(e):
+        """Return a JSON-shaped 404 instead of the default HTML body."""
         return jsonify({"error": "not found"}), 404
 
     @app.errorhandler(500)
     def server_error(e):
+        """Log the traceback and return a JSON 500 without exposing internals."""
         logger.exception("server error")
         return jsonify({"error": "internal server error"}), 500
 
     @app.after_request
     def strip_server_headers(response):
+        """Drop the ``Server`` header on every response to reduce fingerprinting."""
         response.headers.pop("Server", None)
         return response
 

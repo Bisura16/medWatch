@@ -1,4 +1,11 @@
-"""Configuration constants for MedWatch API."""
+"""Configuration constants for the MedWatch API.
+
+Centralises every environment-driven knob (JWT secret, openFDA key,
+CORS allowlist, port, debug flag) and every filesystem path the
+backend relies on. Importing this module has no side effects beyond
+reading from ``os.environ``; nothing is written to disk and no
+network call is made.
+"""
 import os
 from pathlib import Path
 

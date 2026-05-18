@@ -1,4 +1,12 @@
-"""Safety check endpoint wrapping anggota4.safety_checker."""
+"""Safety check endpoint wrapping anggota4.safety_checker.
+
+The route takes a list of drug names and an optional patient id,
+runs the anggota4 safety checker over the list, normalises the
+Indonesian severity labels to English buckets the frontend expects,
+and (when ``pasien_id`` is supplied) attaches the patient's active
+medications parsed from ``P.resep`` so the UI can warn the bidan
+about overlap (B05).
+"""
 import logging
 from flask import Blueprint, request
 from ..middleware import require_auth
@@ -16,6 +24,18 @@ _LABEL_ORDER = {"rendah": 0, "sedang": 1, "tinggi": 2}
 @bp.route("/api/safety/check", methods=["POST"])
 @require_auth
 def safety_check():
+    """Aggregate per-drug safety verdicts plus optional patient context.
+
+    Request body: ``{drugs: list[str], pasien_id?: str}``.
+
+    Returns:
+        HTTP 200 with the drug-level results, the worst-case
+        severity (score + ``low``/``medium``/``high`` label),
+        prioritised warnings, the list of drugs anggota4 could not
+        match, and the patient summary plus active medications when
+        ``pasien_id`` resolves. HTTP 400 when ``drugs`` is missing
+        or empty. HTTP 503 when anggota4 safety_checker is absent.
+    """
     body = request.get_json(silent=True) or {}
     drugs = body.get("drugs") or []
     pasien_id = body.get("pasien_id")

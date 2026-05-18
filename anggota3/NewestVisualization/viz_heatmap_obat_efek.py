@@ -132,6 +132,15 @@ def _warna_teks_kontras(value_norm: float) -> str:
 
 
 def buat_grafik(output_path: str) -> str | None:
+    """Render the drug x effect-category heatmap.
+
+    Args:
+        output_path: Absolute path for the resulting PNG.
+
+    Returns:
+        ``output_path`` on success, ``None`` when there are no valid
+        drug-category pairs or every cell is zero (uninformative).
+    """
     rekord = load_drug_safety()
     if not rekord:
         print("[skip] drug_safety_data.json kosong; heatmap tidak dibuat.")

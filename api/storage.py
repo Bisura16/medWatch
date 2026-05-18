@@ -1,9 +1,15 @@
-"""Storage layer with auto-fallback: Cloud Storage when USE_CLOUD_STORAGE=true,
-local file under api/data/ otherwise.
+"""Storage layer with auto-fallback between Cloud Storage and local disk.
 
-On first read of users.json, plaintext password fields are bcrypt-hashed and
-the file is rewritten back. This means seed data ships with plaintext
-(developer convenience) but never persists plaintext after first server start.
+When ``USE_CLOUD_STORAGE=true`` the layer reads and writes against
+the configured GCS bucket. Otherwise it falls back to JSON files
+under ``api/data/``. Both backends share a uniform load/save API
+so route handlers never need to know which one is active.
+
+On first read of ``users.json``, any user record that still carries
+``password_plain`` is bcrypt-hashed and persisted back through the
+same backend. This keeps seed data developer-friendly (plaintext
+ships in the file) while guaranteeing that plaintext never lingers
+beyond the first server start.
 """
 import json
 import logging
@@ -20,6 +26,12 @@ _gcs_client = None
 
 
 def _gcs():
+    """Lazily build the GCS client so importing this module is free.
+
+    Imports ``google.cloud.storage`` only on first call, which keeps
+    cold-start cost low in environments where Cloud Storage is not
+    enabled (every local dev session).
+    """
     global _gcs_client
     if _gcs_client is None:
         from google.cloud import storage as gcs
@@ -28,6 +40,7 @@ def _gcs():
 
 
 def _load_local(filename: str) -> Any:
+    """Read and JSON-parse ``DATA_DIR/filename`` or return ``None`` if absent."""
     path = DATA_DIR / filename
     if not path.exists():
         return None
@@ -36,6 +49,7 @@ def _load_local(filename: str) -> Any:
 
 
 def _save_local(filename: str, data: Any) -> None:
+    """Serialise ``data`` as pretty UTF-8 JSON under ``DATA_DIR/filename``."""
     path = DATA_DIR / filename
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
@@ -43,6 +57,7 @@ def _save_local(filename: str, data: Any) -> None:
 
 
 def _load_gcs(key: str) -> Any:
+    """Download ``key`` from the configured GCS bucket and parse as JSON."""
     client = _gcs()
     bucket = client.bucket(GCS_BUCKET)
     blob = bucket.blob(key)
@@ -53,6 +68,7 @@ def _load_gcs(key: str) -> Any:
 
 
 def _save_gcs(key: str, data: Any) -> None:
+    """Upload ``data`` as JSON to ``GCS_BUCKET/key``."""
     client = _gcs()
     bucket = client.bucket(GCS_BUCKET)
     blob = bucket.blob(key)
@@ -61,6 +77,7 @@ def _save_gcs(key: str, data: Any) -> None:
 
 
 def _load(key: str, fallback_default: Any) -> Any:
+    """Backend-aware loader. Seeds GCS from local on first cloud read."""
     try:
         if USE_CLOUD_STORAGE:
             data = _load_gcs(key)
@@ -81,6 +98,7 @@ def _load(key: str, fallback_default: Any) -> Any:
 
 
 def _save(key: str, data: Any) -> None:
+    """Backend-aware writer; dispatches to GCS or local disk."""
     if USE_CLOUD_STORAGE:
         _save_gcs(key, data)
     else:
@@ -99,6 +117,12 @@ def _ensure_users_hashed(users: list[dict]) -> tuple[list[dict], bool]:
 
 
 def load_users() -> list[dict]:
+    """Load the full user list, hashing any plaintext passwords found.
+
+    Returns:
+        List of user dicts. Empty list when the store is missing or
+        carries a non-list root (defensive against manual edits).
+    """
     users = _load(USERS_KEY, [])
     if not isinstance(users, list):
         return []
@@ -110,13 +134,21 @@ def load_users() -> list[dict]:
 
 
 def save_users(users: list[dict]) -> None:
+    """Persist the user list through the active storage backend."""
     _save(USERS_KEY, users)
 
 
 def load_patients() -> list[dict]:
+    """Load the full patient list.
+
+    Returns:
+        List of patient dicts in the Bimo SOAP schema. Empty list
+        when the store is missing or carries a non-list root.
+    """
     patients = _load(PATIENTS_KEY, [])
     return patients if isinstance(patients, list) else []
 
 
 def save_patients(patients: list[dict]) -> None:
+    """Persist the patient list through the active storage backend."""
     _save(PATIENTS_KEY, patients)

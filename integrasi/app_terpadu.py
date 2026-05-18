@@ -1,11 +1,16 @@
-"""
-Unified desktop CLI app komposit anggota1-5.
-Login pakai role dari anggota5/auth.py, terus dispatch menu sesuai role.
+"""Unified desktop CLI app combining anggota1-5.
 
-Tidak modifikasi file anggota manapun. Pure subprocess / import shim
-via integrasi/adapter.py.
+Authenticates the user via anggota5's ``verifikasi_login`` and
+dispatches the appropriate role-scoped menu. The admin menu adds
+the scraper and tenaga-kesehatan CRUD on top of the bidan menu.
 
-Run: python integrasi/app_terpadu.py  (dari root repo medWatch)
+The integration is non-invasive: no anggota file is modified.
+Everything is either run as a subprocess or imported through a
+guarded ``sys.path`` window in :mod:`integrasi.adapter`.
+
+Run::
+
+    python integrasi/app_terpadu.py   (from the medWatch repo root)
 """
 import sys
 import os
@@ -30,11 +35,12 @@ from integrasi.adapter import (  # noqa: E402
 
 
 def garis(char="=", lebar=58):
+    """Print a horizontal divider line for the CLI menus."""
     print(char * lebar)
 
 
 def menu_admin():
-    """Menu admin: scraper + tkesehatan CRUD + akses penuh ke fitur lain."""
+    """Admin menu loop: scraper, tkesehatan CRUD, plus full feature access."""
     while True:
         print()
         garis()
@@ -64,7 +70,7 @@ def menu_admin():
 
 
 def menu_tkesehatan():
-    """Menu tenaga kesehatan: CRUD pasien + cari obat + visualisasi + ekspor PDF."""
+    """Tenaga kesehatan menu loop: patient CRUD, drug search, viz, and PDF export."""
     while True:
         print()
         garis()
@@ -90,6 +96,7 @@ def menu_tkesehatan():
 
 
 def main():
+    """CLI entry: login, then dispatch to the role-specific menu loop."""
     print()
     garis()
     print("        M E D W A T C H   T E R P A D U")

@@ -79,6 +79,15 @@ def _agregasi(rekord: list[dict]) -> tuple[list[str], dict[str, np.ndarray]]:
 
 
 def buat_grafik(output_path: str) -> str | None:
+    """Render the stacked severity-by-category bar chart.
+
+    Args:
+        output_path: Absolute path for the resulting PNG.
+
+    Returns:
+        ``output_path`` on success, ``None`` when the source file is
+        empty or has no valid category (the caller logs a skip).
+    """
     rekord = load_drug_safety()
     if not rekord:
         print("[skip] drug_safety_data.json kosong; chart tidak dibuat.")

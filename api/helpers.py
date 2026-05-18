@@ -1,20 +1,65 @@
-"""Response helpers and shared utilities."""
+"""Response helpers and shared utilities for the MedWatch API.
+
+Provides three categories of helpers:
+
+1. JSON response shorthand (``ok``, ``err``) so route handlers stay
+   short and consistent.
+2. Password-leak guard (``strip_password_fields``) used wherever
+   user records leave the backend.
+3. Free-text resep parser (``parse_resep_to_meds``) that converts
+   bidan-typed prescription strings into a clean list of drug names.
+"""
 import re
 from flask import jsonify
 
 
 def ok(data=None, status: int = 200):
+    """Wrap a successful payload in a Flask JSON response tuple.
+
+    Args:
+        data: Any JSON-serialisable payload. ``None`` is rendered as
+            ``{"status": "ok"}`` so callers can use the helper as a
+            204-style acknowledgement.
+        status: HTTP status code. Defaults to 200.
+
+    Returns:
+        Tuple of (``flask.Response``, ``int``) ready to be returned
+        directly from a route handler.
+    """
     return jsonify(data if data is not None else {"status": "ok"}), status
 
 
 def err(message: str, status: int = 400, **extra):
+    """Wrap an error payload in a Flask JSON response tuple.
+
+    Args:
+        message: Human-readable error description placed under the
+            ``error`` key.
+        status: HTTP status code. Defaults to 400.
+        **extra: Additional structured detail (for example a
+            ``fields`` list of per-field validation errors) merged
+            into the response body.
+
+    Returns:
+        Tuple of (``flask.Response``, ``int``).
+    """
     payload = {"error": message}
     payload.update(extra)
     return jsonify(payload), status
 
 
 def strip_password_fields(user: dict) -> dict:
-    """Return a copy of user with password fields removed."""
+    """Return a copy of ``user`` with every password-like field removed.
+
+    Strips ``password_hash``, ``password_plain``, and ``password`` so
+    a stored user record can be safely returned to the client.
+
+    Args:
+        user: User dict, typically loaded from ``users.json``.
+
+    Returns:
+        Shallow copy of ``user`` without any password fields.
+    """
     return {k: v for k, v in user.items() if k not in ("password_hash", "password_plain", "password")}
 
 

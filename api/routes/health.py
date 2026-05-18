@@ -1,4 +1,10 @@
-"""Health and info endpoints."""
+"""Health and runtime info endpoints.
+
+``/api/health`` is a lightweight liveness probe used by Cloud Run
+and by the frontend status indicator. ``/api/info`` reports which
+anggota modules loaded successfully so operators can quickly tell
+whether a deployment lost any teammate dependency.
+"""
 import logging
 from datetime import datetime, timezone
 from flask import Blueprint, jsonify
@@ -11,6 +17,12 @@ bp = Blueprint("health", __name__)
 
 @bp.route("/api/health", methods=["GET"])
 def health():
+    """Return a small status payload with the current UTC timestamp.
+
+    Returns:
+        JSON body containing ``status``, ``version``, and the server
+        clock in ISO-8601 UTC. Always HTTP 200.
+    """
     return jsonify({
         "status": "ok",
         "version": "1.0.0",
@@ -20,6 +32,13 @@ def health():
 
 @bp.route("/api/info", methods=["GET"])
 def info():
+    """Report which anggota modules loaded and the active GCP context.
+
+    Returns:
+        JSON with a ``modules_loaded`` flag map (one entry per
+        anggota module the backend tries to wrap), the boolean
+        ``cloud_storage`` flag, and the GCP project id.
+    """
     modules = {}
     for ang, mod in [
         ("anggota2.pasien_helper", get_module("anggota2", "pasien_helper")),

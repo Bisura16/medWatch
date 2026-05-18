@@ -1,4 +1,12 @@
-"""Admin endpoints: scraper trigger (mocked), user CRUD, system stats."""
+"""Admin-only endpoints: scraper trigger, user CRUD, system stats.
+
+Every route in this blueprint is gated by
+``@require_role("admin")``. The scraper endpoint is intentionally
+mocked: the real Selenium crawl in ``anggota1`` is preserved so it
+can still be run manually, but invoking it inline from a request
+handler would block a Cloud Run worker for minutes. The dashboard
+KPIs (B10) read from real storage rather than hardcoded values.
+"""
 import logging
 import time
 from datetime import datetime, timezone
@@ -21,8 +29,15 @@ _PROCESS_STARTED_AT = datetime.now(timezone.utc)
 @bp.route("/api/admin/scrape", methods=["POST"])
 @require_role("admin")
 def trigger_scrape():
-    """Mocked scraper. Real Selenium-style crawl in anggota1 stays runnable manually.
-    NOTE: production wiring would invoke anggota1 in a worker queue, not inline."""
+    """Mocked scraper trigger that simulates a 3-second crawl.
+
+    The real Selenium-style crawl in anggota1 stays runnable
+    manually. Production wiring would invoke anggota1 in a worker
+    queue rather than inline.
+
+    Returns:
+        HTTP 200 with the synthetic scrape summary.
+    """
     logger.info(f"scraper triggered by {g.user['username']}")
     time.sleep(3)
     dl = get_module("anggota4", "data_loader")
@@ -41,6 +56,13 @@ def trigger_scrape():
 @bp.route("/api/admin/users", methods=["GET"])
 @require_role("admin")
 def list_users():
+    """List every user with password fields stripped.
+
+    Returns:
+        HTTP 200 with a list of user dicts. Stripping is enforced
+        via :func:`api.helpers.strip_password_fields` so no hash
+        leaks even if a new password-like key is introduced later.
+    """
     users = load_users()
     return ok([strip_password_fields(u) for u in users])
 
@@ -48,6 +70,18 @@ def list_users():
 @bp.route("/api/admin/users", methods=["POST"])
 @require_role("admin")
 def create_user():
+    """Create a user with a bcrypt-hashed password.
+
+    Request body: ``{username?, password, role, name?, phone?}``.
+    When ``username`` is omitted, it is derived from
+    ``name.lower().replace(" ", "")`` plus the last 4 digits of
+    ``phone`` so the bidan does not need to invent a handle.
+
+    Returns:
+        HTTP 201 with the stripped record. HTTP 400 when a required
+        field is missing or ``role`` is invalid. HTTP 409 when the
+        username is already taken.
+    """
     body = request.get_json(silent=True) or {}
     username = (body.get("username") or "").strip()
     password = body.get("password") or ""
@@ -88,6 +122,15 @@ def create_user():
 @bp.route("/api/admin/users/<username>", methods=["DELETE"])
 @require_role("admin")
 def delete_user(username: str):
+    """Delete a user, refusing to remove the last remaining admin.
+
+    Args:
+        username: User to remove (from URL path).
+
+    Returns:
+        HTTP 204 on success. HTTP 404 when no user matches. HTTP 400
+        when the target is the only admin (lockout prevention).
+    """
     users = load_users()
 
     admin_count = sum(1 for u in users if u.get("role") == "admin")
@@ -106,6 +149,15 @@ def delete_user(username: str):
 @bp.route("/api/admin/system-stats", methods=["GET"])
 @require_role("admin")
 def system_stats():
+    """Report real-time system KPIs for the admin dashboard (B10 fix).
+
+    Returns:
+        HTTP 200 with counts (users, patients, drugs), the role
+        breakdown, the last mocked scrape summary, and the process
+        start time plus uptime in seconds. Values are computed live
+        from storage and from the process so the dashboard never
+        shows stale or hardcoded numbers.
+    """
     users = load_users()
     patients = load_patients()
     dl = get_module("anggota4", "data_loader")

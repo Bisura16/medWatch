@@ -371,6 +371,9 @@ def _parse_recall_date(raw: str | None) -> str:
 
 
 def _coerce_classification(value: str | None) -> str:
+    """Normalise openFDA's free-form classification text to one of the three
+    FDA recall classes, returning the raw value when no canonical bucket matches.
+    """
     if not value:
         return "Unknown"
     v = value.strip()
@@ -449,6 +452,16 @@ def _build_source_url(endpoint: str, params: dict[str, Any]) -> str:
 
 
 def load_drug_list(path: Path | None) -> list[str]:
+    """Return the drug names to query.
+
+    When ``path`` is ``None`` the bundled :data:`DEFAULT_DRUGS` list
+    is returned verbatim. Otherwise the file is read line-by-line;
+    blanks and comment lines (``#``) are skipped.
+
+    Raises:
+        FileNotFoundError: if ``path`` points to a missing file.
+        ValueError: if the file exists but has no usable names.
+    """
     if path is None:
         return list(DEFAULT_DRUGS)
     if not path.exists():
@@ -464,6 +477,7 @@ def load_drug_list(path: Path | None) -> list[str]:
 
 
 def write_json(path: Path, records: Iterable[dict[str, Any]]) -> int:
+    """Serialise ``records`` as UTF-8 JSON to ``path`` and return the count."""
     data = list(records)
     path.write_text(
         json.dumps(data, ensure_ascii=False, indent=2),
@@ -473,6 +487,7 @@ def write_json(path: Path, records: Iterable[dict[str, Any]]) -> int:
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse CLI flags for the openFDA acquisition entry point."""
     p = argparse.ArgumentParser(
         description="openFDA real large-scale data acquisition for MedWatch.",
     )
@@ -492,6 +507,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Run the full openFDA acquisition.
+
+    Args:
+        argv: Optional argv override (used by tests). When ``None``,
+            ``sys.argv`` is parsed.
+
+    Returns:
+        ``0`` on success. The function writes
+        ``anggota1/data/drug_safety_data.json`` and
+        ``anggota1/data/drug_recalls.json`` and prints summary lines
+        suitable for shell scripting.
+    """
     args = parse_args(argv)
     logging.basicConfig(
         level=getattr(logging, args.log_level.upper(), logging.INFO),

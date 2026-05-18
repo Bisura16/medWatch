@@ -36,6 +36,7 @@ _WIB = timezone(timedelta(hours=7))
 
 
 def _now_wib_str() -> str:
+    """Return the current WIB timestamp formatted for the PDF footer."""
     return datetime.now(_WIB).strftime("%d-%m-%Y %H:%M WIB")
 
 
@@ -52,6 +53,7 @@ class MedWatchReportPDF(FPDF):
     """
 
     def header(self) -> None:
+        """Render the title bar, clinic line, and divider on every page."""
         self.set_font("helvetica", "B", 14)
         title = _safe(self.title or "Laporan MedWatch")
         self.cell(0, 10, title, align="C", ln=True)
@@ -67,6 +69,7 @@ class MedWatchReportPDF(FPDF):
         self.ln(6)
 
     def footer(self) -> None:
+        """Render the centred page-number footer on every page."""
         self.set_y(-15)
         self.set_font("helvetica", "I", 8)
         self.cell(
@@ -78,6 +81,7 @@ class MedWatchReportPDF(FPDF):
 
 
 def _load_drug_safety_data() -> list[dict]:
+    """Read ``anggota1/data/drug_safety_data.json`` or return ``[]``."""
     path = BASE_DIR / "anggota1" / "data" / "drug_safety_data.json"
     try:
         with open(path, "r", encoding="utf-8") as f:
@@ -92,6 +96,7 @@ def _load_drug_safety_data() -> list[dict]:
 
 
 def _load_drug_database() -> list[dict]:
+    """Read ``anggota4/data/drug_database.json`` or return ``[]``."""
     path = BASE_DIR / "anggota4" / "data" / "drug_database.json"
     try:
         with open(path, "r", encoding="utf-8") as f:
@@ -169,6 +174,15 @@ def _to_anggota5_format(p: dict) -> dict:
 @bp.route("/api/pdf/generate-rekam-medis", methods=["POST"])
 @require_role("tenaga_kesehatan", "admin")
 def generate_rekam_medis():
+    """Generate a single-patient rekam medis PDF.
+
+    Request body: ``{pasien_id: str}``.
+
+    Returns:
+        PDF download on success. HTTP 400 when ``pasien_id`` is
+        missing. HTTP 404 when no patient matches. HTTP 503 when
+        anggota5 export_pdf is unavailable.
+    """
     body = request.get_json(silent=True) or {}
     pasien_id = body.get("pasien_id")
     if not pasien_id:
@@ -205,6 +219,15 @@ def generate_rekam_medis():
 @bp.route("/api/pdf/generate-laporan-bulanan", methods=["POST"])
 @require_role("admin")
 def generate_laporan_bulanan():
+    """Generate a monthly recap PDF spanning every patient in the chosen month.
+
+    Request body: ``{month?: "YYYY-MM"}``. Empty/missing ``month``
+    falls back to every patient on record.
+
+    Returns:
+        PDF download on success. HTTP 503 when anggota5 export_pdf
+        is unavailable. HTTP 500 if generation throws.
+    """
     body = request.get_json(silent=True) or {}
     month = body.get("month", "")
 

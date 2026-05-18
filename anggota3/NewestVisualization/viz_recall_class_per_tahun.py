@@ -79,6 +79,15 @@ def _agregasi(rekord: list[dict]) -> tuple[list[str], dict[str, np.ndarray]]:
 
 
 def buat_grafik(output_path: str) -> str | None:
+    """Render the recall-per-year stacked bar chart split by Class.
+
+    Args:
+        output_path: Absolute path for the resulting PNG.
+
+    Returns:
+        ``output_path`` on success, ``None`` when the recalls
+        dataset is empty or no year could be parsed.
+    """
     rekord = load_drug_recalls()
     if not rekord:
         print("[skip] drug_recalls.json kosong; chart tidak dibuat.")

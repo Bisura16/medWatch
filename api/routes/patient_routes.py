@@ -1,4 +1,13 @@
-"""Patient CRUD wrapping anggota2 schema. Patient IDs use Bimo's P001 format."""
+"""Patient CRUD endpoints wrapping the anggota2 SOAP schema.
+
+Patient IDs follow Bimo's canonical format ``P001``, ``P002``, etc.
+Numeric medical fields go through the server-side range guard that
+B03 mandates so the frontend cannot be the sole line of defence.
+Role-based access uses :func:`api.middleware.require_role`:
+``tenaga_kesehatan`` and ``admin`` can list, create, and update;
+only ``admin`` may delete a record; ``masyarakat`` may only read
+their own visit via :func:`get_patient`.
+"""
 import logging
 import re
 from copy import deepcopy
@@ -113,6 +122,7 @@ def _generate_id(patients: list[dict]) -> str:
 
 
 def _summary(p: dict) -> dict:
+    """Return the slim patient summary projection used by the list endpoint."""
     return {
         "id": p.get("id"),
         "nama": p.get("nama"),
@@ -123,6 +133,13 @@ def _summary(p: dict) -> dict:
 
 
 def _deep_merge(base: dict, updates: dict) -> dict:
+    """Recursively merge ``updates`` over a deep copy of ``base``.
+
+    Nested dicts are merged key-by-key; non-dict values are
+    overwritten. Used by PUT so the frontend can submit a partial
+    SOAP subtree (just ``O.tekanan_darah`` for example) without
+    erasing untouched sibling fields.
+    """
     out = deepcopy(base)
     for k, v in updates.items():
         if isinstance(v, dict) and isinstance(out.get(k), dict):
@@ -135,6 +152,15 @@ def _deep_merge(base: dict, updates: dict) -> dict:
 @bp.route("/api/patients", methods=["GET"])
 @require_role("tenaga_kesehatan", "admin")
 def list_patients():
+    """List patients ordered newest visit first (fix for B07).
+
+    Sort is descending by (parsed visit date, numeric id suffix) so
+    patients with the same ``tanggal_kunjungan`` are tie-broken by
+    the highest patient id.
+
+    Returns:
+        HTTP 200 with a list of slim ``_summary`` projections.
+    """
     patients = load_patients()
     # B07: newest visit first. Tiebreak by descending numeric patient id so
     # P003 lists before P001 when both have the same kunjungan date.
@@ -149,6 +175,16 @@ def list_patients():
 @bp.route("/api/patients/<pid>", methods=["GET"])
 @require_auth
 def get_patient(pid: str):
+    """Return one patient record, enforcing per-role visibility.
+
+    Args:
+        pid: Patient id (for example ``P004``) from the URL.
+
+    Returns:
+        HTTP 200 with the full SOAP record. HTTP 404 when no record
+        carries ``pid``. HTTP 403 when a ``masyarakat`` requests a
+        record they do not own (``owner_username`` mismatch).
+    """
     role = g.user["role"]
     patients = load_patients()
     target = next((p for p in patients if p.get("id") == pid), None)
@@ -162,6 +198,18 @@ def get_patient(pid: str):
 @bp.route("/api/patients", methods=["POST"])
 @require_role("tenaga_kesehatan", "admin")
 def create_patient():
+    """Create a new patient SOAP record.
+
+    Validates required fields (``nama``, ``S.keluhan``,
+    ``A.diagnosa``, ``P.tindakan``) and runs the B03 numeric range
+    guard. The new id is generated through
+    :func:`_generate_id` so existing P-numbering stays unique.
+
+    Returns:
+        HTTP 201 with the stored record (including the assigned
+        ``id``). HTTP 400 on validation failure with a ``fields``
+        array detailing each broken rule.
+    """
     body = request.get_json(silent=True) or {}
     if not body.get("nama"):
         return err("nama required", 400)
@@ -190,6 +238,18 @@ def create_patient():
 @bp.route("/api/patients/<pid>", methods=["PUT"])
 @require_role("tenaga_kesehatan", "admin")
 def update_patient(pid: str):
+    """Apply a partial deep-merge update to an existing record.
+
+    The B03 numeric range guard runs again on edits so an admin
+    cannot inject nonsense values through the JSON API.
+
+    Args:
+        pid: Patient id from the URL.
+
+    Returns:
+        HTTP 200 with the merged record. HTTP 404 when no patient
+        matches ``pid``. HTTP 400 when validation fails.
+    """
     body = request.get_json(silent=True) or {}
     # B03: server-side range validation for numeric medical fields on edit.
     medical_errs = _validate_medical_ranges(body)
@@ -208,6 +268,15 @@ def update_patient(pid: str):
 @bp.route("/api/patients/<pid>", methods=["DELETE"])
 @require_role("admin")
 def delete_patient(pid: str):
+    """Delete a patient record. Admin-only.
+
+    Args:
+        pid: Patient id from the URL.
+
+    Returns:
+        HTTP 204 (empty body) on success. HTTP 404 when no record
+        matches ``pid``.
+    """
     patients = load_patients()
     new_patients = [p for p in patients if p.get("id") != pid]
     if len(new_patients) == len(patients):

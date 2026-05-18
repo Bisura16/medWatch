@@ -1,6 +1,15 @@
-"""End-to-end smoke test. Run after server is up:
+"""End-to-end smoke test for the MedWatch API.
+
+Exercises every public route (health, three-role login, auth
+negatives, patient create + fetch, drug search, safety check, the
+four visualization endpoints, role enforcement, password leak
+guard). Designed to be run against either the local Flask server
+or a live Cloud Run revision so the same script doubles as a
+deployment gate.
+
+Usage::
+
     BASE_URL=http://localhost:8080 python api/tests/smoke_test.py
-or against deployed Cloud Run:
     BASE_URL=https://medwatch-api-xxx.run.app python api/tests/smoke_test.py
 """
 import os
@@ -11,18 +20,25 @@ BASE = os.environ.get("BASE_URL", "http://localhost:8080")
 
 
 def _login(username, password):
+    """Authenticate and return the issued bearer token.
+
+    Raises ``AssertionError`` when the login response is not HTTP
+    200 so the caller test surfaces a clear failure path.
+    """
     r = requests.post(f"{BASE}/api/auth/login", json={"username": username, "password": password}, timeout=15)
     assert r.status_code == 200, f"login failed for {username}: {r.status_code} {r.text}"
     return r.json()["token"]
 
 
 def test_health():
+    """Liveness probe: ``/api/health`` must return HTTP 200."""
     r = requests.get(f"{BASE}/api/health", timeout=10)
     assert r.status_code == 200, f"/api/health returned {r.status_code}"
     print("OK /api/health")
 
 
 def test_login_three_roles():
+    """Verify each seeded credential resolves to its expected role."""
     for u, p, expected_role in [
         ("bidan_siti", "siti2026", "tenaga_kesehatan"),
         ("umum_budi", "budi2026", "masyarakat"),
@@ -35,6 +51,7 @@ def test_login_three_roles():
 
 
 def test_login_invalid():
+    """Wrong password, unknown user, and missing token must all return 401."""
     r = requests.post(f"{BASE}/api/auth/login", json={"username": "bidan_siti", "password": "wrong"}, timeout=15)
     assert r.status_code == 401, f"wrong-password should 401, got {r.status_code}"
     r = requests.post(f"{BASE}/api/auth/login", json={"username": "no_such_user", "password": "x"}, timeout=15)
@@ -45,6 +62,7 @@ def test_login_invalid():
 
 
 def test_patients_crud():
+    """Create and re-fetch a patient using the canonical reference record."""
     token = _login("bidan_siti", "siti2026")
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -89,6 +107,7 @@ def test_patients_crud():
 
 
 def test_drug_search():
+    """Confirm ``paracetamol`` returns at least one match."""
     r = requests.get(f"{BASE}/api/drugs/search?q=paracetamol", timeout=15)
     assert r.status_code == 200, r.text
     body = r.json()
@@ -98,6 +117,7 @@ def test_drug_search():
 
 
 def test_safety_check():
+    """Run the safety checker on a known overlap pair and assert envelope shape."""
     token = _login("bidan_siti", "siti2026")
     r = requests.post(
         f"{BASE}/api/safety/check",
@@ -114,6 +134,7 @@ def test_safety_check():
 
 
 def test_visualizations():
+    """All four visualization endpoints must return HTTP 200 for an authed bidan."""
     token = _login("bidan_siti", "siti2026")
     headers = {"Authorization": f"Bearer {token}"}
     for path in [
@@ -128,6 +149,7 @@ def test_visualizations():
 
 
 def test_role_enforcement():
+    """Bidan must be blocked from admin routes; admin must see no password fields."""
     bidan = _login("bidan_siti", "siti2026")
     r = requests.get(f"{BASE}/api/admin/users", headers={"Authorization": f"Bearer {bidan}"}, timeout=15)
     assert r.status_code == 403, f"bidan on /api/admin/users should 403, got {r.status_code}"
@@ -141,6 +163,7 @@ def test_role_enforcement():
 
 
 def main():
+    """Run the full smoke suite in order; print a summary line at the end."""
     print(f"smoke testing {BASE}\n")
     test_health()
     test_login_three_roles()

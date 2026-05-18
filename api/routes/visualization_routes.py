@@ -54,6 +54,13 @@ def _dummy_keluhan_distribution() -> list[dict]:
 @bp.route("/api/visualizations/kunjungan-trend", methods=["GET"])
 @require_role("tenaga_kesehatan", "admin")
 def kunjungan_trend():
+    """Twelve-month patient visit trend.
+
+    Returns:
+        HTTP 200 with a 12-element list of ``{month, count}``.
+        Falls back to a sample series when the patient store is
+        empty so the chart never renders as a flat line.
+    """
     patients = load_patients()
     if not patients:
         return ok(_dummy_kunjungan_trend())
@@ -69,6 +76,13 @@ def kunjungan_trend():
 @bp.route("/api/visualizations/keluhan-distribution", methods=["GET"])
 @require_role("tenaga_kesehatan", "admin")
 def keluhan_distribution():
+    """Patient distribution per ``kategori`` (Ibu Hamil, KB, ...).
+
+    Returns:
+        HTTP 200 with a list of ``{kategori, count}`` ordered by
+        descending count. Falls back to a sample distribution when
+        the patient store is empty.
+    """
     patients = load_patients()
     if not patients:
         return ok(_dummy_keluhan_distribution())
