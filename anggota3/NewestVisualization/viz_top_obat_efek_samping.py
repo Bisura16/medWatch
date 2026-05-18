@@ -103,6 +103,15 @@ def _format_ribuan(n: int) -> str:
 
 
 def buat_grafik(output_path: str) -> str | None:
+    """Render the top-15 drugs by FAERS report volume.
+
+    Args:
+        output_path: Absolute path for the resulting PNG.
+
+    Returns:
+        ``output_path`` on success, ``None`` when no record carries
+        a valid FAERS total in its ``warnings`` field.
+    """
     rekord = load_drug_safety()
     if not rekord:
         print("[skip] drug_safety_data.json kosong; chart tidak dibuat.")

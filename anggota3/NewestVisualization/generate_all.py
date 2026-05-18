@@ -33,6 +33,7 @@ URUTAN_VIZ = [
 
 
 def _format_ukuran(size_bytes: int) -> str:
+    """Pretty-print a byte count as ``B`` / ``KB`` / ``MB`` for the run log."""
     if size_bytes < 1024:
         return f"{size_bytes} B"
     if size_bytes < 1024 * 1024:
@@ -41,6 +42,12 @@ def _format_ukuran(size_bytes: int) -> str:
 
 
 def main() -> int:
+    """Generate every NewestVisualization PNG in order.
+
+    Returns:
+        ``0`` when every chart rendered successfully, ``1`` when at
+        least one failed (the caller can use this as a CI signal).
+    """
     print("[NewestVisualization] mulai generate seluruh PNG")
     sukses = 0
     gagal = 0

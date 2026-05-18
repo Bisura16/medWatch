@@ -1,6 +1,10 @@
-"""
-Adapter / shim layer untuk panggil modul anggota1-5 dari app_terpadu.py.
-Tidak ngubah file anggota manapun, cuma orchestrate via subprocess atau import.
+"""Shim layer for calling anggota1-5 modules from app_terpadu.py.
+
+Every dispatcher in this file either spawns the target module as a
+subprocess (so its own ``__main__`` block runs and its imports
+resolve relative to its own folder) or imports it read-only inside
+a guarded ``sys.path`` window. None of the teammate files are
+modified; this module is the integration seam.
 """
 import sys
 import subprocess
@@ -17,6 +21,13 @@ ANGGOTA = {
 
 
 def jalankan_scraper() -> int:
+    """Run anggota1's drugs.com scraper with a confirmation prompt.
+
+    Returns:
+        The subprocess return code. ``1`` when the entry script is
+        missing, ``130`` when the user cancels with Ctrl+C, ``0``
+        when the user declines the confirmation prompt.
+    """
     folder = ANGGOTA["anggota1"]
     file = folder / "anggota1.py"
     if not file.exists():
@@ -33,17 +44,20 @@ def jalankan_scraper() -> int:
 
 
 def jalankan_pasien_crud() -> int:
+    """Launch anggota2's PasienCRUD as a subprocess and return its exit code."""
     folder = ANGGOTA["anggota2"]
     return subprocess.run([sys.executable, "PasienCRUD.py"], cwd=folder).returncode
 
 
 def jalankan_pencarian_obat() -> int:
+    """Launch anggota4's pencarian_obat entry script and return its exit code."""
     folder = ANGGOTA["anggota4"]
     entry = folder / "pencarian_obat.py"
     return subprocess.run([sys.executable, str(entry)], cwd=folder).returncode
 
 
 def jalankan_visualisasi() -> int:
+    """Launch anggota3's TampilGrafik viewer and return its exit code."""
     folder = ANGGOTA["anggota3"]
     return subprocess.run([sys.executable, "TampilGrafik.py"], cwd=folder).returncode
 

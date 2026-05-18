@@ -64,6 +64,15 @@ def _agregasi(rekord: list[dict]) -> tuple[list[str], list[int]]:
 
 
 def buat_grafik(output_path: str) -> str | None:
+    """Render the top-20 recalling-companies horizontal bar chart.
+
+    Args:
+        output_path: Absolute path for the resulting PNG.
+
+    Returns:
+        ``output_path`` on success, ``None`` when the recalls
+        dataset is empty or no valid company name was extracted.
+    """
     rekord = load_drug_recalls()
     if not rekord:
         print("[skip] drug_recalls.json kosong; chart tidak dibuat.")
