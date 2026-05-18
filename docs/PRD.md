@@ -234,7 +234,7 @@ Rincian lengkap, kuantifikasi, dan acceptance criteria dipindahkan ke `docs/SRS.
 
 ### 8.2 Pivot drugs.com ke openFDA (ringkas)
 
-Awalnya `anggota1/anggota1.py` melakukan scraping `drugs.com/sfx/<nama>` untuk daftar efek samping. Per 11 Mei 2026 saat run scraping live, seluruh 64 URL `drugs.com/sfx/` mengembalikan HTTP 403 (Akamai anti-bot, bukti verbatim di `anggota1/scraper.log` baris 1-8). Tidak ada upaya bypass anti-bot yang dilakukan (sesuai etika riset dan ToS). Mitigasi: pivot ke openFDA REST API publik via modul aditif `anggota1/openfda/` (preserve file lama untuk audit trail). Rincian keputusan ada di ADR-004 (`docs/adr/0004-openfda-pivot.md`).
+Awalnya `anggota1/anggota1.py` melakukan scraping `drugs.com/sfx/<nama>` untuk daftar efek samping. Per 11 Mei 2026 saat run scraping live, seluruh 64 URL `drugs.com/sfx/` mengembalikan HTTP 403 (Akamai anti-bot, bukti verbatim di `anggota1/scraper.log` baris 1-8). Tidak ada upaya bypass anti-bot yang dilakukan (sesuai etika riset dan ToS). Mitigasi: pivot ke openFDA REST API publik via modul aditif `anggota1/openfda/` (preserve file lama untuk audit trail). Rincian keputusan ada di ADR-004 (`docs/adr/0004-drugs-com-akamai-to-openfda-pivot.md`).
 
 ### 8.3 Update dan refresh strategy
 
@@ -254,7 +254,7 @@ Awalnya `anggota1/anggota1.py` melakukan scraping `drugs.com/sfx/<nama>` untuk d
 | M-05 | ID pasien sesuai format `P001..P999` | 100% format kanonik | 100% (validasi di `api/routes/patient_routes.py:102-112`) |
 | M-06 | Tidak ada nilai kredensial di repo / dokumen | nol leak | nol (per-commit secret-scan `./scripts/secret-scan.sh`) |
 | M-07 | Dashboard admin uptime nyata (bukan hardcoded) | KPI uptime dihitung dari `process_started_at` | Lulus (lihat `api/routes/admin_routes.py:106-127`) |
-| M-08 | Heatmap continuous color scale 5-stop risk | non-binary | Lulus per ADR-006 (`docs/adr/0006-heatmap-color-scale.md`) |
+| M-08 | Heatmap continuous color scale 5-stop risk | non-binary | Lulus per ADR-006 (`docs/adr/0006-heatmap-continuous-color-scale.md`) |
 | M-09 | Daftar pasien sort descending tanggal | Terbaru paling atas | Lulus (`api/routes/patient_routes.py:135-146`) |
 | M-10 | Tipe PDF tersedia | >= 4 (rekam medis, laporan bulanan, efek samping, inventaris) | 4/4 (`api/routes/pdf_routes.py`) |
 | M-11 | Dokumentasi standar dikutip | PRD, SRS, SDD, ADR, API, As-Built, USER-MANUAL ada | Sedang dibangun di Wave 2 |
@@ -367,14 +367,14 @@ Test plan dan eksekusi didistribusikan lintas anggota:
 - `docs/SECURITY.md`
 - `docs/AS-BUILT.md`
 - `docs/USER-MANUAL.md`
-- `docs/adr/0001-vercel-cloudrun-split.md` (security pattern B)
-- `docs/adr/0002-jwt-bcrypt-cookie.md`
-- `docs/adr/0003-pasien-soap-schema.md`
-- `docs/adr/0004-openfda-pivot.md`
-- `docs/adr/0005-newest-visualization-additive.md`
-- `docs/adr/0006-heatmap-color-scale.md`
-- `docs/adr/0007-patient-list-sort.md`
-- `docs/adr/0008-pdf-fpdf2-inprocess.md`
+- `docs/adr/0001-vercel-cloud-run-security-pattern.md` (security pattern B)
+- `docs/adr/0002-jwt-bcrypt-httponly.md`
+- `docs/adr/0003-pasien-soap-schema-canonicalization.md`
+- `docs/adr/0004-drugs-com-akamai-to-openfda-pivot.md`
+- `docs/adr/0005-anggota3-newest-visualization-additive.md`
+- `docs/adr/0006-heatmap-continuous-color-scale.md`
+- `docs/adr/0007-patient-list-sort-newest-first.md`
+- `docs/adr/0008-pdf-endpoints-in-process-fpdf2.md`
 
 ---
 

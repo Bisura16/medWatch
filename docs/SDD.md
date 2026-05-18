@@ -854,7 +854,7 @@ Test plan lengkap (TC-MOD-NNN) ditulis di Wave 5. Untuk *frontend* tidak ada *un
 
 - `docs/PRD.md` - kebutuhan produk dan persona.
 - `docs/SRS.md` - kebutuhan fungsional FR-001..N dan non-fungsional.
-- `docs/adr/0001-vercel-cloud-run-split.md` ... `000N-*.md` - keputusan arsitektur.
+- `docs/adr/0001-vercel-cloud-run-security-pattern.md` ... `000N-*.md` - keputusan arsitektur.
 - `docs/API.md` - daftar endpoint dan request/response per endpoint.
 - `docs/DATA-DICTIONARY.md` - kamus data lengkap.
 - `docs/INSTALL.md` - panduan instalasi dan deployment.
