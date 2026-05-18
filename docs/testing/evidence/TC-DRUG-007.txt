@@ -1,0 +1,9 @@
+==== TC-DRUG-007 ====
+Tanggal eksekusi: 2026-05-18T17:46:54+07:00
+Deskripsi: Detail obat tidak ada (404)
+Perintah: curl http://127.0.0.1:8080/api/drugs/ObatYangTidakAda
+-- BEGIN RESPONSE --
+{"error":"not found"}
+
+-- HTTP_STATUS:404 TIME:0.000735s --
+-- END RESPONSE --

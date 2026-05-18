@@ -1,0 +1,9 @@
+==== TC-AUTH-001 ====
+Tanggal eksekusi: 2026-05-18T17:46:53+07:00
+Deskripsi: Login valid bidan
+Perintah: curl -X POST http://127.0.0.1:8080/api/auth/login -H Content-Type: application/json -d {"username":"bidan_siti","password":"siti2026"}
+-- BEGIN RESPONSE --
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaWRhbl9zaXRpIiwicm9sZSI6InRlbmFnYV9rZXNlaGF0YW4iLCJuYW1lIjoiQmlkYW4gU2l0aSBBbWluYWgiLCJpYXQiOjE3NzkxMDEyMTMsImV4cCI6MTc3OTE0NDQxMywiaXNzIjoibWVkd2F0Y2gtYXBpIn0.1AG3BKdb0FTYYAauTxfnajddSMtaGYWS3i2KCDNK1oY","user":{"name":"Bidan Siti Aminah","role":"tenaga_kesehatan","username":"bidan_siti"}}
+
+-- HTTP_STATUS:200 TIME:0.224081s --
+-- END RESPONSE --

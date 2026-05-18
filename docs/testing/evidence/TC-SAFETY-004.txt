@@ -1,0 +1,9 @@
+==== TC-SAFETY-004 ====
+Tanggal eksekusi: 2026-05-18T17:46:54+07:00
+Deskripsi: Cek tanpa auth (RBAC)
+Perintah: curl -X POST http://127.0.0.1:8080/api/safety/check -H Content-Type: application/json -d {"drugs":["paracetamol"]}
+-- BEGIN RESPONSE --
+{"error":"missing or invalid token"}
+
+-- HTTP_STATUS:401 TIME:0.000828s --
+-- END RESPONSE --

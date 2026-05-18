@@ -1,0 +1,9 @@
+==== TC-DRUG-002 ====
+Tanggal eksekusi: 2026-05-18T17:47:13+07:00
+Deskripsi: Filter obat per kategori (URL-encoded)
+Perintah: curl --data-urlencode category='analgesik dan antipiretik' -G http://127.0.0.1:8080/api/drugs
+-- BEGIN RESPONSE --
+[{"alias":["Acetaminophen"],"bahan_aktif":["Paracetamol"],"dosis_umum":"500 mg setiap 4-6 jam bila perlu, maksimal 4 gram per hari.","efek_samping":["Mual","Ruam kulit","Peningkatan enzim hati","Reaksi alergi berat"],"indikasi":["Demam","Nyeri ringan sampai sedang"],"interaksi":["Warfarin dapat meningkatkan risiko perdarahan bila dipakai jangka panjang.","Alkohol meningkatkan risiko toksisitas hati."],"kategori":"Analgesik dan antipiretik","kehamilan":"Kategori B, umumnya aman bila sesuai dosis.","kontraindikasi":["Hipersensitivitas terhadap paracetamol.","Penyakit hati berat."],"nama_obat":"Paracetamol","peringatan":["Gunakan hati-hati pada pasien dengan gangguan fungsi hati.","Hindari konsumsi alkohol berlebihan saat menggunakan obat ini."]}]
+
+-- HTTP_STATUS:200 TIME:0.001505s --
+-- END RESPONSE --
