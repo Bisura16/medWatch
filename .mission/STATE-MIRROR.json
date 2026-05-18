@@ -1,12 +1,13 @@
 {
   "note": "Mirror of mission state. Authoritative state lives in /Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json. Refreshed at every wave checkpoint.",
   "mission_id": "medwatch-2026-05-18T00-00-00Z",
-  "last_checkpoint_at": "2026-05-18T18:00:00Z",
+  "last_checkpoint_at": "2026-05-18T19:30:00Z",
   "status": "in_progress",
-  "current_wave": 3,
+  "current_wave": 4,
   "waves_total": 5,
-  "last_completed_wave": 2,
-  "wave_1_summary": "8 PASS / 1 PARTIAL (T1-LOGIN). 1 open_blocker (B-WAVE1-BUILD-1 Node 25). Real openFDA: 1850 events / 6000 recalls. anggota3/NewestVisualization 5 PNGs.",
-  "wave_2_summary": "14 docs delivered: PRD SRS SDD 10 ADRs API DataDict INSTALL UserManual SECURITY AS-BUILT 15 diagrams 27 docx ProductionGrade-Plan both READMEs. 10 PASS + 4 PARTIAL all fixed via slug rename d33577d.",
+  "last_completed_wave": 3,
+  "wave_1_summary": "8 PASS / 1 PARTIAL. 1 open_blocker B-WAVE1-BUILD-1. Real openFDA 1850 events 6000 recalls. anggota3/NewestVisualization 5 PNGs.",
+  "wave_2_summary": "14 docs delivered. 10 PASS + 4 PARTIAL fixed via slug rename d33577d.",
+  "wave_3_summary": "Code commenting (29 Py + 88 TS files) + repo tidying (7 files each repo); 3 PASS + 1 PARTIAL fixed via em-dash purge across pre-existing UI strings.",
   "authoritative_state_path": "/Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json"
 }
