@@ -1,0 +1,9 @@
+==== TC-AUTH-012 ====
+Tanggal eksekusi: 2026-05-18T17:46:54+07:00
+Deskripsi: RBAC: masyarakat tidak boleh akses admin-only
+Perintah: curl http://127.0.0.1:8080/api/admin/system-stats -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1bXVtX2J1ZGkiLCJyb2xlIjoibWFzeWFyYWthdCIsIm5hbWUiOiJCdWRpIFNhbnRvc28iLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.n2GJt9i1JD4VHENCSQabQ3wmHxx287yaycSm6ON39ok
+-- BEGIN RESPONSE --
+{"error":"forbidden"}
+
+-- HTTP_STATUS:403 TIME:0.000805s --
+-- END RESPONSE --

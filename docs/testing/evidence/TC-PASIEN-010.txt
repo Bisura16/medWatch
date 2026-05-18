@@ -1,0 +1,9 @@
+==== TC-PASIEN-010 ====
+Tanggal eksekusi: 2026-05-18T17:46:54+07:00
+Deskripsi: POST pasien BVA BB tepat max (300)
+Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaWRhbl9zaXRpIiwicm9sZSI6InRlbmFnYV9rZXNlaGF0YW4iLCJuYW1lIjoiQmlkYW4gU2l0aSBBbWluYWgiLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.pwMZptL35vnEKZ4gXnc56WydapEV3jj-LcbFnZJBeoI -H Content-Type: application/json -d {"nama":"Ny BVA Max","S":{"keluhan":"x"},"A":{"diagnosa":"x"},"P":{"tindakan":"x"},"O":{"bb_kg":"300"}}
+-- BEGIN RESPONSE --
+{"A":{"diagnosa":"x"},"O":{"bb_kg":"300"},"P":{"tindakan":"x"},"S":{"keluhan":"x"},"created_by":"bidan_siti","id":"P023","nama":"Ny BVA Max"}
+
+-- HTTP_STATUS:201 TIME:0.001702s --
+-- END RESPONSE --

@@ -1,0 +1,9 @@
+==== TC-AUTH-002 ====
+Tanggal eksekusi: 2026-05-18T17:46:53+07:00
+Deskripsi: Login valid umum
+Perintah: curl -X POST http://127.0.0.1:8080/api/auth/login -H Content-Type: application/json -d {"username":"umum_budi","password":"budi2026"}
+-- BEGIN RESPONSE --
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1bXVtX2J1ZGkiLCJyb2xlIjoibWFzeWFyYWthdCIsIm5hbWUiOiJCdWRpIFNhbnRvc28iLCJpYXQiOjE3NzkxMDEyMTMsImV4cCI6MTc3OTE0NDQxMywiaXNzIjoibWVkd2F0Y2gtYXBpIn0.bTOi3ufJjXzyIzFAex3PbRHV65tJDmDal9Cs_E3hc_0","user":{"name":"Budi Santoso","role":"masyarakat","username":"umum_budi"}}
+
+-- HTTP_STATUS:200 TIME:0.222744s --
+-- END RESPONSE --
