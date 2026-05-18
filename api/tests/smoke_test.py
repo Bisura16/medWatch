@@ -162,6 +162,47 @@ def test_role_enforcement():
     print("OK role-based access enforced and passwords not leaked")
 
 
+def test_safety_check_masyarakat_no_pii_leak():
+    """H07-1 (Wave 5): masyarakat must not receive another patient's PII.
+
+    Login as the demo masyarakat user, call /api/safety/check with a
+    pasien_id that is NOT owned by that user, and assert the response
+    omits pasien_context (None) and pasien_active_meds (empty list).
+    Bidan and admin must keep the existing behaviour: pasien_context
+    and pasien_active_meds populated for the same pasien_id.
+    """
+    masy = _login("umum_budi", "budi2026")
+    r = requests.post(
+        f"{BASE}/api/safety/check",
+        json={"drugs": ["paracetamol"], "pasien_id": "P001"},
+        headers={"Authorization": f"Bearer {masy}"},
+        timeout=15,
+    )
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body.get("pasien_context") is None, (
+        f"H07-1 leak: masyarakat received pasien_context={body.get('pasien_context')}"
+    )
+    assert body.get("pasien_active_meds") == [], (
+        f"H07-1 leak: masyarakat received pasien_active_meds={body.get('pasien_active_meds')}"
+    )
+    print("OK /api/safety/check pasien_context hidden from masyarakat (H07-1)")
+
+    bidan = _login("bidan_siti", "siti2026")
+    r = requests.post(
+        f"{BASE}/api/safety/check",
+        json={"drugs": ["paracetamol"], "pasien_id": "P001"},
+        headers={"Authorization": f"Bearer {bidan}"},
+        timeout=15,
+    )
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body.get("pasien_context") is not None, "bidan must still receive pasien_context"
+    assert body["pasien_context"].get("id") == "P001"
+    assert isinstance(body.get("pasien_active_meds"), list)
+    print("OK /api/safety/check pasien_context retained for bidan (H07-1 baseline preserved)")
+
+
 def main():
     """Run the full smoke suite in order; print a summary line at the end."""
     print(f"smoke testing {BASE}\n")
@@ -173,6 +214,7 @@ def main():
     test_safety_check()
     test_visualizations()
     test_role_enforcement()
+    test_safety_check_masyarakat_no_pii_leak()
     print("\ndone all smoke tests passed")
 
 

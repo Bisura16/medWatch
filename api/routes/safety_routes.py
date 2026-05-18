@@ -8,7 +8,7 @@ medications parsed from ``P.resep`` so the UI can warn the bidan
 about overlap (B05).
 """
 import logging
-from flask import Blueprint, request
+from flask import Blueprint, request, g
 from ..middleware import require_auth
 from ..bootstrap import get_module
 from ..storage import load_patients
@@ -62,7 +62,15 @@ def safety_check():
 
     pasien_context = None
     pasien_active_meds: list[str] = []
-    if pasien_id:
+    # H07-1 (Wave 5): role-aware patient-context attachment. The masyarakat
+    # role must never receive another patient's PII through this endpoint.
+    # Bidan (tenaga_kesehatan) and admin retain their existing behaviour
+    # because the patient roster is single-faskes (H07-2 documented). For
+    # masyarakat we silently drop the pasien_context / pasien_active_meds
+    # fields regardless of the supplied pasien_id so the safety verdict
+    # itself still computes and the response shape stays stable.
+    role = g.user.get("role") if getattr(g, "user", None) else None
+    if pasien_id and role in ("tenaga_kesehatan", "admin"):
         patients = load_patients()
         target = next((p for p in patients if p.get("id") == pasien_id), None)
         if target:
