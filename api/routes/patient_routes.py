@@ -10,6 +10,7 @@ their own visit via :func:`get_patient`.
 """
 import logging
 import re
+import threading
 from copy import deepcopy
 from flask import Blueprint, request, g, jsonify
 from ..middleware import require_auth, require_role
@@ -19,6 +20,21 @@ from ..helpers import ok, err
 
 logger = logging.getLogger(__name__)
 bp = Blueprint("patient_routes", __name__)
+
+# H10-1 (Wave 5): process-level lock for the read-modify-write sequence in
+# POST/PUT/DELETE. Without this lock, two concurrent POSTs can both read
+# the same patient list, compute the same next id, and the last writer
+# wins the file rewrite. The lock is intentionally module-scoped so every
+# request handled by this process serialises through it.
+_patients_lock = threading.Lock()
+
+# H01-1 (Wave 5): allowed umur range when value parses to an integer.
+# Bidan input convention is either a bare integer like ``25`` or the
+# bidan abbreviation ``25 THN``. Both forms must pass when the parsed
+# integer falls inside (UMUR_MIN, UMUR_MAX).
+UMUR_MIN = 0
+UMUR_MAX = 150
+_UMUR_INT_PATTERN = re.compile(r"^\s*(-?\d+)\s*(?:thn|tahun|y|yr|yrs)?\s*$", re.IGNORECASE)
 
 
 # Medical field range definitions for server-side validation (B03).
@@ -106,6 +122,33 @@ def _validate_medical_ranges(body: dict) -> list[str]:
             hi_s = f"{hi:g}"
             errors.append(f"{label} harus antara {lo_s} dan {hi_s}.")
     return errors
+
+
+def _validate_umur(body: dict) -> list[str]:
+    """Validate ``umur`` accepts only sane integers in [UMUR_MIN, UMUR_MAX].
+
+    H01-1 (Wave 5). The bidan input convention is either ``25`` or the
+    abbreviated ``25 THN`` form. Empty/missing values are allowed because
+    the SOAP schema marks umur as optional. Any non-empty value that is
+    not parseable as an integer in range produces a Bahasa Indonesia
+    field-level error.
+    """
+    raw = body.get("umur")
+    if raw is None:
+        return []
+    s = str(raw).strip()
+    if not s:
+        return []
+    m = _UMUR_INT_PATTERN.match(s)
+    if not m:
+        return [f"Umur harus berupa angka antara {UMUR_MIN} dan {UMUR_MAX}."]
+    try:
+        n = int(m.group(1))
+    except ValueError:
+        return [f"Umur harus berupa angka antara {UMUR_MIN} dan {UMUR_MAX}."]
+    if n < UMUR_MIN or n > UMUR_MAX:
+        return [f"Umur harus antara {UMUR_MIN} dan {UMUR_MAX}."]
+    return []
 
 
 def _generate_id(patients: list[dict]) -> str:
@@ -220,17 +263,23 @@ def create_patient():
     if not body.get("P", {}).get("tindakan"):
         return err("P.tindakan required", 400)
 
-    # B03: server-side range validation for numeric medical fields.
+    # B03 + H01-1: server-side range validation for numeric medical
+    # fields plus umur.
+    umur_errs = _validate_umur(body)
     medical_errs = _validate_medical_ranges(body)
-    if medical_errs:
-        return err("Validasi gagal", 400, fields=medical_errs)
+    all_errs = umur_errs + medical_errs
+    if all_errs:
+        return err("Validasi gagal", 400, fields=all_errs)
 
-    patients = load_patients()
-    new_patient = deepcopy(body)
-    new_patient["id"] = _generate_id(patients)
-    new_patient["created_by"] = g.user["username"]
-    patients.append(new_patient)
-    save_patients(patients)
+    # H10-1: serialise the read-modify-write block so two concurrent
+    # POSTs cannot allocate the same id or drop each other's records.
+    with _patients_lock:
+        patients = load_patients()
+        new_patient = deepcopy(body)
+        new_patient["id"] = _generate_id(patients)
+        new_patient["created_by"] = g.user["username"]
+        patients.append(new_patient)
+        save_patients(patients)
     logger.info(f"patient created: {new_patient['id']} by {g.user['username']}")
     return ok(new_patient, status=201)
 
@@ -251,17 +300,23 @@ def update_patient(pid: str):
         matches ``pid``. HTTP 400 when validation fails.
     """
     body = request.get_json(silent=True) or {}
-    # B03: server-side range validation for numeric medical fields on edit.
+    # B03 + H01-1: server-side range validation for numeric medical
+    # fields plus umur on edit.
+    umur_errs = _validate_umur(body)
     medical_errs = _validate_medical_ranges(body)
-    if medical_errs:
-        return err("Validasi gagal", 400, fields=medical_errs)
-    patients = load_patients()
-    for i, p in enumerate(patients):
-        if p.get("id") == pid:
-            patients[i] = _deep_merge(p, body)
-            patients[i]["id"] = pid
-            save_patients(patients)
-            return ok(patients[i])
+    all_errs = umur_errs + medical_errs
+    if all_errs:
+        return err("Validasi gagal", 400, fields=all_errs)
+    # H10-1: same lock as create_patient so PUT cannot stomp a concurrent
+    # POST mid-write.
+    with _patients_lock:
+        patients = load_patients()
+        for i, p in enumerate(patients):
+            if p.get("id") == pid:
+                patients[i] = _deep_merge(p, body)
+                patients[i]["id"] = pid
+                save_patients(patients)
+                return ok(patients[i])
     return err("not found", 404)
 
 
@@ -277,10 +332,13 @@ def delete_patient(pid: str):
         HTTP 204 (empty body) on success. HTTP 404 when no record
         matches ``pid``.
     """
-    patients = load_patients()
-    new_patients = [p for p in patients if p.get("id") != pid]
-    if len(new_patients) == len(patients):
-        return err("not found", 404)
-    save_patients(new_patients)
+    # H10-1: serialise delete with the same lock to avoid losing a
+    # concurrent POST that the caller did not yet see.
+    with _patients_lock:
+        patients = load_patients()
+        new_patients = [p for p in patients if p.get("id") != pid]
+        if len(new_patients) == len(patients):
+            return err("not found", 404)
+        save_patients(new_patients)
     logger.info(f"patient deleted: {pid} by {g.user['username']}")
     return ("", 204)
