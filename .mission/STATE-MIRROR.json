@@ -1,14 +1,24 @@
 {
-  "note": "Mirror of mission state. Authoritative state lives in /Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json. Final close snapshot.",
+  "note": "Mirror of mission state. Authoritative state lives in ~/Documents/MedWatchIntegration/FrontendMedwatch/.mission/state.json. Final close + closeout reconciliation snapshot.",
   "mission_id": "medwatch-2026-05-18T00-00-00Z",
-  "last_checkpoint_at": "2026-05-18T20:00:00Z",
+  "last_checkpoint_at": "2026-05-19T06:50:00Z",
   "status": "complete",
   "current_wave": 5,
   "waves_total": 5,
   "last_completed_wave": 5,
   "ready_to_close": true,
-  "open_blockers_remaining": ["B-WAVE1-BUILD-1 (environmental, deferred)"],
+  "open_blockers_remaining": ["B-WAVE1-BUILD-1 (environmental, deferred to Node 22 LTS swap)"],
   "submission_package": "/Users/ghaisan/Documents/MedWatchIntegration/medWatch/ArtifactReadySubmit/ (214 files in 10 subfolders)",
-  "final_report": "/Users/ghaisan/Documents/FrontendMedWatch/.mission/outbox/FINAL-REPORT.md",
-  "authoritative_state_path": "/Users/ghaisan/Documents/FrontendMedWatch/.mission/state.json"
+  "final_report": "/Users/ghaisan/Documents/MedWatchIntegration/FrontendMedwatch/.mission/outbox/FINAL-REPORT.md",
+  "closeout": {
+    "reconciled_at": "2026-05-19T06:50:00Z",
+    "verified_commit_counts": {"backend_inclusive": 33, "frontend_inclusive": 19, "grand_total": 52},
+    "verified_test_metrics": {"total_tc": 88, "pass": 79, "fail": 0, "blocked": 9, "primary_pass_over_total_percent": 89.77, "secondary_pass_over_pass_plus_fail_percent": 100.0, "arikunto": "sangat baik"},
+    "vercel_live": "HTTP 200 on /login; 307 redirect on protected routes (verified 2026-05-19)",
+    "node22_local": "UNVERIFIED on closeout host (no version manager installed)",
+    "smoke_test": "16/16 OK including 2 H07-1 RBAC assertions",
+    "evidence_doc": "/Users/ghaisan/Documents/MedWatchIntegration/FrontendMedwatch/.mission/outbox/CLOSEOUT-EVIDENCE.md",
+    "gates": {"gate_1": "not yet authorized (awaits user 'push branch')", "gate_2": "not yet authorized (awaits user 'merge')", "branch_name": "mission/closeout-20260518"}
+  },
+  "authoritative_state_path": "/Users/ghaisan/Documents/MedWatchIntegration/FrontendMedwatch/.mission/state.json"
 }
