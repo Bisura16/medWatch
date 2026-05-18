@@ -28,5 +28,10 @@ GCP_PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "medwatch-polban-2026")
 GCS_BUCKET = os.environ.get("GCS_BUCKET", "medwatch-polban-2026-state")
 USE_CLOUD_STORAGE = os.environ.get("USE_CLOUD_STORAGE", "false").lower() == "true"
 
+# openFDA real-data acquisition. Read from env only; the value is never
+# echoed, logged, or committed. Used by anggota1/openfda/fetch.py and any
+# future backend route that needs to hit api.fda.gov.
+OPENFDA_API_KEY = os.environ.get("OPENFDA_API_KEY", "")
+
 PORT = int(os.environ.get("PORT", 8080))
 DEBUG = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
