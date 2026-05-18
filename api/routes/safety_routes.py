@@ -4,7 +4,7 @@ from flask import Blueprint, request
 from ..middleware import require_auth
 from ..bootstrap import get_module
 from ..storage import load_patients
-from ..helpers import ok, err
+from ..helpers import ok, err, parse_resep_to_meds
 
 logger = logging.getLogger(__name__)
 bp = Blueprint("safety_routes", __name__)
@@ -41,6 +41,7 @@ def safety_check():
         agg_label_id = "rendah"
 
     pasien_context = None
+    pasien_active_meds: list[str] = []
     if pasien_id:
         patients = load_patients()
         target = next((p for p in patients if p.get("id") == pasien_id), None)
@@ -52,6 +53,12 @@ def safety_check():
                 "diagnosa": target.get("A", {}).get("diagnosa"),
                 "kondisi_umum": target.get("S", {}).get("riwayat", ""),
             }
+            # B05: surface the patient's active medications by parsing the
+            # `P.resep` field of the most recent visit. The current Pasien
+            # schema is single-visit-per-record, so the record itself is the
+            # most recent visit.
+            resep_text = target.get("P", {}).get("resep", "")
+            pasien_active_meds = parse_resep_to_meds(resep_text)
 
     return ok({
         "drugs": hasil_obat,
@@ -61,4 +68,5 @@ def safety_check():
         "warnings": payload.get("peringatan_prioritas", []),
         "obat_tidak_ditemukan": payload.get("obat_tidak_ditemukan", []),
         "pasien_context": pasien_context,
+        "pasien_active_meds": pasien_active_meds,
     })
