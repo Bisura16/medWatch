@@ -68,7 +68,7 @@ MedWatch versi presentasi memproses **data sintetik demo**, bukan PHI (Protected
 | A6 | Session token | Cookie `medwatch_token`, httpOnly + Secure + SameSite=Lax, max-age 12 jam; di-set oleh `src/app/api/[...slug]/route.ts:82` | confidential | Browser + proxy Vercel |
 | A7 | Audit/operational logs | stdout Cloud Run -> Cloud Logging (otomatis); format Python `logging` di `api/app.py:20` | internal | Cloud Logging |
 
-Resource names yang digunakan dokumen ini (project `medwatch-polban-2026`, bucket `medwatch-polban-2026-state`, service `medwatch-api`, secret `medwatch-jwt-secret`) adalah identifier publik yang aman dicantumkan sesuai mission constraint 12; nilai kredensial sama sekali tidak ada.
+Resource names yang digunakan dokumen ini (project `medwatch-polban-2026`, bucket `medwatch-polban-2026-state`, service `medwatch-api`, secret `medwatch-jwt-secret`) adalah identifier publik yang aman dicantumkan sesuai mission constraint 12. Nilai kredensial produksi tidak ada di repo. Satu nilai dev-only (WT-04 dev loopback `JWT_SECRET`) ter-commit pre-mission dan didokumentasikan sebagai Known Accepted Finding pada Section 7.6 di bawah; user (Ghaisan, Project Leader) menerima risiko ini secara eksplisit setelah review konteks dev-loopback only.
 
 ---
 
@@ -300,7 +300,7 @@ Ringkasan capaian terhadap acceptance keamanan mission:
 
 - A01..A10 OWASP: 9 PASS, 1 PARTIAL (A04 karena CSRF token + rate-limit residual). Sumber: `docs/SECURITY_AUDIT.md` Section OWASP Top 10 Mapping.
 - bcrypt cost 12, JWT issuer-validated, cookie httpOnly+Secure+SameSite, CORS allowlist eksplisit.
-- Tidak ada nilai kredensial di repo (verified secret-scan; lihat Section 8).
+- Tidak ada nilai kredensial produksi di repo (verified secret-scan; lihat Section 8). Satu nilai dev-only (WT-04 dev loopback `JWT_SECRET`) ter-commit pre-mission sebagai Known Accepted Finding (Section 7.6 di bawah); tidak pernah menyentuh produksi karena prod menggunakan GCP Secret Manager `medwatch-jwt-secret`. Frasa "zero credential VALUES exposed anywhere" pada acceptance criterion misi karenanya dilaporkan sebagai "partial: 1 known LOW dev-loopback secret, accepted by user, documented".
 - Service account JSON keys tidak pernah di-commit (gunakan default Cloud Run SA / Workload Identity di Vercel).
 
 Update pasca Wave 4 + Wave 5:
@@ -326,6 +326,31 @@ Update pasca Wave 4 + Wave 5:
 | R7 | Direct backend Cloud Run `--allow-unauthenticated` | Bypass proxy memungkinkan secara teknis | Rendah | Backend RBAC tetap menolak token absen/invalid (defense in depth) | Sysadmin | Production: Cloud Run IAM `roles/run.invoker` hanya untuk Vercel IP range atau private VPC peering. |
 | R8 | Frontend high-severity deps di `_archived/` paths (H5, H6) | Tidak runtime; risiko jika archived route di-restore | Rendah | Tidak ada route aktif yang me-load paket bermasalah | Frontend | `npm uninstall react-simple-maps react-force-graph-2d ...` setelah konfirmasi pages tidak di-restore. |
 | ~~R9~~ (sebelumnya direncanakan untuk H07-1) | Masyarakat dapat memanen patient PII via POST /api/safety/check dengan pasien_id arbitrer | **RESOLVED dalam Wave 5 (commit b5a98e8 (backend) plus 40754cd (frontend))** | N/A pasca-fix | Role gating pada `pasien_context` dan `pasien_active_meds` di `api/routes/safety_routes.py`: jika `g.user['role'] == 'masyarakat'`, kedua field selalu di-set `null` dan `[]` regardless of pasien_id supplied; assertion baru di `api/tests/smoke_test.py` memverifikasi behavior pasca-fix. Bukti reproduction pre-fix di `.mission/findings/bugs/W4-HUNT.md` Bagian 7 H07-1 dan auditor verification di `.mission/findings/audits/wave-04-audit.md` baris 91-117. | Backend (Ghaisan) | Closed pasca W5-AUDIT verification. Tidak ada residual; masyarakat tetap dapat memanggil safety check untuk obat-saja (drugs[]) tanpa menerima konteks pasien apapun. |
+
+### 7.6 Known Accepted Findings (User-Accepted, Bukan Self-Waive Agen)
+
+Temuan ini ditemukan oleh audit Wave 4 (`.mission/findings/security/W4-SEC.md`) dan diterima sebagai risiko residual oleh user (Ghaisan Khoirul Badruzaman, NIM 251524048, Project Leader Kelompok B5) selama closeout pada 2026-05-19. Penerimaan risiko dilakukan oleh user, bukan oleh agen otomatis; mission acceptance criterion melarang agen menutup temuan secret secara mandiri.
+
+#### WT-04 Dev-loopback `JWT_SECRET` literal ter-commit (LOW, accepted)
+
+- **Lokasi (working tree dan history)**: nilai literal `JWT_SECRET=<dev-loopback-secret>` (string aktual sengaja tidak diulang di sini) muncul di berkas-berkas dokumentasi berikut yang sudah ter-commit pre-closeout:
+  - `medWatch/.mission/waves/wave-01-plan.md` (perintah restart backend lokal di lingkungan dev)
+  - `medWatch/.mission/findings/audits/wave-01-audit.md`, `wave-03-audit.md`, `wave-05-audit.md` (transkrip perintah audit)
+  - `medWatch/.mission/findings/bugs/T1-ADMIN.md`, `medWatch/.mission/findings/docs/W3-CMT-PY.md`, `medWatch/.mission/findings/docs/W3-TIDY-BE.md` (transkrip perintah uji)
+  - `medWatch/.mission/findings/security/W4-SEC.md` baris 44 (mencatat temuan itu sendiri)
+  - `medWatch/CONTRIBUTING.md` baris sekitar 64 (panduan kontributor lokal)
+- **Mengapa LOW**: nilai ini hanya dipakai untuk menandatangani JWT terhadap backend Flask yang `bind` ke `127.0.0.1:8080` (loopback localhost dev). Backend produksi di Cloud Run membaca env `JWT_SECRET` dari GCP Secret Manager melalui flag `--set-secrets` yang memetakan env var ke secret resource `medwatch-jwt-secret` versi `latest`. Token yang ditandatangani dengan secret loopback tidak valid terhadap backend produksi (signature mismatch karena secret berbeda). Tidak ada eskalasi ke produksi.
+- **Path rotasi (bila perlu)**:
+  1. Pilih nilai dev baru per sesi (mis. `JWT_SECRET=$(openssl rand -hex 32)`); jangan tulis ke berkas.
+  2. Ubah perintah di `CONTRIBUTING.md` dan `wave-01-plan.md` agar menggunakan placeholder `JWT_SECRET=<your-dev-secret>`; jangan tulis nilai literal lagi.
+  3. Pre-existing literal di transkrip audit dan findings tetap berada di history karena history-rewrite dilarang (`git filter-branch`/`filter-repo` akan mengubah SHA seluruh commit pasca-Wave 0 dan dilarang oleh mission rule 10). Risiko diterima karena nilai hanya valid untuk localhost loopback.
+  4. Untuk audit lanjutan: anggota tim dapat memutuskan untuk menulis ulang panduan `CONTRIBUTING.md` sehingga developer baru tidak meng-copy-paste nilai literal ini.
+- **Pengambil keputusan menerima risiko**: Ghaisan Khoirul Badruzaman (251524048) sebagai Project Leader Kelompok B5, didokumentasikan pada closeout 2026-05-19. Keputusan menyetujui penerimaan ini direkam di `.mission/outbox/CLOSEOUT-EVIDENCE.md` dan `.mission/outbox/FINAL-REPORT.md` Section 13.
+- **Status acceptance**: LOW severity, user-accepted untuk submission akademik 25 Mei 2026. Untuk hand-over produksi klinik, rotasi minimum item 1 dan 2 di atas dieksekusi sebelum live.
+
+#### Catatan untuk auditor masa depan
+
+Mission acceptance criterion menyatakan "zero credential VALUES exposed anywhere". Status sebenarnya pada closeout 2026-05-19 adalah satu LOW dev-loopback secret diterima oleh user. Frasa "zero credential VALUE PASS" yang muncul di draft awal W4-SEC summary telah diperbarui pada closeout 2026-05-19 menjadi "1 known LOW dev-loopback secret, accepted, documented".
 
 ### 7.5 Asumsi Kepemilikan Pasien Lintas Bidan (Single-Faskes Assumption)
 
