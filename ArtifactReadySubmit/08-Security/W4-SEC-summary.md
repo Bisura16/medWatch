@@ -25,7 +25,7 @@ Audit dilakukan terhadap dua repositori (backend `medWatch` dan frontend `Fronte
 | Total temuan | 12 |
 | Kredensial nilai nyata yang ter-leak | 0 |
 
-`gitleaks detect` mengonfirmasi `no leaks found` untuk kedua repo. Verdict konstrain misi nomor 12 (zero credential VALUE): PASS.
+`gitleaks detect` mengonfirmasi `no leaks found` untuk pola signature scanner standar pada kedua repo. Status terhadap konstrain misi nomor 12 ("zero credential VALUES exposed anywhere"): **PARTIAL - 1 known LOW dev-loopback secret, accepted by user (Ghaisan Khoirul Badruzaman, 251524048, Project Leader Kelompok B5), documented**. Penerimaan risiko ini dilakukan oleh user secara eksplisit pada closeout 2026-05-19, bukan self-waive agen. Detail di docs/SECURITY.md Section 7.6 (Known Accepted Findings) WT-04.
 
 ## Temuan Medium dan Remediasi
 
@@ -36,7 +36,7 @@ Dua temuan Medium yang seluruhnya berkategori demo-by-design.
 
 ## Temuan Low dan Info
 
-Tiga temuan Low semuanya berbentuk string literal `<redacted: pattern JWT_SECRET=literal>` di berkas dokumentasi yang nilai-nya secara eksplisit menyebut "dev-only" atau "dev-mission-secret-local". Order remediasi opsional: ganti contoh di dokumentasi dengan placeholder agar pola scanner di repo lain tidak match. Produksi sudah aman karena JWT secret diambil dari Google Secret Manager via `--set-secrets` saat deploy ke Cloud Run.
+Tiga temuan Low semuanya berbentuk string literal `<redacted: pattern JWT_SECRET=literal>` di berkas dokumentasi yang nilai-nya secara eksplisit menyebut "dev-only" atau "dev-mission-secret-local" (terkonsolidasi sebagai WT-04 di laporan internal). Nilai hanya menandatangani JWT terhadap backend Flask `127.0.0.1:8080` loopback localhost; produksi memakai GCP Secret Manager `medwatch-jwt-secret` lewat Cloud Run `--set-secrets`, sehingga token signed dev tidak valid di produksi. Pengambil keputusan menerima risiko LOW ini: Ghaisan Khoirul Badruzaman (251524048) sebagai Project Leader Kelompok B5, didokumentasikan pada closeout 2026-05-19. Mission acceptance criterion melarang agen menutup temuan secret secara mandiri; penerimaan harus oleh user, dan itulah yang dilakukan di sini. Order remediasi opsional: ganti contoh di dokumentasi dengan placeholder agar pola scanner di repo lain tidak match. Detail lengkap di docs/SECURITY.md Section 7.6.
 
 Tujuh temuan Info terdiri dari nomor identifier publik openFDA (UPC barcode dan NDC), nomor telepon fixture dengan pola sekuensial demo, nama pasien synthetic dengan suffix test, token OIDC Vercel di berkas `.env.local` yang tidak pernah tracked, serta meta-reference pola scanner di berkas konfigurasi agent. Tidak ada aksi yang diperlukan untuk kategori ini.
 
@@ -58,4 +58,4 @@ Beberapa hal yang sudah diverifikasi PASS pada audit.
 
 ## Pernyataan Akhir
 
-Tidak ada kredensial nilai nyata yang bocor di working tree atau histori git. Mission constraint nomor 12 PASS. Untuk produksi, dua langkah remediasi Medium di atas harus dieksekusi sebelum klinik live. Detail lengkap audit, perintah yang dijalankan, dan daftar berkas yang diperiksa tersedia di `.mission/findings/security/W4-SEC.md` pada repo backend.
+Tidak ada kredensial produksi yang bocor di working tree atau history git. Mission constraint nomor 12 ("zero credential VALUES exposed anywhere") berstatus **PARTIAL: 1 known LOW dev-loopback secret accepted by user Ghaisan Khoirul Badruzaman (251524048) sebagai Project Leader, documented sebagai WT-04 di docs/SECURITY.md Section 7.6**. Untuk produksi klinik, dua langkah remediasi Medium di atas harus dieksekusi sebelum live; rotasi WT-04 dev-loopback secret opsional sebelum live, tidak memblokir submission akademik. Detail lengkap audit, perintah yang dijalankan, dan daftar berkas yang diperiksa tersedia di `.mission/findings/security/W4-SEC.md` pada repo backend.
