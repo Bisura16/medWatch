@@ -1,7 +1,7 @@
 ==== TC-PASIEN-014 ====
 Tanggal eksekusi: 2026-05-18T17:46:54+07:00
 Deskripsi: POST pasien tekanan darah format salah
-Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaWRhbl9zaXRpIiwicm9sZSI6InRlbmFnYV9rZXNlaGF0YW4iLCJuYW1lIjoiQmlkYW4gU2l0aSBBbWluYWgiLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.pwMZptL35vnEKZ4gXnc56WydapEV3jj-LcbFnZJBeoI -H Content-Type: application/json -d {"nama":"Ny TD2","S":{"keluhan":"x"},"A":{"diagnosa":"x"},"P":{"tindakan":"x"},"O":{"tekanan_darah":"abc/def"}}
+Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"nama":"Ny TD2","S":{"keluhan":"x"},"A":{"diagnosa":"x"},"P":{"tindakan":"x"},"O":{"tekanan_darah":"abc/def"}}
 -- BEGIN RESPONSE --
 {"error":"Validasi gagal","fields":["Tekanan darah harus dalam format sistolik/diastolik (mis. 120/80)."]}
 

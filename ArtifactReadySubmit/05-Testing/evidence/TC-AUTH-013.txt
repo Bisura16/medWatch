@@ -1,7 +1,7 @@
 ==== TC-AUTH-013 ====
 Tanggal eksekusi: 2026-05-18T17:46:57+07:00
 Deskripsi: POST /api/patients dengan token expired/garbage
-Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer eyJabcdef.xyz.expired -H Content-Type: application/json -d {"nama":"X"}
+Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"nama":"X"}
 -- BEGIN RESPONSE --
 {"error":"missing or invalid token"}
 

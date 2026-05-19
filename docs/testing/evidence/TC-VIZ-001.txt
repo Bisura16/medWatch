@@ -1,7 +1,7 @@
 ==== TC-VIZ-001 ====
 Tanggal eksekusi: 2026-05-18T17:46:54+07:00
 Deskripsi: GET kunjungan-trend 12 bulan
-Perintah: curl http://127.0.0.1:8080/api/visualizations/kunjungan-trend -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaWRhbl9zaXRpIiwicm9sZSI6InRlbmFnYV9rZXNlaGF0YW4iLCJuYW1lIjoiQmlkYW4gU2l0aSBBbWluYWgiLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.pwMZptL35vnEKZ4gXnc56WydapEV3jj-LcbFnZJBeoI
+Perintah: curl http://127.0.0.1:8080/api/visualizations/kunjungan-trend -H Authorization: Bearer <expired-issued-JWT>
 -- BEGIN RESPONSE --
 [{"count":0,"month":"Jan"},{"count":18,"month":"Feb"},{"count":0,"month":"Mar"},{"count":1,"month":"Apr"},{"count":2,"month":"Mei"},{"count":0,"month":"Jun"},{"count":0,"month":"Jul"},{"count":0,"month":"Agu"},{"count":0,"month":"Sep"},{"count":0,"month":"Okt"},{"count":0,"month":"Nov"},{"count":0,"month":"Des"}]
 

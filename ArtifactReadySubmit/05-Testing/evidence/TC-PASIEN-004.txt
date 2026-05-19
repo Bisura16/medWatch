@@ -1,7 +1,7 @@
 ==== TC-PASIEN-004 ====
 Tanggal eksekusi: 2026-05-18T17:46:54+07:00
 Deskripsi: Detail pasien P001 sebagai bidan
-Perintah: curl http://127.0.0.1:8080/api/patients/P001 -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaWRhbl9zaXRpIiwicm9sZSI6InRlbmFnYV9rZXNlaGF0YW4iLCJuYW1lIjoiQmlkYW4gU2l0aSBBbWluYWgiLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.pwMZptL35vnEKZ4gXnc56WydapEV3jj-LcbFnZJBeoI
+Perintah: curl http://127.0.0.1:8080/api/patients/P001 -H Authorization: Bearer <expired-issued-JWT>
 -- BEGIN RESPONSE --
 {"A":{"diagnosa":"G1P0A0 hamil 5 mg"},"O":{"bb_kg":"50","catatan":"tespek positif","lila_cm":"23","tb_cm":"150","tekanan_darah":"110/70"},"P":{"jadwal_kontrol":"","resep":"Asam folat 1x1 sehari\nAmoxicillin 3x500mg","tindakan":"Istirahat cukup\nMakan sedikit tapi sering"},"S":{"keluhan":"mual dan pusing","riwayat":""},"alamat":"Kp. Selang Cau","created_by":"bidan_siti","id":"P001","kategori":"Ibu Hamil","nama":"Ny. Dewi Lestari","tanggal_kunjungan":"18-05-2026","umur":"25"}
 

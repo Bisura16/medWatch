@@ -1,7 +1,7 @@
 ==== TC-SAFETY-008 ====
 Tanggal eksekusi: 2026-05-18T17:46:54+07:00
 Deskripsi: Cek obat tidak terdaftar (Error Guessing)
-Perintah: curl -X POST http://127.0.0.1:8080/api/safety/check -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaWRhbl9zaXRpIiwicm9sZSI6InRlbmFnYV9rZXNlaGF0YW4iLCJuYW1lIjoiQmlkYW4gU2l0aSBBbWluYWgiLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.pwMZptL35vnEKZ4gXnc56WydapEV3jj-LcbFnZJBeoI -H Content-Type: application/json -d {"drugs":["obatxyz123"]}
+Perintah: curl -X POST http://127.0.0.1:8080/api/safety/check -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"drugs":["obatxyz123"]}
 -- BEGIN RESPONSE --
 {"drugs":[],"interactions":[],"obat_tidak_ditemukan":["obatxyz123"],"pasien_active_meds":[],"pasien_context":null,"severity_level":"low","severity_score":0,"warnings":[]}
 
