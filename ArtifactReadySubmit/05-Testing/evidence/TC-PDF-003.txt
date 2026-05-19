@@ -1,7 +1,7 @@
 ==== TC-PDF-003 ====
 Tanggal eksekusi: 2026-05-18T17:46:54+07:00
 Deskripsi: PDF laporan-bulanan April 2026
-Perintah: curl -X POST http://127.0.0.1:8080/api/pdf/generate-laporan-bulanan -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbl9naGFpc2FuIiwicm9sZSI6ImFkbWluIiwibmFtZSI6IkdoYWlzYW4gS2hvaXJ1bCBCLiIsImlhdCI6MTc3OTEwMTEyNSwiZXhwIjoxNzc5MTQ0MzI1LCJpc3MiOiJtZWR3YXRjaC1hcGkifQ.hrvH-MH9apome0lAelOrueRtRL3EuGLd2awIvNYJ4_4 -H Content-Type: application/json -d {"month":"2026-04"} -o /tmp/medwatch-test/pdf-bulanan-202604.pdf -D /tmp/medwatch-test/pdf-bulanan-202604.headers.txt
+Perintah: curl -X POST http://127.0.0.1:8080/api/pdf/generate-laporan-bulanan -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"month":"2026-04"} -o /tmp/medwatch-test/pdf-bulanan-202604.pdf -D /tmp/medwatch-test/pdf-bulanan-202604.headers.txt
 -- BEGIN RESPONSE --
 
 -- HTTP_STATUS:200 TIME:0.003283s --

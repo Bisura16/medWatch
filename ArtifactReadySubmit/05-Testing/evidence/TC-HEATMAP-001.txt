@@ -1,7 +1,7 @@
 ==== TC-HEATMAP-001 ====
 Tanggal eksekusi: 2026-05-18T17:46:54+07:00
 Deskripsi: GET heatmap-efek matrix 6x17
-Perintah: curl http://127.0.0.1:8080/api/visualizations/heatmap-efek -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiaWRhbl9zaXRpIiwicm9sZSI6InRlbmFnYV9rZXNlaGF0YW4iLCJuYW1lIjoiQmlkYW4gU2l0aSBBbWluYWgiLCJpYXQiOjE3NzkxMDExMjUsImV4cCI6MTc3OTE0NDMyNSwiaXNzIjoibWVkd2F0Y2gtYXBpIn0.pwMZptL35vnEKZ4gXnc56WydapEV3jj-LcbFnZJBeoI
+Perintah: curl http://127.0.0.1:8080/api/visualizations/heatmap-efek -H Authorization: Bearer <expired-issued-JWT>
 -- BEGIN RESPONSE --
 {"drugs":["Paracetamol","Ibuprofen","Amoxicillin","Captopril","Cetirizine","Metformin"],"effects":["Angioedema","Asidosis laktat","Batuk kering","Diare","Gangguan ginjal","Hipoglikemia","Hipotensi","Kantuk","Kembung","Mual","Mulut kering","Nyeri lambung","Peningkatan enzim hati","Pusing","Reaksi alergi berat","Ruam kulit","Tukak lambung"],"values":[[0,0,0,0,0,0,0,0,0,1,0,0,1,0,1,1,0],[0,0,0,0,1,0,0,0,0,1,0,1,0,1,0,0,1],[0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,1,0],[1,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0],[0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0],[0,1,0,1,0,1,0,0,1,1,0,0,0,0,0,0,0]]}
 

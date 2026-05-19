@@ -3,7 +3,7 @@ Tanggal eksekusi: 2026-05-18T17:46:53+07:00
 Deskripsi: Login valid admin
 Perintah: curl -X POST http://127.0.0.1:8080/api/auth/login -H Content-Type: application/json -d {"username":"admin_ghaisan","password":"admin2026"}
 -- BEGIN RESPONSE --
-{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbl9naGFpc2FuIiwicm9sZSI6ImFkbWluIiwibmFtZSI6IkdoYWlzYW4gS2hvaXJ1bCBCLiIsImlhdCI6MTc3OTEwMTIxMywiZXhwIjoxNzc5MTQ0NDEzLCJpc3MiOiJtZWR3YXRjaC1hcGkifQ.8IIQuYJv4DnTCaOxguOnVYF-jbwNyYBw0AkWnZJq-8s","user":{"name":"Ghaisan Khoirul B.","role":"admin","username":"admin_ghaisan"}}
+{"token":"<expired-issued-JWT>","user":{"name":"Ghaisan Khoirul B.","role":"admin","username":"admin_ghaisan"}}
 
 -- HTTP_STATUS:200 TIME:0.221612s --
 -- END RESPONSE --
