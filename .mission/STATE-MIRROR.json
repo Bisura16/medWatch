@@ -1,24 +1,48 @@
 {
-  "note": "Mirror of mission state. Authoritative state lives in ~/Documents/MedWatchIntegration/FrontendMedwatch/.mission/state.json. Final close + closeout reconciliation snapshot.",
+  "note": "Mirror of mission state. Authoritative state lives in ~/Documents/MedWatchIntegration/FrontendMedwatch/.mission/state.json. Final close + closeout reconciliation + merge-to-main snapshot.",
   "mission_id": "medwatch-2026-05-18T00-00-00Z",
-  "last_checkpoint_at": "2026-05-19T06:50:00Z",
+  "last_checkpoint_at": "2026-05-19T07:20:00Z",
   "status": "complete",
   "current_wave": 5,
   "waves_total": 5,
   "last_completed_wave": 5,
   "ready_to_close": true,
-  "open_blockers_remaining": ["B-WAVE1-BUILD-1 (environmental, deferred to Node 22 LTS swap)"],
+  "open_blockers_remaining": ["B-WAVE1-BUILD-1 (environmental, deferred to Node 22 LTS swap; Vercel production unaffected)"],
   "submission_package": "/Users/ghaisan/Documents/MedWatchIntegration/medWatch/ArtifactReadySubmit/ (214 files in 10 subfolders)",
   "final_report": "/Users/ghaisan/Documents/MedWatchIntegration/FrontendMedwatch/.mission/outbox/FINAL-REPORT.md",
   "closeout": {
     "reconciled_at": "2026-05-19T06:50:00Z",
-    "verified_commit_counts": {"backend_inclusive": 33, "frontend_inclusive": 19, "grand_total": 52},
+    "follow_up_corrections_at": "2026-05-19T07:00:00Z",
+    "wt04_user_accepted_at": "2026-05-19T07:00:00Z",
+    "wt04_decision": "User Ghaisan Khoirul Badruzaman (251524048, Project Leader Kelompok B5) explicitly accepts LOW dev-loopback JWT_SECRET literal at docs/SECURITY.md Section 7.6. Not self-waived by agent.",
+    "verified_commit_counts": {"backend_inclusive": 33, "frontend_inclusive": 19, "grand_total": 52, "backend_pre_mission": 65, "frontend_pre_mission": 7},
     "verified_test_metrics": {"total_tc": 88, "pass": 79, "fail": 0, "blocked": 9, "primary_pass_over_total_percent": 89.77, "secondary_pass_over_pass_plus_fail_percent": 100.0, "arikunto": "sangat baik"},
-    "vercel_live": "HTTP 200 on /login; 307 redirect on protected routes (verified 2026-05-19)",
-    "node22_local": "UNVERIFIED on closeout host (no version manager installed)",
-    "smoke_test": "16/16 OK including 2 H07-1 RBAC assertions",
+    "vercel_live_pre_push": "HTTP 200 on /login serving pre-mission build (age 1244707 seconds)",
+    "vercel_live_post_push": "HTTP 200 on /login serving post-mission build; deployment medwatch-frontend-2y29qtox5 Ready in Production in 38s; new etag 8ed5a0de7fc51be86b09c2305987bdd4 confirms new build",
+    "node22_local": "UNVERIFIED on closeout host (no version manager installed); Vercel build uses Node 22 LTS by default, unaffected",
+    "smoke_test": "16/16 OK including 2 H07-1 RBAC assertions, re-verified post-corrections",
     "evidence_doc": "/Users/ghaisan/Documents/MedWatchIntegration/FrontendMedwatch/.mission/outbox/CLOSEOUT-EVIDENCE.md",
-    "gates": {"gate_1": "not yet authorized (awaits user 'push branch')", "gate_2": "not yet authorized (awaits user 'merge')", "branch_name": "mission/closeout-20260518"}
+    "gates": {
+      "gate_1_phrase": "push branch",
+      "gate_2_phrase": "merge",
+      "gate_1_status": "authorized 2026-05-19; branch mission/closeout-20260518 pushed to both remotes",
+      "gate_2_status": "authorized 2026-05-19; merged to main and pushed; auto-deploy on Vercel Ready",
+      "closeout_branch_name": "mission/closeout-20260518",
+      "pushed_at": "2026-05-19T07:18:00Z",
+      "merged_at": "2026-05-19T07:20:00Z"
+    },
+    "final_main_sha": {
+      "backend_local": "b91686f00cbbf1b7ccebeff5920bb3d9a927d861",
+      "backend_remote": "b91686f00cbbf1b7ccebeff5920bb3d9a927d861",
+      "frontend_local": "fcc6e8e84b7aafca6dfdaccb445db8a196d52193",
+      "frontend_remote": "fcc6e8e84b7aafca6dfdaccb445db8a196d52193",
+      "backend_pre_push_main": "15361008a5e75f982ec570eb430423aaf207d819",
+      "frontend_pre_push_main": "0e9133e4669befb3c54ffdd4c23fb91d4259fe7d"
+    },
+    "remote_compare_urls": [
+      "https://github.com/Bisura16/medWatch/compare/15361008..b91686f",
+      "https://github.com/Finerium/FrontendMedwatch/compare/0e9133e..fcc6e8e"
+    ]
   },
   "authoritative_state_path": "/Users/ghaisan/Documents/MedWatchIntegration/FrontendMedwatch/.mission/state.json"
 }
