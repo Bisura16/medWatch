@@ -18,3 +18,15 @@ Dispatched scaffold-builder via `general-purpose` (opus). Created the two top-le
 
 Wave 1 complete. Advancing to Wave 2.
 
+Wave 1 local commit: `a08fff0 feat(installer): wave 1 scaffold installer-based and portable variants` (18 files, 498 insertions).
+
+## Wave 2 - PyInstaller backend bundle (complete, 2026-05-24T21:42Z)
+
+Dispatched backend-bundler via `general-purpose` (opus). Wrote `api/desktop_entry.py` as a sibling entry to keep `api/app.py` untouched: the new module is the PyInstaller target, reads `MEDWATCH_DESKTOP=1` env to activate, binds `127.0.0.1:0` via `wsgiref.simple_server.make_server`, prints `MEDWATCH_BACKEND_PORT=<n>` to stdout for the Electron handshake, reads `MEDWATCH_DB_PATH` env for the SQLite path. Wrote `medwatch_desktop.spec` (PyInstaller --onefile, excludes `google.cloud.storage`, `gunicorn`, `matplotlib.tests`, `numpy.testing`, `tkinter`). 
+
+Big surprise: Python 3.13.13 was already on the dev host via Homebrew at `/opt/homebrew/bin/python3.13`. Backend-bundler created `.venv-desktop/` on that interpreter (no system install), installed `pyinstaller==6.20.0`, and produced a 24 MB macOS arm64 binary at `dist/medwatch-backend`. Smoke test passed: launched with `MEDWATCH_DESKTOP=1 MEDWATCH_DB_PATH=/tmp/test-medwatch.db`, captured `MEDWATCH_BACKEND_PORT=60022` from stdout, `GET /api/health` returned 200, `GET /api/info` returned 200. The Python 3.14 blocker is RESOLVED. The Windows `.exe` blocker for Wave 5 remains; backend-bundler delivered `.mission/findings/wave-2-runbook-windows-build.md` covering three remediation paths (GitHub Actions recommended).
+
+Updated `.gitignore`: added `.venv-desktop/` under the venv section and `!medwatch_desktop.spec` exception to the `*.spec` ignore rule so the spec gets tracked.
+
+Wave 2 complete. Advancing to Wave 3.
+

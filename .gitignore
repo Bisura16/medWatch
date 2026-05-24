@@ -2,6 +2,7 @@
 anggota1/.venv/
 **/.venv/
 **/venv/
+.venv-desktop/
 
 # Python
 __pycache__/
@@ -40,6 +41,7 @@ anggota1/scraper.log
 # Build artifacts
 *.spec
 !ProductionGrade-ImplementationPlan/build/medwatch.spec
+!medwatch_desktop.spec
 
 # Secrets and credentials (never commit values; use Secret Manager / env)
 *.pem
