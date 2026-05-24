@@ -44,3 +44,21 @@ Frontend branch `mission/installer-static-export` committed locally at SHA `95f1
 
 Wave 3 complete. Advancing to Wave 4 (openFDA scrape, the long one).
 
+Wave 3 local commit: `<see git log>` feat(installer): wave 3 Next.js static export embedded into both variants (396 files, ~5.2M static export across both variants).
+
+## Wave 4 - openFDA scrape (script committed; full scrape in background, 2026-05-24T21:55Z)
+
+Dispatched data-engineer via `general-purpose` (opus, BOUNDED scope: write script + smoke validate, do not run full). Returned clean: `scripts/scrape_openfda.py` (940 lines) with resumable search_after cursor paging, per-1000-records checkpoint into `.mission/scrape_checkpoint.sqlite`, 200ms throttle with exponential backoff on 429, OPENFDA_API_KEY read from env and never logged. Argparse subcommands: scrape (with --endpoint and --limit-records), verify, status. Schema in `anggota1/Hasil-Scrap/drugs.db`: drugs (PK product_ndc, 16 columns), reactions ((generic_name, reaction_term) PK + count), recalls (PK recall_number), drugs_fts FTS5 over text columns, 4 indexes.
+
+Smoke caps (drugs=1000, reactions=20, recalls=500) all green: 678 deduped drugs from 641 requests (label coverage 634/678), 100 reactions (top atorvastatin/fatigue=14031), 1000 recalls, FTS5 MATCH 'pain' returns 456 rows, api_key never appeared in logs. Estimated full scrape: 4.5-6.5 hours, 25k-35k requests (well under 60k cap).
+
+Wave 4 partial commit: `82d9809 feat(installer): wave 4 scrape script and smoke validation` (script + MANIFEST template + findings + gitignore additions for the large db artifacts). The drugs.db itself stays out of git (will exceed 100MB; ships via GitHub Releases per Wave 7 plan).
+
+Full scrape launched as a detached `nohup ... & disown` bash process at 2026-05-24T21:55Z, PID 50914, log at `.mission/scrape_full.log`. Manager will poll progress while continuing with Wave 5 wiring (independent of drugs.db) in parallel.
+
+## Wave 5 (wiring) - Electron main / preload (complete, 2026-05-24T21:59Z)
+
+Dispatched integration-builder via `general-purpose` (opus, SCOPED to wiring; build deferred). Filled in `main/index.js` in both variants (byte-identical): spawns the backend binary with `MEDWATCH_DESKTOP=1` and `MEDWATCH_DB_PATH=<userData>/drugs.db`, reads stdout for `MEDWATCH_BACKEND_PORT=<n>` with 30s timeout, copies bundled `drugs.db` from `process.resourcesPath` to userData on first launch, opens 1280x800 BrowserWindow at `http://127.0.0.1:<port>` with `contextIsolation: true`, `sandbox: true`, `nodeIntegration: false`. Passes port to preload via `additionalArguments`. `before-quit` sends SIGTERM to the backend child with a 5s grace and SIGKILL fallback. Error dialogs are in Bahasa Indonesia. Filled in `preload/index.js` in both variants (byte-identical): reads `--medwatch-backend-port=<n>` from `process.argv` and exposes `window.__MEDWATCH_BACKEND_PORT__` via `contextBridge.exposeInMainWorld` for the renderer's `src/lib/api-base.ts` to consume. `node --check` passes on all 4 files. Both variants confirmed byte-identical via `diff`. Em-dash sweep clean.
+
+Wave 5 BUILD phase (running electron-builder) deferred until the background scrape finishes and `drugs.db` is in place in both variants' `resources/`. Continuing to poll scrape progress.
+
