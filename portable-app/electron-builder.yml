@@ -1,0 +1,33 @@
+# MedWatch Electron Builder configuration. Portable variant.
+# Wave 5 will fill in the renderer build and backend binary that this config references.
+
+appId: com.medwatch.desktop.portable
+productName: MedWatch
+
+directories:
+  output: dist
+
+# Source files that ship inside the asar bundle.
+files:
+  - main/**
+  - preload/**
+  - resources/renderer/**
+  - package.json
+
+# Native resources that ship alongside the app (unpacked from asar).
+# Wave 2 produces the backend binary. Wave 4 produces the SQLite database.
+extraResources:
+  - from: resources/drugs.db
+    to: drugs.db
+  - from: resources/medwatch-backend
+    to: medwatch-backend
+
+# Windows configuration.
+win:
+  icon: resources/icon.ico
+  target: portable
+
+# Portable single executable. The file name embeds the version so a user can
+# keep multiple builds side by side without renaming.
+portable:
+  artifactName: MedWatch-${version}-portable.exe

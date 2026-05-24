@@ -1,0 +1,18 @@
+{
+  "name": "medwatch-installer",
+  "version": "0.1.0",
+  "description": "MedWatch desktop wrapper (NSIS installer variant)",
+  "main": "main/index.js",
+  "author": "Ghaisan Khoirul Badruzaman <ghaisan.khoirul.b@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "electron .",
+    "build:installer": "electron-builder --config electron-builder.yml --win nsis",
+    "build:installer-mac": "electron-builder --config electron-builder.yml --mac"
+  },
+  "devDependencies": {
+    "electron": "36.9.5",
+    "electron-builder": "26.11.1"
+  }
+}
