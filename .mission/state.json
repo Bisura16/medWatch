@@ -1,8 +1,17 @@
 {
   "mission_id": "medwatch-windows-installers-2026-05-25",
   "started_at": "2026-05-24T20:56:14Z",
-  "current_wave": 3,
-  "last_completed_wave": 2,
+  "current_wave": 4,
+  "last_completed_wave": 3,
+  "wave_3_completed_at": "2026-05-24T22:00:00Z",
+  "wave_3_artifacts": {
+    "frontend_branch": "mission/installer-static-export",
+    "frontend_branch_sha": "95f1428a",
+    "frontend_branch_status": "local-only-never-pushed",
+    "static_out_size_bytes": 2730000,
+    "static_routes_count": 21,
+    "renderer_tree_size_bytes": 2621440
+  },
   "wave_1_completed_at": "2026-05-24T21:25:00Z",
   "wave_2_completed_at": "2026-05-24T21:42:00Z",
   "wave_2_artifacts": {
@@ -27,7 +36,7 @@
     "0": { "name": "Bootstrap and recon", "status": "complete" },
     "1": { "name": "Scaffold both variants", "status": "complete" },
     "2": { "name": "PyInstaller backend bundle", "status": "complete" },
-    "3": { "name": "Next.js static export", "status": "pending" },
+    "3": { "name": "Next.js static export", "status": "complete" },
     "4": { "name": "openFDA scrape to SQLite", "status": "pending" },
     "5": { "name": "Electron integration and dual build", "status": "pending" },
     "6": { "name": "Validation and docs", "status": "pending" },

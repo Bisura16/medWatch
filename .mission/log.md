@@ -30,3 +30,17 @@ Updated `.gitignore`: added `.venv-desktop/` under the venv section and `!medwat
 
 Wave 2 complete. Advancing to Wave 3.
 
+Wave 2 local commit: `db04bb9 feat(installer): wave 2 PyInstaller backend bundle with dynamic port` (9 files, 743 insertions).
+
+## Wave 3 - Next.js static export (complete, 2026-05-24T22:00Z)
+
+Dispatched frontend-bundler via `general-purpose` (opus). Created local-only branch `mission/installer-static-export` on the frontend repo. Configured `next.config.ts` with `output: 'export'`, `images: { unoptimized: true }`, `trailingSlash: true`. Audited and resolved every static-export blocker: removed `export const dynamic = 'force-dynamic'` from the 3 pages flagged by Wave 0 (login, safety-checker, drug-comparison); deleted `src/proxy.ts` (Vercel edge proxy not needed in desktop); deleted `src/app/api/[...slug]/route.ts` (Cloud Run proxy not needed in desktop); deleted `src/app/patients/[id]/page.tsx` and replaced with `src/app/patients/edit/page.tsx` using `?id=` query param because Next 16 rejects `dynamicParams=true` under `output: 'export'`.
+
+Added the backend-port injection chokepoint at `src/lib/api-base.ts`: exports `apiBase()` reading `window.__MEDWATCH_BACKEND_PORT__` and `apiUrl(path)` for fetch call-sites. Migrated all 5 `fetch('/api/...')` call sites in `src/lib/api.ts`, `src/lib/auth-store.ts`, and the per-page client code to use `apiUrl()`.
+
+Built: `npm run build` produced 21 static routes in `out/` totaling 2.6 MB; 1.4s compile, 4.0s typecheck, no errors. Smoke-tested with `python3 -m http.server 5500` on six URLs (root, login, safety-checker, drug-comparison, patients/edit, dashboard); all returned HTTP 200. Copied `out/.` into BOTH `installer-based app/resources/renderer/` and `portable-app/resources/renderer/` (2.5M each, byte-identical confirmed via `diff -r` exit 0).
+
+Frontend branch `mission/installer-static-export` committed locally at SHA `95f1428a`. NOT pushed. NOT merged. Frontend `main` remains the Vercel deploy source.
+
+Wave 3 complete. Advancing to Wave 4 (openFDA scrape, the long one).
+
