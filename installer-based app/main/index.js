@@ -1,22 +1,151 @@
-// MedWatch Electron main process. Wave 5 wires the backend spawn and DB copy here.
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
+// MedWatch Electron main process. Spawns the PyInstaller backend,
+// reads the port handshake, copies drugs.db to userData on first
+// launch, opens the renderer window at http://127.0.0.1:<port>.
 
-// Wave 5 will fill this in (spawn backend, port handshake, DB copy).
-function createPlaceholderWindow() {
-  const win = new BrowserWindow({
+const { app, BrowserWindow, dialog } = require("electron");
+const path = require("path");
+const fs = require("fs");
+const { spawn } = require("child_process");
+const readline = require("readline");
+
+let backendChild = null;
+let backendPort = null;
+let mainWindow = null;
+
+function backendBinaryName() {
+  return process.platform === "win32" ? "medwatch-backend.exe" : "medwatch-backend";
+}
+
+function resolveBackendPath() {
+  // In dev: resources/ alongside the project root.
+  // In packaged: process.resourcesPath/<binary>.
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, backendBinaryName());
+  }
+  return path.join(__dirname, "..", "resources", backendBinaryName());
+}
+
+function resolveBundledDbPath() {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, "drugs.db");
+  }
+  return path.join(__dirname, "..", "resources", "drugs.db");
+}
+
+function resolveUserDbPath() {
+  return path.join(app.getPath("userData"), "drugs.db");
+}
+
+async function ensureUserDb() {
+  const target = resolveUserDbPath();
+  if (fs.existsSync(target)) return target;
+  const source = resolveBundledDbPath();
+  if (!fs.existsSync(source)) {
+    throw new Error(
+      "Database bawaan tidak ditemukan pada paket aplikasi. Ulangi instalasi."
+    );
+  }
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  await new Promise((resolve, reject) => {
+    const rd = fs.createReadStream(source);
+    const wr = fs.createWriteStream(target);
+    rd.on("error", reject);
+    wr.on("error", reject);
+    wr.on("finish", resolve);
+    rd.pipe(wr);
+  });
+  return target;
+}
+
+function spawnBackend(dbPath) {
+  return new Promise((resolve, reject) => {
+    const exe = resolveBackendPath();
+    if (!fs.existsSync(exe)) {
+      reject(new Error(`Binary backend tidak ditemukan: ${exe}`));
+      return;
+    }
+    const child = spawn(exe, [], {
+      env: Object.assign({}, process.env, {
+        MEDWATCH_DESKTOP: "1",
+        MEDWATCH_DB_PATH: dbPath,
+        PYTHONIOENCODING: "utf-8"
+      }),
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+
+    const rl = readline.createInterface({ input: child.stdout });
+    let resolved = false;
+    const timer = setTimeout(() => {
+      if (!resolved) {
+        rl.close();
+        try { child.kill("SIGTERM"); } catch (e) {}
+        reject(new Error("Timeout 30 detik menunggu backend memulai."));
+      }
+    }, 30000);
+
+    rl.on("line", (line) => {
+      const match = /^MEDWATCH_BACKEND_PORT=(\d+)/.exec(line);
+      if (match && !resolved) {
+        resolved = true;
+        clearTimeout(timer);
+        resolve({ child, port: Number(match[1]) });
+      }
+    });
+
+    child.on("exit", (code) => {
+      if (!resolved) {
+        resolved = true;
+        clearTimeout(timer);
+        reject(new Error(`Backend exit dengan kode ${code} sebelum siap.`));
+      }
+    });
+  });
+}
+
+function createMainWindow(port) {
+  mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,
-      preload: path.join(__dirname, "..", "preload", "index.js")
+      sandbox: true,
+      nodeIntegration: false,
+      preload: path.join(__dirname, "..", "preload", "index.js"),
+      additionalArguments: [`--medwatch-backend-port=${port}`]
     }
   });
-  win.loadFile(path.join(__dirname, "..", "resources", "renderer", "index.html"));
+  mainWindow.loadURL(`http://127.0.0.1:${port}/`);
+  mainWindow.on("closed", () => { mainWindow = null; });
 }
 
-app.on("ready", createPlaceholderWindow);
+async function boot() {
+  try {
+    const dbPath = await ensureUserDb();
+    const { child, port } = await spawnBackend(dbPath);
+    backendChild = child;
+    backendPort = port;
+    createMainWindow(port);
+  } catch (err) {
+    dialog.showErrorBox(
+      "MedWatch gagal dimulai",
+      `${err.message}\n\nMohon laporkan ke tim pengembang.`
+    );
+    app.exit(1);
+  }
+}
+
+app.on("ready", boot);
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
+});
+
+app.on("before-quit", () => {
+  if (backendChild && !backendChild.killed) {
+    backendChild.kill("SIGTERM");
+    setTimeout(() => {
+      if (!backendChild.killed) backendChild.kill("SIGKILL");
+    }, 5000);
+  }
 });
