@@ -1,0 +1,30 @@
+{
+  "mission_id": "medwatch-windows-installers-2026-05-25",
+  "started_at": "2026-05-24T20:56:14Z",
+  "current_wave": 1,
+  "last_completed_wave": 0,
+  "status": "in_progress",
+  "wave_0_completed_at": "2026-05-24T21:13:00Z",
+  "model": "claude-opus-4-7",
+  "effort_floor": "xhigh",
+  "manager_effort": "max",
+  "branch_name": "mission/windows-installers-20260525",
+  "backend_repo": "/Users/ghaisan/Documents/MedWatchIntegration/medWatch",
+  "frontend_repo": "/Users/ghaisan/Documents/MedWatchIntegration/FrontendMedwatch",
+  "open_blockers": [],
+  "waves": {
+    "0": { "name": "Bootstrap and recon", "status": "complete" },
+    "1": { "name": "Scaffold both variants", "status": "pending" },
+    "2": { "name": "PyInstaller backend bundle", "status": "pending" },
+    "3": { "name": "Next.js static export", "status": "pending" },
+    "4": { "name": "openFDA scrape to SQLite", "status": "pending" },
+    "5": { "name": "Electron integration and dual build", "status": "pending" },
+    "6": { "name": "Validation and docs", "status": "pending" },
+    "7": { "name": "Handover and Phase H gate", "status": "pending" }
+  },
+  "phase_h": {
+    "branch_pushed_at": null,
+    "merged_at": null,
+    "final_main_sha": null
+  }
+}
