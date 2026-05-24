@@ -1,0 +1,37 @@
+# MedWatch Electron Builder configuration. Installer (NSIS) variant.
+# Wave 5 will fill in the renderer build and backend binary that this config references.
+
+appId: com.medwatch.desktop.installer
+productName: MedWatch
+
+directories:
+  output: dist
+
+# Source files that ship inside the asar bundle.
+files:
+  - main/**
+  - preload/**
+  - resources/renderer/**
+  - package.json
+
+# Native resources that ship alongside the app (unpacked from asar).
+# Wave 2 produces the backend binary. Wave 4 produces the SQLite database.
+extraResources:
+  - from: resources/drugs.db
+    to: drugs.db
+  - from: resources/medwatch-backend
+    to: medwatch-backend
+
+# Windows configuration.
+win:
+  icon: resources/icon.ico
+  target: nsis
+
+# NSIS installer behavior. Allows the user to pick the install directory
+# and creates desktop plus start menu shortcuts.
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: MedWatch

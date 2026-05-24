@@ -10,3 +10,11 @@ Scout returned `phase_status: complete` with a 443-line findings file at `.missi
 
 Wave 0 complete. Advancing to Wave 1.
 
+Wave 0 local commit: `2334b0c chore(installer-mission): wave 0 bootstrap and recon` (16 files, 1476 insertions).
+
+## Wave 1 - Scaffold both variants (complete, 2026-05-24T21:25Z)
+
+Dispatched scaffold-builder via `general-purpose` (opus). Created the two top-level Electron variant folders inside the backend repo with literal user-specified names: `installer-based app/` (folder name contains a space) and `portable-app/` (hyphen). Each contains `electron-builder.yml`, `package.json`, `main/index.js`, `preload/index.js`, `resources/.gitkeep`, `resources/renderer/.gitkeep`, `README.md`. Picked `electron@36.9.5` (latest stable in the v36 line) and `electron-builder@26.11.1`. Both folders resolve a 391-package graph cleanly under `npm install --dry-run`. NSIS variant configured with `oneClick: false`, `allowToChangeInstallationDirectory: true`, desktop + Start Menu shortcuts. Portable variant configured with `artifactName: MedWatch-${version}-portable.exe`. `main/index.js` is the Wave-5-ready skeleton (placeholder createWindow + the standard quit handler). README documents output paths, build steps, SmartScreen warning, offline mode, DB location, maintainer.
+
+Wave 1 complete. Advancing to Wave 2.
+
