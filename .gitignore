@@ -50,6 +50,17 @@ anggota1/Hasil-Scrap/drugs.db-wal
 installer-based app/resources/drugs.db
 portable-app/resources/drugs.db
 
+# Windows backend binary (built by Wave 5; bundled into installer/portable .exe)
+installer-based app/resources/medwatch-backend.exe
+portable-app/resources/medwatch-backend.exe
+dist-windows/
+
+# Electron builder per-variant output (the .exe artifacts ship outside git)
+installer-based app/dist/
+portable-app/dist/
+installer-based app/node_modules/
+portable-app/node_modules/
+
 # Scrape checkpoint and progress (transient state for the scraper)
 .mission/scrape_checkpoint.sqlite
 .mission/scrape_checkpoint.sqlite-shm

@@ -19,12 +19,14 @@ files:
 extraResources:
   - from: resources/drugs.db
     to: drugs.db
-  - from: resources/medwatch-backend
-    to: medwatch-backend
+  - from: resources/medwatch-backend.exe
+    to: medwatch-backend.exe
 
 # Windows configuration.
+# Note: win.icon line intentionally omitted because resources/icon.ico
+# does not exist. electron-builder uses the default icon. Adding a custom
+# icon is a low-impact follow-up that does not block the build.
 win:
-  icon: resources/icon.ico
   target: nsis
 
 # NSIS installer behavior. Allows the user to pick the install directory

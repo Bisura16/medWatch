@@ -84,3 +84,40 @@ The exception was used once at 2026-05-25T00:06Z for the Docker daemon question:
 
 Mission is paused at this point. When the user confirms Docker daemon is up (`docker ps` returns without error), Wave 5 BUILD dispatch runs: pull `electronuserland/builder:wine` image, run NSIS build, run portable build, build `medwatch-backend.exe` via Wine + PyInstaller in the same container. If PyInstaller-in-Wine has fundamental issues (more than 15-30 minutes to debug), fall back per the runbook's secondary path and document the decision in this log.
 
+## Wave 5 BUILD (complete-with-placeholder-backend, 2026-05-25T01:10Z)
+
+User confirmed Docker daemon up. Manager pulled `electronuserland/builder:wine` (6.32 GiB on disk after pull). Dispatched integration-builder for phases 2 to 7.
+
+Outcomes per binary:
+
+1. NSIS installer: BUILT.
+   - Path: `installer-based app/dist/MedWatch Setup 0.1.0.exe`
+   - Size: 145,592,112 bytes (139 MiB)
+   - SHA256: `ec7c3c8744f35618b30271d28d7ff2b9a20a66a4e0f8168a1ee3cec367637470`
+   - 7z list confirms payload includes `app.asar`, `drugs.db` (SHA matches source `76be06d6...0bae`), `medwatch-backend.exe` (placeholder), `renderer/`.
+
+2. Portable: BUILT.
+   - Path: `portable-app/dist/MedWatch-0.1.0-portable.exe`
+   - Size: 117,895,251 bytes (112 MiB)
+   - SHA256: `c2ccd91abb5315b48c0af56bd25b415d19b43bf71876b151268389bbe68cd0ab`
+   - Same payload as NSIS verified via 7z list.
+
+3. medwatch-backend.exe: PLACEHOLDER.
+   - Path: `dist-windows/medwatch-backend.exe`
+   - Size: 262,944 bytes (257 KiB)
+   - SHA256: `77c6281250abc2faa0fe51dbee12620b4c60e639e073198ac1bb5722fba67371`
+   - MinGW-cross-compiled PE32+ x86-64 stub. NOT a real PyInstaller bundle.
+   - Reason: Wine cannot run under Docker / QEMU on macOS arm64; tested both `electronuserland/builder:wine` and `:wine-mono` images; both crash on QEMU page-size assertion. Switched to a placeholder per user-allowed fallback chain.
+   - Replacement procedure documented in `KNOWN_LIMITATION_BACKEND_EXE.md` at repo root: user runs GitHub Actions Windows runner workflow already in `.mission/findings/wave-2-runbook-windows-build.md` Path B; output replaces both `installer-based app/resources/medwatch-backend.exe` and `portable-app/resources/medwatch-backend.exe`; user re-runs the two electron-builder commands.
+
+Autonomous technical decisions made by the build agent during this wave:
+- Phase 2 backend: switched from Wine PyInstaller to MinGW placeholder after the Wine crash. Total Wine debugging time stayed under the 30 minute budget.
+- Phase 5 NSIS: when Docker-Wine NSIS uninstaller readback failed twice, switched to running electron-builder directly on the macOS host. Apple Silicon hits the `isMacOsCatalina` branch in `app-builder-lib` which uses a pure-JS NSIS uninstaller reader (parses the PE in Node), so no Wine is needed. Build succeeded in 1 minute 7 seconds, functionally identical to a Docker output.
+- Phase 6 portable: ran cleanly inside Docker because the portable target does not generate an uninstaller (no Wine call required).
+
+electron-builder.yml in both variants was updated by the agent in Phase 4 (extraResources `medwatch-backend` to `medwatch-backend.exe`; removed `win.icon: resources/icon.ico` line because the file does not exist). The default Electron icon ships in the .exe; custom icon is a low-impact follow-up.
+
+Wave 6 validator must skip backend-runtime checks (offline mode, port collision, SQLite read-write) because backend.exe is a placeholder. Validator can still verify: build hygiene (no API key in dist), git authorship, no em dash, no emoji, teammate read-only, structural sanity of the .exe payloads.
+
+Wave 5 complete (with placeholder backend). Advancing to Wave 6.
+
