@@ -1,47 +1,68 @@
-# MedWatch (Portable variant)
+# MedWatch Desktop (Portable Variant)
+
+## What this is
+
+This is the single-file portable variant of MedWatch Desktop, the Windows desktop wrapper for the MedWatch project. MedWatch provides a clinical drug-safety reference (openFDA prescription label data, adverse-reaction frequencies, drug recalls) plus patient SOAP CRUD for Faskes 1 bidan workflow. The portable executable is a self-extracting bundle that ships the entire openFDA prescription dataset locally as a SQLite file, so the application is fully offline at runtime. No installation step is required: the user double-clicks the .exe to launch. It is intended for Windows 10 and Windows 11 on x86_64.
 
 ## Output
 
-This variant builds a single file portable Windows executable. The artifact
-produced is `dist/MedWatch-x.y.z-portable.exe`, where `x.y.z` matches the
-version in `package.json`. No installation step is required; the user can
-double click the file to launch the app.
+Binary path: `portable-app/dist/MedWatch-0.1.0-portable.exe`.
 
-## Build steps
+Size: 112 MiB (117,895,251 bytes).
 
-1. Run `npm install` from this folder.
-2. Run `npm run build:portable` to produce the portable executable.
+SHA256: `c2ccd91abb5315b48c0af56bd25b415d19b43bf71876b151268389bbe68cd0ab`.
 
-Cross-compiling a Windows portable executable from macOS requires `wine`.
-Install it via `brew install --cask wine-stable` before running the build
-script on macOS.
+The `medwatch-backend.exe` embedded inside this bundle is a placeholder pending replacement via the procedure described in the "Known limitation" section below.
+
+## Build from source on macOS host
+
+```
+docker pull electronuserland/builder:wine
+cd 'portable-app'
+docker run --rm --platform linux/amd64 -v "$PWD:/project" -w /project \
+  electronuserland/builder:wine bash -c "\
+    npm install --no-audit --no-fund && \
+    npx electron-builder --config electron-builder.yml --win portable --publish=never"
+```
+
+The portable target does NOT generate a separate uninstaller (the portable .exe self-extracts to `%TEMP%` and launches MedWatch.exe directly; there is no install state to uninstall). Without uninstaller generation, electron-builder never calls `execWine`, so the QEMU plus Wine crash path that blocks the NSIS Docker build is bypassed. The portable build therefore completes inside the official `electronuserland/builder:wine` container on macOS arm64.
+
+Wall-clock build time on a 2024 M-series MacBook is about 3 minutes 24 seconds (40 seconds npm install, the rest electron plus 7z packaging).
+
+## Build from source on Windows host
+
+Follow Path B (GitHub Actions Windows runner) in `.mission/findings/wave-2-runbook-windows-build.md`. The workflow checks out the repo on `windows-latest`, runs PyInstaller against `medwatch_desktop.spec` to produce the real `medwatch-backend.exe`, copies the result into both variant `resources/` folders, then runs `npx electron-builder --config electron-builder.yml --win portable` from this folder.
 
 ## What this contains
 
-The portable executable carries everything the application needs to run offline:
+The bundle ships these payloads under `resources/`:
 
-- Embedded Next.js static frontend (Wave 3).
-- PyInstaller-bundled Flask backend (Wave 2).
-- SQLite drug database (Wave 4) copied to the user data directory on first launch.
+- Static Next.js export from Wave 3 (the renderer tree, about 2.5 MiB).
+- PyInstaller-bundled Flask backend as `medwatch-backend.exe` (PLACEHOLDER, see below).
+- SQLite drug database `drugs.db` (246 MiB, SHA256 `76be06d65ada4ac13dc17786a76214d36fc496ba08d3222aff1b4660f86b0bae`).
 
-## First-run SmartScreen warning
+The Electron 36 main process spawns the backend as a child process, waits for the port handshake on stdout, then loads the Next.js export into a `BrowserWindow`.
 
-Windows SmartScreen will warn on first run because the executable is not code
-signed. Click `More info` then `Run anyway`. Code signing is out of scope for
-this academic submission.
+## Known limitation (backend.exe)
+
+The `medwatch-backend.exe` inside this portable bundle is currently a 257 KiB placeholder, not a real PyInstaller bundle. The placeholder displays an error dialog and exits with code 1, so the application UI will show "Backend MedWatch gagal dimulai" on launch. The build host (macOS arm64) cannot run PyInstaller against a Windows Python interpreter because Wine in Docker crashes on Apple Silicon. The replacement procedure (Path A native Windows, Path B GitHub Actions Windows runner) is documented in `KNOWN_LIMITATION_BACKEND_EXE.md` at the repo root.
+
+## SmartScreen first-run warning
+
+Windows SmartScreen warns on first run because the .exe is unsigned. Click `More info` then `Run anyway`. Code signing is out of scope for this academic submission.
 
 ## Offline operation
 
-All drug data ships in `drugs.db`. The app does not require internet access at
-runtime. The local Flask backend serves the data to the embedded renderer over
-a loopback HTTP port.
+All drug data ships in `drugs.db`. The app does NOT require internet at runtime. Network isolation will be verified by the user on a Windows VM per `.mission/findings/wave-6-validation.md`.
+
+## Portable launch behavior
+
+Double-clicking the .exe extracts the bundle contents to `%LOCALAPPDATA%\Temp` on first launch (subdirectory named after a content hash), then spawns `MedWatch.exe` from that temp directory. Subsequent launches reuse the same extracted copy if the hash matches, so cold-start cost is paid only once per executable version. Deleting the portable .exe does not remove the extracted temp copy; Windows will clean it up on the next disk-cleanup cycle.
 
 ## Database location
 
-On Windows the runtime database lives at `%APPDATA%\MedWatch\drugs.db`. On a
-macOS dev run it lands in `~/Library/Application Support/MedWatch/drugs.db`.
-The file is copied from the read only resources directory on first launch.
+First launch copies the bundled `drugs.db` from the extracted `resources/` to `%APPDATA%\MedWatch\drugs.db`. User edits land in the writable copy at that location. This means patient SOAP records and any database mutations PERSIST across portable runs even though the application itself is "portable" in the sense of no installer.
 
 ## Maintainer
 
-Ghaisan Khoirul Badruzaman <ghaisan.khoirul.b@gmail.com>
+Ghaisan Khoirul Badruzaman <ghaisan.khoirul.b@gmail.com> (Project Leader, Kelompok B5, POLBAN D4 Teknik Informatika 1B-D4, AT 2025/2026).
