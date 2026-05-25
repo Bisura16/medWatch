@@ -121,3 +121,19 @@ Wave 6 validator must skip backend-runtime checks (offline mode, port collision,
 
 Wave 5 complete (with placeholder backend). Advancing to Wave 6.
 
+## Wave 6 - Validator + per-variant docs (complete, verdict GO, 2026-05-25T01:30Z)
+
+Dispatched two subagents in parallel: validator (read-only audit) and doc-writer (READMEs + INSTALL + RUN).
+
+Validator verdict: GO. The five deterministic checks all pass: build hygiene (zero credential patterns in either installer .exe payload, including extracted app.asar contents and drugs.db dump and strings scan), git authorship (only `Ghaisan Khoirul Badruzaman <ghaisan.khoirul.b@gmail.com>` in `git log 2334b0c..HEAD`), em-dash and emoji sweep across mission files plus variant trees plus commit messages (zero hits in each), teammate read-only (`git diff 2334b0c..HEAD -- anggota{2,3,4,5}*` empty), and binary structural sanity (both installer .exe are PE32 NSIS SFX, contain app.asar with renderer at resources/app.asar/resources/renderer/, contain drugs.db at the SHA matching the Wave 4 capture, contain medwatch-backend.exe placeholder at the SHA matching the Wave 5 fallback). The three runtime checks (network isolation, SQLite read-write persistence, port collision) are correctly classified as unconfirmable with a Windows-VM user-side runbook in `.mission/findings/wave-6-validation.md`; this is the expected state given the placeholder backend.exe.
+
+Doc-writer outputs:
+- `installer-based app/README.md` rewritten (English, technical) with actual Wave 5 metadata, isMacOsCatalina build path explanation, KNOWN_LIMITATION pointer.
+- `portable-app/README.md` rewritten (same structure adapted for portable).
+- `installer-based app/INSTALL.md` (Bahasa Indonesia formal, end-user-facing): wizard install steps including SmartScreen "More info / Run anyway" bypass.
+- `portable-app/RUN.md` (Bahasa Indonesia formal, end-user-facing): portable double-click usage, %APPDATA%\MedWatch\drugs.db persistence note.
+
+All four docs em-dash-free and emoji-free per re-verified sweep.
+
+Wave 6 complete. Advancing to Wave 7 (HANDOVER-REPORT).
+
