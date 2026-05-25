@@ -85,7 +85,7 @@
     "pyinstaller_version": "6.20.0",
     "python_used": "/opt/homebrew/bin/python3.13 (3.13.13)"
   },
-  "status": "in_progress",
+  "status": "complete",
   "wave_0_completed_at": "2026-05-24T21:13:00Z",
   "mission_start_sha": "2334b0c",
   "pre_mission_main_sha": "1ef862f",
@@ -111,7 +111,12 @@
     "branch_pushed_sha": "f03c18ea75d8caa030a1b4c7321bfb9d7c56b5de",
     "branch_pushed_url": "https://github.com/Bisura16/medWatch/tree/mission/windows-installers-20260525",
     "compare_url": "https://github.com/Bisura16/medWatch/compare/main...mission/windows-installers-20260525",
-    "merged_at": null,
-    "final_main_sha": null
+    "merged_at": "2026-05-25T02:00:00Z",
+    "merge_strategy": "fast-forward (--ff-only)",
+    "pre_merge_origin_main_sha": "1ef862f735931043aabe0b3758f5b0c1a63c3d8a",
+    "merged_branch_head_sha": "bc7cfd7a139f4ff20a248cfb7fbc9a40f34aac6a",
+    "final_main_sha": "bc7cfd7a139f4ff20a248cfb7fbc9a40f34aac6a",
+    "post_merge_origin_main_sha": "bc7cfd7a139f4ff20a248cfb7fbc9a40f34aac6a",
+    "match": true
   }
 }
