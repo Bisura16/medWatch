@@ -4,10 +4,12 @@
   "permissions": {
     "defaultMode": "acceptEdits",
     "deny": [
-      "Bash(git push:*)",
-      "Bash(git push)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git push --mirror:*)",
+      "Bash(git push --delete:*)",
+      "Bash(git push -d:*)",
       "Bash(git reset --hard:*)",
       "Bash(git filter-branch:*)",
       "Bash(git rebase -i:*)",

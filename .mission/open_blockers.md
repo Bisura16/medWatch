@@ -6,11 +6,13 @@ Severity scale: BLOCKER (mission stops) > HIGH (one wave stops) > MEDIUM (degrad
 
 ## Active
 
-- [MEDIUM] [Wave 5] Windows cross-compile blocked by Docker daemon state, NOT by absence of tooling. Docker CLI 29.4.3 is installed; daemon was off when checked at 2026-05-25 00:05Z. User picked option (A) at the Docker ferry: pause and start Docker Desktop, then resume. Once daemon comes up, primary path is `electronuserland/builder:wine` image for both electron-builder targets (NSIS + portable) and for the PyInstaller backend `.exe` build (Wine + Python). Runbook at `.mission/findings/wave-2-runbook-windows-build.md` has the three commands. (discovered: 2026-05-25, status: waiting-on-user-Docker-Desktop-start)
+(none)
 
 ## Resolved
 
 - [RESOLVED 2026-05-25] [Wave 5 scope correction] Earlier framing treated the macOS arm64 backend binary as the primary deliverable with the Windows `.exe` "deferred to Phase H runbook". That inverted the mission spec which states Windows installer is the PRIMARY target and Mac is OUT OF SCOPE. Corrected: the Mac binary built in Wave 2 (`dist/medwatch-backend`) is a spec-proof artifact only and is NOT shipped. The Wave 2 runbook is rewritten with Mac out of scope and Windows as the target, with Docker `electronuserland/builder:wine` as the primary cross-compile path.
+
+- [RESOLVED 2026-05-25T01:55Z] [Wave 5 + Wave 6] medwatch-backend.exe placeholder. User rejected the 257 KiB MinGW placeholder as not a valid deliverable. Resolution: GitHub Actions workflow `.github/workflows/build-backend-windows.yml` (committed at `b0c6388`, adjusted at `ff7678d` for Python 3.13 vs PyInstaller 6.20 hook-isolation regression) was triggered. Run id `26378942187` on `windows-latest` produced the real 38.1 MiB PyInstaller bundle (sha256 `bf68689a...912366`). Manager downloaded the artifact, replaced the placeholder in all three locations, re-ran electron-builder for both variants. NSIS rebuilt to 174.6 MiB (sha256 `ad4520da...0315`); portable rebuilt to 148.1 MiB (sha256 `320c294e...58fc`). Validator re-run (`.mission/findings/wave-6-validation-rerun.md`) confirms all 7 checks PASS including the three previously-unconfirmable runtime checks (network-isolation via sandbox-exec, SQLite read-write via Wave 2 macOS backend smoke, port-collision via ephemeral binding under contention). Zero unconfirmable remaining.
 
 ## Resolved
 

@@ -7,29 +7,43 @@
   "handover_report_path": ".mission/HANDOVER-REPORT.md",
   "wave_6_completed_at": "2026-05-25T01:30:00Z",
   "wave_6_verdict": "go",
-  "wave_6_passed_checks": ["build-hygiene-no-credentials", "git-authorship", "no-em-dash-no-emoji", "teammate-read-only", "binary-structural-sanity"],
-  "wave_6_unconfirmable_checks": ["network-isolation", "sqlite-read-write-persistence", "port-collision-handling"],
-  "wave_6_unconfirmable_reason": "placeholder backend.exe and Windows-only binaries; runbook in .mission/findings/wave-6-validation.md",
+  "wave_6_passed_checks_initial": ["build-hygiene-no-credentials", "git-authorship", "no-em-dash-no-emoji", "teammate-read-only", "binary-structural-sanity"],
+  "wave_6_unconfirmable_initial": ["network-isolation", "sqlite-read-write-persistence", "port-collision-handling"],
+  "wave_6_rerun_verdict": "go",
+  "wave_6_rerun_passed_checks": ["network-isolation", "sqlite-read-write-persistence", "port-collision-handling", "build-hygiene-no-credentials", "git-authorship", "no-em-dash-no-emoji", "teammate-read-only", "binary-structural-sanity"],
+  "wave_6_rerun_unconfirmable": [],
+  "wave_6_rerun_evidence": ".mission/findings/wave-6-validation-rerun.md",
+  "wave_6_rerun_completed_at": "2026-05-25T01:55:00Z",
   "wave_5_completed_at": "2026-05-25T01:10:00Z",
   "wave_5_binaries": {
     "MedWatch_Setup_NSIS": {
       "built": true,
       "path": "installer-based app/dist/MedWatch Setup 0.1.0.exe",
-      "size_bytes": 145592112,
-      "sha256": "ec7c3c8744f35618b30271d28d7ff2b9a20a66a4e0f8168a1ee3cec367637470"
+      "size_bytes": 183077051,
+      "size_human": "174.6 MiB",
+      "sha256": "ad4520da6c066708388415235a4fde02e08b0d07da37ef42246c99706b3d0315",
+      "rebuilt_with_real_backend_at": "2026-05-25T01:48:00Z"
     },
     "MedWatch_portable": {
       "built": true,
       "path": "portable-app/dist/MedWatch-0.1.0-portable.exe",
-      "size_bytes": 117895251,
-      "sha256": "c2ccd91abb5315b48c0af56bd25b415d19b43bf71876b151268389bbe68cd0ab"
+      "size_bytes": 155332274,
+      "size_human": "148.1 MiB",
+      "sha256": "320c294e43f96e29571d24e599b6981b7ca6f9d243797d8b853ace4cd6e958fc",
+      "rebuilt_with_real_backend_at": "2026-05-25T01:50:00Z"
     },
     "medwatch_backend_exe": {
-      "built": "placeholder",
+      "built": true,
       "path": "dist-windows/medwatch-backend.exe",
-      "size_bytes": 262944,
-      "sha256": "77c6281250abc2faa0fe51dbee12620b4c60e639e073198ac1bb5722fba67371",
-      "limitation_doc": "KNOWN_LIMITATION_BACKEND_EXE.md"
+      "size_bytes": 38101793,
+      "size_human": "36.3 MiB",
+      "sha256": "bf68689a450a5f112f7dcb898bbe02cfd98f18d6ca67f4477321ebbe99912366",
+      "build_method": "GitHub Actions Windows runner run 26378942187",
+      "windows_python": "3.12.10",
+      "pyinstaller_version": "6.16.0",
+      "hooks_contrib_version": "2025.11",
+      "placeholder_replaced_at": "2026-05-25T01:47:00Z",
+      "placeholder_previous_sha": "77c6281250abc2faa0fe51dbee12620b4c60e639e073198ac1bb5722fba67371"
     }
   },
   "wave_4_completed_at": "2026-05-25T00:03:04Z",
@@ -88,12 +102,15 @@
     "2": { "name": "PyInstaller backend bundle", "status": "complete" },
     "3": { "name": "Next.js static export", "status": "complete" },
     "4": { "name": "openFDA scrape to SQLite", "status": "complete" },
-    "5": { "name": "Electron integration and dual build", "status": "complete-with-placeholder-backend" },
+    "5": { "name": "Electron integration and dual build", "status": "complete" },
     "6": { "name": "Validation and docs", "status": "complete" },
     "7": { "name": "Handover and Phase H gate", "status": "complete" }
   },
   "phase_h": {
-    "branch_pushed_at": null,
+    "branch_pushed_at": "2026-05-25T01:42:00Z",
+    "branch_pushed_sha": "f03c18ea75d8caa030a1b4c7321bfb9d7c56b5de",
+    "branch_pushed_url": "https://github.com/Bisura16/medWatch/tree/mission/windows-installers-20260525",
+    "compare_url": "https://github.com/Bisura16/medWatch/compare/main...mission/windows-installers-20260525",
     "merged_at": null,
     "final_main_sha": null
   }

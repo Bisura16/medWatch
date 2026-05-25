@@ -8,6 +8,12 @@ Audience: Ghaisan, for producing the three Windows binaries that the mission shi
 
 Mission: `medwatch-windows-installers-2026-05-25`.
 
+## Execution status (2026-05-25)
+
+Path B (GitHub Actions Windows runner) has been EXECUTED for the backend; see `.github/workflows/build-backend-windows.yml`. Run id `26378942187` produced the real `medwatch-backend.exe` (38,101,793 B, sha256 `bf68689a450a5f112f7dcb898bbe02cfd98f18d6ca67f4477321ebbe99912366`). It has been bundled into both installer .exe files. The two installer .exe files were re-built locally after the backend artifact was downloaded (NSIS via macOS host direct using the `isMacOsCatalina` pure-JS NSIS reader; portable via Docker `electronuserland/builder:wine`). See `KNOWN_LIMITATION_BACKEND_EXE.md` for the resolution note and current binary metadata.
+
+The Path B GitHub Actions config in section "Secondary path" below is the EXECUTED config. The Path A native-Windows and Path C native-Wine sections remain as documentation for future re-builds if the user prefers a different path.
+
 ## Scope clarification (locked)
 
 - Windows is the PRIMARY target of this mission. Both installer variants are Windows-only deliverables.

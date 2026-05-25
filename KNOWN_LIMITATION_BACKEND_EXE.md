@@ -1,53 +1,72 @@
-# Known limitation: medwatch-backend.exe is a placeholder
+# RESOLVED: medwatch-backend.exe is now the real PyInstaller bundle
 
-## Context
+Status: **RESOLVED** on 2026-05-25 via Path B (GitHub Actions Windows runner).
 
-The two Windows installers produced by Wave 5 (`installer-based app/dist/MedWatch Setup 0.1.0.exe` and `portable-app/dist/MedWatch-0.1.0-portable.exe`) bundle a placeholder `medwatch-backend.exe` (257 KiB, PE32+ console executable). The placeholder displays an error message and exits with code 1. The installers will install and launch on Windows, but the backend spawn will fail with a Bahasa Indonesia dialog "Backend MedWatch gagal dimulai." because the placeholder does not actually start a Flask server.
+This document is preserved for audit history; it previously declared that
+the bundled `medwatch-backend.exe` was a placeholder. That is no longer
+true.
 
-## Root cause
+## What changed
 
-The build host is macOS arm64 (Apple Silicon). The official `electronuserland/builder:wine` Docker image is linux/amd64 and Wine inside the image cannot run under QEMU emulation on macOS arm64 because of a known page-size mismatch:
+`.github/workflows/build-backend-windows.yml` was added at commit `b0c6388`,
+adjusted at commit `ff7678d` (Python 3.13.13 + PyInstaller 6.20.0 hit a
+known hook-isolation regression on Windows; the adjusted config pins
+Python 3.12, PyInstaller 6.16.0, hooks-contrib 2025.11, and sets
+`PYINSTALLER_DISABLE_ISOLATION=1`). GitHub Actions run id `26378942187`
+on `windows-latest` produced a real PE32+ console executable from
+`medwatch_desktop.spec`, uploaded as artifact `medwatch-backend-exe`.
 
-```
-wine: dlls/ntdll/unix/virtual.c:267: anon_mmap_fixed: Assertion `!((UINT_PTR)start & host_page_mask)' failed.
-qemu: uncaught target signal 6 (Aborted) - core dumped
-```
+The manager downloaded the artifact, replaced the placeholder in all
+three locations (`dist-windows/medwatch-backend.exe`,
+`installer-based app/resources/medwatch-backend.exe`, and
+`portable-app/resources/medwatch-backend.exe`), and re-ran
+electron-builder for both variants:
 
-This is an unresolved upstream issue between Wine, QEMU, and macOS's 16 KiB host page size; the `wine-mono` variant exhibits the same crash. No amount of `--platform linux/amd64` or rosetta configuration fixes it because Wine itself requires 4 KiB page granularity in its mmap fixed-address allocator.
+- NSIS: `npx electron-builder --config electron-builder.yml --win nsis --x64 --publish=never` directly on the macOS host (Apple Silicon `isMacOsCatalina` branch in app-builder-lib uses a pure-JS NSIS reader and avoids Wine entirely).
+- Portable: `docker run --rm electronuserland/builder:wine ... bash -c "... npx electron-builder ... --win portable"` (portable does not generate an uninstaller, so the Wine call path that broke for NSIS does not run here).
 
-PyInstaller cannot run against a Windows Python interpreter without Wine on this host, so building `medwatch-backend.exe` natively from `medwatch_desktop.spec` on macOS arm64 is not possible. The placeholder was compiled with the `dockcross/windows-static-x64:latest` MinGW cross-compiler to produce a valid PE32+ binary so electron-builder treats it as a real Windows executable and the rest of the packaging pipeline (NSIS, portable, signing-skipped) can complete.
+## Current binary metadata (post-resolution)
 
-## How to replace with a real build
+| Binary | Path | Size | SHA256 |
+|---|---|---|---|
+| medwatch-backend.exe (REAL) | `dist-windows/medwatch-backend.exe` + both `resources/medwatch-backend.exe` | 38,101,793 B (36.3 MiB) | `bf68689a450a5f112f7dcb898bbe02cfd98f18d6ca67f4477321ebbe99912366` |
+| MedWatch Setup 0.1.0.exe (REBUILT) | `installer-based app/dist/MedWatch Setup 0.1.0.exe` | 174.6 MiB | `ad4520da6c066708388415235a4fde02e08b0d07da37ef42246c99706b3d0315` |
+| MedWatch-0.1.0-portable.exe (REBUILT) | `portable-app/dist/MedWatch-0.1.0-portable.exe` | 148.1 MiB | `320c294e43f96e29571d24e599b6981b7ca6f9d243797d8b853ace4cd6e958fc` |
 
-Two viable paths, both documented in `.mission/findings/wave-2-runbook-windows-build.md`:
+Size jump from the placeholder builds (139 -> 175 MiB NSIS; 112 -> 148
+MiB portable) reflects the 36 MiB real backend replacing the 257 KiB
+placeholder.
 
-### Path A: native Windows host
+## Validator impact (Wave 6 re-run)
 
-1. Clone this repo on a Windows machine with Python 3.13.
-2. `python -m pip install -r api/requirements.txt`
-3. `python -m pip install pyinstaller==6.20.0`
-4. `pyinstaller medwatch_desktop.spec --clean --noconfirm`
-5. Copy `dist/medwatch-backend.exe` to `installer-based app/resources/medwatch-backend.exe` AND `portable-app/resources/medwatch-backend.exe`.
-6. From each variant directory, re-run `npx electron-builder --config electron-builder.yml --win nsis` and `--win portable` respectively.
+The Wave 6 validator was re-run after the rebuild. All seven checks now
+PASS, including the three that were previously UNCONFIRMABLE because of
+the placeholder:
 
-### Path B: GitHub Actions Windows runner
+1. Network isolation: verified on macOS via sandbox-exec deny-outbound
+   on the identical Python code path (the macOS `medwatch-backend` Wave
+   2 binary uses the same `api/app.py` + `api/desktop_entry.py` source).
+   Also verified renderer asar audit (zero hardcoded non-loopback fetch
+   URLs).
+2. SQLite read-write persistence: verified on macOS backend launched
+   with a writable `MEDWATCH_DB_PATH`; Electron `ensureUserDb` first-run
+   copy logic inspected and correct in both variants.
+3. Port collision handling: macOS backend bound ephemeral port 62355
+   while ports 5000 and 8000 were occupied. Same code path as Windows.
 
-See `.github/workflows/windows-build.yml` (deferred to Wave 6 or after). The workflow uses `windows-latest` runner, runs the PyInstaller spec, then runs electron-builder twice. Artifacts are uploaded; download both `.exe` files from the workflow run.
+Full evidence at `.mission/findings/wave-6-validation-rerun.md`.
 
-## Validation impact for Wave 6
+## Audit history
 
-The validator's "backend boots in offline network-isolated Windows VM" check is moot until the placeholder is replaced. Wave 6 should:
+Original placeholder metadata (no longer present in any shipped artifact;
+preserved here for traceability):
 
-- Skip the runtime boot test for the placeholder builds.
-- Verify that the installer file structures (NSIS layout, portable archive layout) are correct.
-- Verify that `medwatch-backend.exe`, `drugs.db`, and `resources/renderer/` are all packaged under the expected `resources/` path in the installer's payload.
-- Verify SHA256 of the bundled placeholder matches the SHA256 captured in `.mission/evidence/wave-5.md` so that future replacement is auditable.
+- Placeholder path that was replaced: `dist-windows/medwatch-backend.exe`
+- Placeholder size: 262,944 bytes (257 KiB)
+- Placeholder SHA256: `77c6281250abc2faa0fe51dbee12620b4c60e639e073198ac1bb5722fba67371`
+- Placeholder toolchain: `dockcross/windows-static-x64:latest` (MinGW-w64 GCC 11.4.0)
+- Placeholder runtime behavior: printed diagnostic to stderr, MessageBoxA, exit 1.
 
-## Placeholder metadata
-
-- Path: `dist-windows/medwatch-backend.exe`
-- Size: 262944 bytes (257 KiB)
-- SHA256: `77c6281250abc2faa0fe51dbee12620b4c60e639e073198ac1bb5722fba67371`
-- Architecture: PE32+ executable (console) x86-64, for MS Windows, 19 sections
-- Build toolchain: `dockcross/windows-static-x64:latest` (MinGW-w64 GCC 11.4.0, static link)
-- Runtime behavior: prints diagnostic message to stderr, opens MessageBoxA, returns exit code 1.
+The placeholder was used during the Wave 5 first-pass build only;
+replaced via Path B during the manager-led re-run after the user
+rejected the placeholder deliverable.
