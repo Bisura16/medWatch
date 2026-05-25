@@ -52,8 +52,19 @@ portable-app/resources/drugs.db
 
 # Scrape checkpoint and progress (transient state for the scraper)
 .mission/scrape_checkpoint.sqlite
+.mission/scrape_checkpoint.sqlite-shm
+.mission/scrape_checkpoint.sqlite-wal
 .mission/scrape_progress.jsonl
 .mission/scrape_full.log
+
+# macOS Finder duplicate-suffix noise (filename like 'foo 2.ext')
+*[[:space:]][0-9]*.db
+*[[:space:]][0-9]*.db-shm
+*[[:space:]][0-9]*.db-wal
+*[[:space:]][0-9]*.sqlite
+*[[:space:]][0-9]*.sqlite-shm
+*[[:space:]][0-9]*.sqlite-wal
+*[[:space:]][0-9]*.jsonl
 
 # Secrets and credentials (never commit values; use Secret Manager / env)
 *.pem

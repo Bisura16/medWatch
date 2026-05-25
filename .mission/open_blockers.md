@@ -6,7 +6,11 @@ Severity scale: BLOCKER (mission stops) > HIGH (one wave stops) > MEDIUM (degrad
 
 ## Active
 
-- [HIGH] [Wave 5] Windows `medwatch-backend.exe` and Electron `MedWatch-Setup.exe` / `MedWatch-portable.exe` cannot be produced from the macOS dev host: no `wine` is installed, and PyInstaller cannot cross-compile to Windows from macOS regardless. Recommended remediation paths (in order of preference): (a) GitHub Actions Windows runner with the runbook at `.mission/findings/wave-2-runbook-windows-build.md`, (b) user runs the build on a Windows VM following the same runbook, (c) install `wine` on the dev host (least reliable). The macOS arm64 backend binary built in Wave 2 (24 MB, smoke-tests green) is the proof-of-build that the spec is correct. Wave 5 integration will produce a macOS-only Electron build as additional proof. (discovered: 2026-05-24, status: deferred-to-Phase-H)
+- [MEDIUM] [Wave 5] Windows cross-compile blocked by Docker daemon state, NOT by absence of tooling. Docker CLI 29.4.3 is installed; daemon was off when checked at 2026-05-25 00:05Z. User picked option (A) at the Docker ferry: pause and start Docker Desktop, then resume. Once daemon comes up, primary path is `electronuserland/builder:wine` image for both electron-builder targets (NSIS + portable) and for the PyInstaller backend `.exe` build (Wine + Python). Runbook at `.mission/findings/wave-2-runbook-windows-build.md` has the three commands. (discovered: 2026-05-25, status: waiting-on-user-Docker-Desktop-start)
+
+## Resolved
+
+- [RESOLVED 2026-05-25] [Wave 5 scope correction] Earlier framing treated the macOS arm64 backend binary as the primary deliverable with the Windows `.exe` "deferred to Phase H runbook". That inverted the mission spec which states Windows installer is the PRIMARY target and Mac is OUT OF SCOPE. Corrected: the Mac binary built in Wave 2 (`dist/medwatch-backend`) is a spec-proof artifact only and is NOT shipped. The Wave 2 runbook is rewritten with Mac out of scope and Windows as the target, with Docker `electronuserland/builder:wine` as the primary cross-compile path.
 
 ## Resolved
 

@@ -62,3 +62,25 @@ Dispatched integration-builder via `general-purpose` (opus, SCOPED to wiring; bu
 
 Wave 5 BUILD phase (running electron-builder) deferred until the background scrape finishes and `drugs.db` is in place in both variants' `resources/`. Continuing to poll scrape progress.
 
+## Wave 4 finalization (scrape complete, 2026-05-25T00:03Z)
+
+Background scrape exited code 0 after about 2 hours 8 minutes. Final counts: drugs 8,678 unique (deduped from 55,666 raw NDC records), drugs_with_labels 8,522 (98.2 percent coverage), reactions 17,868, recalls 17,660. FTS5 sanity: MATCH 'pain' returns 5,816 rows. File size 246 MiB. SHA256 `76be06d65ada4ac13dc17786a76214d36fc496ba08d3222aff1b4660f86b0bae`. Total openFDA requests spent: 12,865 (well under the 60,000 conservative cap and the 120,000 authenticated daily limit). Checkpoint table shows all three endpoints status `complete`.
+
+Copied `anggota1/Hasil-Scrap/drugs.db` (gitignored canonical) into `installer-based app/resources/drugs.db` and `portable-app/resources/drugs.db` (both also gitignored, ship via GitHub Releases per Wave 7 plan). All three copies verified byte-identical via SHA256.
+
+Updated `anggota1/Hasil-Scrap/MANIFEST.md` with full provenance, schema, row counts, file size, SHA256, distribution notes, and reproduction commands.
+
+## Scope correction applied (2026-05-25T00:08Z)
+
+User correction received. Earlier framing inverted the deliverable priority. Mission spec is Windows installer is PRIMARY, Mac is OUT OF SCOPE. The Wave 2 macOS PyInstaller bundle is now explicitly labeled as a spec-proof artifact only, NOT shipped. Wave 2 runbook at `.mission/findings/wave-2-runbook-windows-build.md` rewritten end to end with the new framing: primary path is Docker `electronuserland/builder:wine` for both electron-builder targets (NSIS + portable) AND for the PyInstaller backend `.exe` (Wine + Python in the same container); secondary path is GitHub Actions Windows runner; tertiary path is native Windows VM.
+
+## Ferry policy clarified (2026-05-25T00:08Z)
+
+User correction received. Manager is autonomous until the Phase H merge gate. The single in-between ferry exception is reserved for hard decisions that cannot be made without user input. Status snapshots, progress reports, and confirmation requests in the middle of waves are not allowed.
+
+The exception was used once at 2026-05-25T00:06Z for the Docker daemon question: Docker CLI 29.4.3 is installed on the host but the daemon was off. User picked option (A) Pause and start Docker Desktop, then resume.
+
+## Wave 5 BUILD phase (waiting on user Docker Desktop start)
+
+Mission is paused at this point. When the user confirms Docker daemon is up (`docker ps` returns without error), Wave 5 BUILD dispatch runs: pull `electronuserland/builder:wine` image, run NSIS build, run portable build, build `medwatch-backend.exe` via Wine + PyInstaller in the same container. If PyInstaller-in-Wine has fundamental issues (more than 15-30 minutes to debug), fall back per the runbook's secondary path and document the decision in this log.
+

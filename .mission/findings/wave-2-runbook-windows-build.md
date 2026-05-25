@@ -1,46 +1,104 @@
-# Wave 2 Runbook: Producing the Windows medwatch-backend.exe
+# Runbook: Producing the Windows .exe deliverables
 
-Audience: Ghaisan, when he has access to a Windows machine or a Windows
-build runner (GitHub Actions, Windows VM, or borrowed Windows laptop).
+Audience: Ghaisan, for producing the three Windows binaries that the mission ships:
+
+1. `installer-based app/dist/MedWatch Setup <version>.exe` (NSIS installer wizard).
+2. `portable-app/dist/MedWatch <version>.exe` (single-file portable).
+3. `medwatch-backend.exe` (PyInstaller bundle of the Flask backend, embedded into both installers via electron-builder `extraResources`).
 
 Mission: `medwatch-windows-installers-2026-05-25`.
 
-This runbook is the Windows-side companion to Wave 2. The macOS side
-of Wave 2 already produced a working `dist/medwatch-backend` arm64
-binary that smoke-tests green. The Windows `.exe` cannot be cross
-compiled from macOS without Wine and is therefore deferred to the user.
+## Scope clarification (locked)
 
-There are three viable paths. Pick one, follow it end to end, do not
-mix steps from different paths.
+- Windows is the PRIMARY target of this mission. Both installer variants are Windows-only deliverables.
+- macOS is OUT OF SCOPE for this mission. The macOS PyInstaller bundle produced in Wave 2 (`dist/medwatch-backend`, 24 MB, arm64) was a proof-of-build for the spec only and is NOT shipped. The Electron variants do NOT package a macOS binary.
+- A future mission may revisit Mac (electron-builder accepts `--mac` targets without architectural change), but anything Mac-shaped in this repository today is for spec validation, not distribution.
 
----
+## Primary path: Docker electronuserland/builder:wine on the macOS dev host
 
-## Path A: GitHub Actions Windows runner (recommended)
+This is the supported path while the project is on a Mac. The container ships Wine plus the build prerequisites, and electron-builder uses Wine to package Windows NSIS and portable artifacts. The PyInstaller backend `.exe` is also built inside the same container (Wine + Python).
 
-Use the free Windows runner provided by GitHub Actions to produce
-`medwatch-backend.exe` as a downloadable artifact. This is the most
-reproducible option and produces a clean binary without touching a
-local Windows machine.
+### Prerequisites
 
-### A.1 Add the workflow file
+- Docker Desktop installed and the daemon running (`docker ps` returns without an error).
+- Internet access to pull the image on first run (image is roughly 3 GB).
+- Repo cloned at a path with no spaces in any parent directory (Docker volume mounting tolerates spaces inside the repo path but parent-dir spaces are quirky on some hosts; this repo is at `/Users/ghaisan/Documents/MedWatchIntegration/medWatch` which is OK).
 
-Path: `.github/workflows/build-windows-backend.yml`
+### Image
 
-Content:
+`electronuserland/builder:wine` (multi-arch; the amd64 layer runs under Rosetta on Apple Silicon; the build is slower than a native amd64 host but works).
+
+Reference: https://www.electron.build/multi-platform-build (see the Docker section).
+
+### Build script (run from each variant folder)
+
+```bash
+cd '/Users/ghaisan/Documents/MedWatchIntegration/medWatch/installer-based app'
+docker run --rm \
+  -v "$PWD":/project \
+  -v ~/.cache/electron:/root/.cache/electron \
+  -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+  electronuserland/builder:wine \
+  bash -c "cd /project && npm install && npx electron-builder --win nsis"
+```
+
+```bash
+cd '/Users/ghaisan/Documents/MedWatchIntegration/medWatch/portable-app'
+docker run --rm \
+  -v "$PWD":/project \
+  -v ~/.cache/electron:/root/.cache/electron \
+  -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+  electronuserland/builder:wine \
+  bash -c "cd /project && npm install && npx electron-builder --win portable"
+```
+
+Outputs land in `dist/` under each variant folder. Names follow the `productName` / `artifactName` settings in `electron-builder.yml`.
+
+### PyInstaller backend in the same container
+
+```bash
+cd /Users/ghaisan/Documents/MedWatchIntegration/medWatch
+docker run --rm \
+  -v "$PWD":/project \
+  -v ~/.cache/pip:/root/.cache/pip \
+  electronuserland/builder:wine \
+  bash -c "cd /project && \
+           wine python -m pip install -r api/requirements.txt && \
+           wine python -m pip install pyinstaller==6.20.0 && \
+           wine pyinstaller medwatch_desktop.spec --clean --noconfirm --distpath dist-windows"
+```
+
+The output is `dist-windows/medwatch-backend.exe`. Copy it into the two variant `resources/` directories before running the electron-builder steps above:
+
+```bash
+cp dist-windows/medwatch-backend.exe 'installer-based app/resources/medwatch-backend.exe'
+cp dist-windows/medwatch-backend.exe 'portable-app/resources/medwatch-backend.exe'
+```
+
+If PyInstaller-in-Wine has issues that take longer than 15 to 30 minutes to debug (Wine prefix corruption, missing DLLs, Python installer hangs on the first launch), fall back to the secondary path for the backend only and keep the Docker path for the Electron build (electron-builder itself is robust under Wine).
+
+## Secondary path: GitHub Actions Windows runner
+
+Use when Docker is not available on the dev host, when the Docker run consistently fails, or for reproducible CI builds.
+
+### Workflow file
+
+Path: `.github/workflows/build-windows.yml`
 
 ```yaml
-name: Build Windows backend
+name: Build Windows deliverables
 on:
   workflow_dispatch:
   push:
     paths:
       - "medwatch_desktop.spec"
       - "api/**"
-      - "api/requirements.txt"
-      - ".github/workflows/build-windows-backend.yml"
+      - "installer-based app/**"
+      - "portable-app/**"
+      - ".github/workflows/build-windows.yml"
 
 jobs:
-  build:
+  backend:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,152 +113,126 @@ jobs:
         with:
           name: medwatch-backend-windows
           path: dist/medwatch-backend.exe
+
+  installer-nsis:
+    needs: backend
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/download-artifact@v4
+        with:
+          name: medwatch-backend-windows
+          path: installer-based app/resources/
+      - working-directory: installer-based app
+        run: npm install
+      - working-directory: installer-based app
+        run: npx electron-builder --win nsis
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MedWatch-Setup-Windows
+          path: "installer-based app/dist/MedWatch Setup *.exe"
+
+  portable:
+    needs: backend
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/download-artifact@v4
+        with:
+          name: medwatch-backend-windows
+          path: portable-app/resources/
+      - working-directory: portable-app
+        run: npm install
+      - working-directory: portable-app
+        run: npx electron-builder --win portable
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MedWatch-Portable-Windows
+          path: portable-app/dist/MedWatch-*-portable.exe
 ```
 
-### A.2 Trigger and download
+Trigger via the `Actions` tab `workflow_dispatch`. Roughly 8 to 12 minutes total wall clock across the three jobs.
 
-1. Commit the workflow file.
-2. Push the branch.
-3. From the GitHub repo `Actions` tab, run `Build Windows backend`
-   from the `workflow_dispatch` button.
-4. Wait approximately 4 to 6 minutes for the runner.
-5. Download the artifact `medwatch-backend-windows.zip`, extract
-   `medwatch-backend.exe`.
-6. Place the `.exe` at:
-   - `installer-based app/resources/medwatch-backend.exe`
-   - `portable-app/resources/medwatch-backend.exe`
+The `drugs.db` is excluded from git (too large), so the runner must either fetch it from a GitHub Release attached to a tag or download it from an artifact uploaded by a separate dispatch. Add a step that fetches `drugs.db` from the release page (URL goes here once the release exists), or upload `drugs.db` as a workflow artifact in a pre-step.
 
-Both Electron variant folders need a copy because each one packages
-its own resources.
+## Tertiary path: native Windows VM or laptop
 
-### A.3 Verify on a Windows host
+Use only when both Docker and GitHub Actions are unavailable.
 
-If you have any Windows machine (laptop or VM), copy the `.exe` over
-and run:
+### Prerequisites on the Windows machine
 
-```cmd
-set MEDWATCH_DESKTOP=1
-set MEDWATCH_DB_PATH=C:\Users\%USERNAME%\AppData\Local\Temp\test.db
-medwatch-backend.exe
-```
+1. Python 3.13 (NOT 3.14; PyInstaller 6.20 stable does not support 3.14).
+2. Git for Windows.
+3. Node.js 22 LTS.
+4. Visual C++ Redistributable (usually preinstalled).
 
-Expect `MEDWATCH_BACKEND_PORT=<number>` within 10 seconds of launch.
-
----
-
-## Path B: Build on a Windows VM or laptop
-
-Use this if you already have a Windows 10 or Windows 11 machine
-available. Avoids the GitHub Actions roundtrip but requires local
-tooling.
-
-### B.1 Prerequisites on the Windows machine
-
-Install in this order:
-
-1. Python 3.13 from `https://www.python.org/downloads/` (the
-   Microsoft Store build is acceptable; the `python.org` installer
-   gives more control over PATH).
-   - During install, check "Add Python to PATH".
-   - Verify: `py -3.13 --version` returns `Python 3.13.x`.
-2. Git from `https://git-scm.com/download/win`.
-3. Visual C++ Redistributable (usually already present; required by
-   some wheels at runtime).
-
-Do NOT install Python 3.14. PyInstaller 6.20 stable does not support
-3.14. Stick to 3.13.
-
-### B.2 Clone and bundle
+### Build commands
 
 ```cmd
 git clone https://github.com/Bisura16/medWatch.git
 cd medWatch
-git checkout ghaisan-APIIntegration
+git checkout main
 py -3.13 -m venv .venv-desktop
 .venv-desktop\Scripts\activate
 python -m pip install --upgrade pip wheel setuptools
 pip install -r api\requirements.txt
 pip install pyinstaller==6.20.0
 pyinstaller medwatch_desktop.spec --clean --noconfirm
+
+copy dist\medwatch-backend.exe "installer-based app\resources\medwatch-backend.exe"
+copy dist\medwatch-backend.exe "portable-app\resources\medwatch-backend.exe"
+
+cd "installer-based app"
+npm install
+npx electron-builder --win nsis
+
+cd ..\"portable-app"
+npm install
+npx electron-builder --win portable
 ```
 
-The output is `dist\medwatch-backend.exe`. Copy it to both Electron
-variant folders' `resources\` directories.
+Drop `drugs.db` (246 MiB, SHA256 `76be06d65ada4ac13dc17786a76214d36fc496ba08d3222aff1b4660f86b0bae`) into both variant `resources/` directories before running electron-builder.
 
-### B.3 Verify locally
+## Post-build verification on a Windows host
 
-```cmd
-set MEDWATCH_DESKTOP=1
-set MEDWATCH_DB_PATH=%TEMP%\test.db
-dist\medwatch-backend.exe
-```
+For each of the three `.exe` files, on a Windows machine:
 
-Expect `MEDWATCH_BACKEND_PORT=<port>` within 10 seconds. Hit
-`http://127.0.0.1:<port>/api/health` from a separate Command Prompt
-with `curl` or a browser.
+1. `medwatch-backend.exe` standalone smoke:
+   ```cmd
+   set MEDWATCH_DESKTOP=1
+   set MEDWATCH_DB_PATH=%TEMP%\medwatch-smoke.db
+   medwatch-backend.exe
+   ```
+   Expect `MEDWATCH_BACKEND_PORT=<n>` on stdout within 10 seconds. Hit `http://127.0.0.1:<n>/api/health` from a browser; expect HTTP 200.
 
----
+2. NSIS installer end-to-end:
+   - Double click `MedWatch Setup x.y.z.exe`.
+   - SmartScreen will warn on the unsigned binary. Click `More info` then `Run anyway`.
+   - Wizard appears. Pick an install dir. Finish.
+   - Confirm Desktop shortcut and Start Menu shortcut exist.
+   - Launch MedWatch from the shortcut. Confirm the renderer loads, drug search works, side-effect lookup works.
+   - Confirm `%APPDATA%\MedWatch\drugs.db` exists after first launch.
+   - Uninstall via Settings -> Apps. Confirm the install directory and shortcuts are removed.
 
-## Path C: Wine on the macOS dev host (not recommended)
-
-PyInstaller can in theory be run under Wine on macOS or Linux to
-produce a Windows `.exe`, but the workflow is fragile and Wine on
-arm64 macOS is particularly unreliable. Use only as a last resort.
-
-### C.1 Install Wine (requires user approval, NOT done by Claude)
-
-```bash
-brew install --cask --no-quarantine wine-stable
-```
-
-(The user must approve and run this; Claude is forbidden from
-installing system packages.)
-
-### C.2 Set up Python under Wine
-
-This is where Wine on arm64 macOS commonly breaks. Expect to spend
-two to four hours debugging Wine prefix issues, missing DLLs, and
-Python installer hangs. If you reach this point, prefer Path A.
-
----
-
-## After the `.exe` exists
-
-Whichever path was used, the deliverable is a single file:
-
-- `medwatch-backend.exe` (about 25 to 30 MB)
-
-Drop a copy into each Electron variant folder:
-
-- `installer-based app/resources/medwatch-backend.exe`
-- `portable-app/resources/medwatch-backend.exe`
-
-Wave 5 picks up from there to wire the Electron main process to
-spawn the `.exe`, parse the port handshake, and proxy HTTP requests
-from the static-export renderer to the bundled backend.
-
----
+3. Portable end-to-end:
+   - Double click `MedWatch x.y.z portable.exe`.
+   - SmartScreen warning then Run anyway.
+   - Confirm renderer loads, features work.
+   - Confirm `%LOCALAPPDATA%\Temp` holds the extracted runtime.
+   - Confirm `%APPDATA%\MedWatch\drugs.db` exists after first launch.
 
 ## Known gotchas
 
-1. PyInstaller `--onefile` extracts to `%TEMP%` on first launch.
-   First launch is slow (5 to 10 seconds) while the bootloader
-   unpacks. Subsequent launches reuse the cached extraction. Do not
-   interpret the cold-start delay as a hang.
-2. Windows Defender or SmartScreen may flag the unsigned `.exe`.
-   The README in each variant folder already documents this for
-   the end user. Code-signing the binary requires a paid cert and is
-   out of scope for this mission.
-3. The `.exe` must NOT be UPX-compressed. The current `medwatch_desktop.spec`
-   already disables UPX. UPX-compressed binaries trip Windows Defender
-   heuristics far more aggressively than uncompressed ones.
-4. If `pip install` fails on Windows for `bcrypt`, install
-   `Microsoft C++ Build Tools` from the Visual Studio Installer
-   then retry. bcrypt 4.x usually ships prebuilt wheels for cp313
-   so this should not be necessary, but is the standard workaround.
-5. The bundled binary expects `MEDWATCH_DB_PATH` to point at a valid
-   SQLite file. The Electron main process (Wave 5) handles first-run
-   DB copy from the read-only bundled `drugs.db` to the user-writable
-   `%APPDATA%\medwatch\drugs.db` location.
+1. `--onefile` PyInstaller bundles extract to `%TEMP%` on first launch. First launch is 5 to 10 seconds. Subsequent launches reuse the cache. Do not interpret cold start as a hang.
+2. Windows SmartScreen will flag the unsigned `.exe`. The end-user docs already cover the "More info, Run anyway" path. Code signing is out of scope for this mission.
+3. UPX compression is disabled in `medwatch_desktop.spec` because UPX-packed binaries trip Defender heuristics much more aggressively.
+4. If `pip install` errors on `bcrypt`, install `Microsoft C++ Build Tools` via the Visual Studio Installer and retry. Modern bcrypt ships prebuilt wheels for cp313, so this is rare.
+5. The Electron main process (Wave 5) copies the bundled `drugs.db` from `process.resourcesPath` to `%APPDATA%\MedWatch\drugs.db` on first launch, leaving the bundled copy read-only and the user-side copy writable.
 
 End of runbook.

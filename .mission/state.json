@@ -1,8 +1,29 @@
 {
   "mission_id": "medwatch-windows-installers-2026-05-25",
   "started_at": "2026-05-24T20:56:14Z",
-  "current_wave": 4,
-  "last_completed_wave": 3,
+  "current_wave": 5,
+  "last_completed_wave": 4,
+  "wave_4_completed_at": "2026-05-25T00:03:04Z",
+  "wave_4_artifacts": {
+    "drugs_db_path": "anggota1/Hasil-Scrap/drugs.db",
+    "drugs_db_size_bytes": 248684544,
+    "drugs_db_sha256": "76be06d65ada4ac13dc17786a76214d36fc496ba08d3222aff1b4660f86b0bae",
+    "drugs_rows": 8678,
+    "drugs_with_label_rows": 8522,
+    "reactions_rows": 17868,
+    "recalls_rows": 17660,
+    "fts5_match_pain_rows": 5816,
+    "openfda_requests_spent": 12865,
+    "scrape_wall_minutes": 128,
+    "installer_variant_db_copied": true,
+    "portable_variant_db_copied": true
+  },
+  "scope_correction_2026_05_25": {
+    "summary": "Mac binary is OUT OF SCOPE; Windows installer (NSIS + portable) is the PRIMARY deliverable. Mac PyInstaller bundle from Wave 2 is a spec-proof artifact only and not shipped.",
+    "runbook_rewritten": ".mission/findings/wave-2-runbook-windows-build.md",
+    "primary_path": "Docker electronuserland/builder:wine on Mac host"
+  },
+  "ferry_policy_clarified_2026_05_25": "autonomous until Phase H merge gate; single hard-decision-only ferry exception when a deliverable-affecting choice cannot be made without user input. Single ferry already used for Docker daemon question; user picked option A (pause and start Docker Desktop, then resume).",
   "wave_3_completed_at": "2026-05-24T22:00:00Z",
   "wave_3_artifacts": {
     "frontend_branch": "mission/installer-static-export",
@@ -37,7 +58,7 @@
     "1": { "name": "Scaffold both variants", "status": "complete" },
     "2": { "name": "PyInstaller backend bundle", "status": "complete" },
     "3": { "name": "Next.js static export", "status": "complete" },
-    "4": { "name": "openFDA scrape to SQLite", "status": "pending" },
+    "4": { "name": "openFDA scrape to SQLite", "status": "complete" },
     "5": { "name": "Electron integration and dual build", "status": "pending" },
     "6": { "name": "Validation and docs", "status": "pending" },
     "7": { "name": "Handover and Phase H gate", "status": "pending" }
