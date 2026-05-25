@@ -1,0 +1,58 @@
+name: Build Windows backend
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - mission/windows-installers-20260525
+    paths:
+      - "api/**"
+      - "medwatch_desktop.spec"
+      - ".github/workflows/build-backend-windows.yml"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Upgrade pip toolchain
+        run: python -m pip install --upgrade pip wheel setuptools
+
+      - name: Install backend runtime dependencies
+        run: pip install -r api/requirements.txt
+
+      - name: Install PyInstaller
+        run: pip install pyinstaller==6.20.0
+
+      - name: Build medwatch-backend.exe
+        run: pyinstaller medwatch_desktop.spec --clean --noconfirm
+
+      - name: Capture binary metadata
+        shell: pwsh
+        run: |
+          $f = "dist\medwatch-backend.exe"
+          if (-not (Test-Path $f)) {
+            Write-Host "BUILD FAILED: $f not found"
+            exit 1
+          }
+          $info = Get-Item $f
+          $hash = (Get-FileHash $f -Algorithm SHA256).Hash.ToLower()
+          Write-Host "path: $f"
+          Write-Host "size_bytes: $($info.Length)"
+          Write-Host "sha256: $hash"
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: medwatch-backend-exe
+          path: dist/medwatch-backend.exe
+          if-no-files-found: error
+          retention-days: 7
