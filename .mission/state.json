@@ -1,8 +1,10 @@
 {
   "mission_id": "medwatch-windows-installers-2026-05-25",
   "started_at": "2026-05-24T20:56:14Z",
-  "current_wave": 7,
-  "last_completed_wave": 6,
+  "current_wave": 8,
+  "last_completed_wave": 7,
+  "wave_7_completed_at": "2026-05-25T01:40:00Z",
+  "handover_report_path": ".mission/HANDOVER-REPORT.md",
   "wave_6_completed_at": "2026-05-25T01:30:00Z",
   "wave_6_verdict": "go",
   "wave_6_passed_checks": ["build-hygiene-no-credentials", "git-authorship", "no-em-dash-no-emoji", "teammate-read-only", "binary-structural-sanity"],
@@ -88,7 +90,7 @@
     "4": { "name": "openFDA scrape to SQLite", "status": "complete" },
     "5": { "name": "Electron integration and dual build", "status": "complete-with-placeholder-backend" },
     "6": { "name": "Validation and docs", "status": "complete" },
-    "7": { "name": "Handover and Phase H gate", "status": "pending" }
+    "7": { "name": "Handover and Phase H gate", "status": "complete" }
   },
   "phase_h": {
     "branch_pushed_at": null,
