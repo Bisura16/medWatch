@@ -168,6 +168,25 @@ def _map_light(row: sqlite3.Row) -> dict[str, Any]:
     }
 
 
+def _map_catalog(row: sqlite3.Row) -> dict[str, Any]:
+    """Map a row into the catalog list shape (BackendDrug-compatible).
+
+    Includes the fields the frontend catalog card and client-side search
+    need (name, class, ingredients, a short indication and warning), but
+    keeps long label text out so the full-catalog payload stays small.
+    """
+    base = _map_light(row)
+    indikasi = _to_list(row["indications"])
+    peringatan = _to_list(row["warnings"])
+    base.update({
+        "indikasi": [indikasi[0][:200]] if indikasi else [],
+        "dosis_umum": _clean(row["dosage_administration"])[:120],
+        "peringatan": [peringatan[0][:200]] if peringatan else [],
+        "interaksi": [],
+    })
+    return base
+
+
 def _map_full(row: sqlite3.Row, conn: sqlite3.Connection) -> dict[str, Any]:
     """Map a drugs row into the full detail shape (anggota4-compatible)."""
     base = _map_light(row)
@@ -218,38 +237,53 @@ _COLS = (
 )
 
 
-def list_drugs(category: Optional[str] = None, limit: int = 100, offset: int = 0) -> dict[str, Any]:
-    """Return a paginated light catalog list plus the total row count.
+def list_drugs(category: Optional[str] = None, limit: int = 0, offset: int = 0) -> list[dict[str, Any]]:
+    """Return the drug catalog as a bare list of BackendDrug-shaped rows.
+
+    The frontend loads the catalog once and searches client-side, so by
+    default (``limit=0``) every row is returned with the compact catalog
+    projection. A positive ``limit`` paginates instead.
 
     Args:
         category: Optional case-insensitive route/category filter.
-        limit: Page size (clamped to 1..500).
-        offset: Row offset for pagination.
+        limit: ``0`` returns all rows; a positive value paginates.
+        offset: Row offset when paginating.
 
     Returns:
-        ``{"items": [...], "total": int}``. Empty result when the
-        database is unavailable.
+        List of catalog dicts (empty when the database is unavailable).
     """
     conn = _connect()
     if not conn:
-        return {"items": [], "total": 0}
+        return []
     try:
-        limit = max(1, min(int(limit or 100), 500))
-        offset = max(0, int(offset or 0))
         params: list[Any] = []
         where = ""
         if category:
             where = "WHERE UPPER(route) LIKE ?"
             params.append(f"%{category.upper()}%")
-        total = conn.execute(f"SELECT COUNT(*) AS n FROM drugs {where}", params).fetchone()["n"]
-        rows = conn.execute(
-            f"SELECT {_COLS} FROM drugs {where} ORDER BY generic_name LIMIT ? OFFSET ?",
-            params + [limit, offset],
-        ).fetchall()
-        return {"items": [_map_light(r) for r in rows], "total": total}
+        sql = f"SELECT {_COLS} FROM drugs {where} ORDER BY generic_name"
+        limit = int(limit or 0)
+        if limit > 0:
+            sql += " LIMIT ? OFFSET ?"
+            params += [min(limit, 10000), max(0, int(offset or 0))]
+        rows = conn.execute(sql, params).fetchall()
+        return [_map_catalog(r) for r in rows]
     except sqlite3.Error as e:
         logger.warning("list_drugs failed: %s", e)
-        return {"items": [], "total": 0}
+        return []
+    finally:
+        conn.close()
+
+
+def count_drugs() -> int:
+    """Return the total number of catalog rows, or 0 when unavailable."""
+    conn = _connect()
+    if not conn:
+        return 0
+    try:
+        return conn.execute("SELECT COUNT(*) FROM drugs").fetchone()[0]
+    except sqlite3.Error:
+        return 0
     finally:
         conn.close()
 

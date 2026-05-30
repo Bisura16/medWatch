@@ -217,7 +217,7 @@ def generate_rekam_medis():
 
 
 @bp.route("/api/pdf/generate-laporan-bulanan", methods=["POST"])
-@require_role("admin")
+@require_role("tenaga_kesehatan", "admin")
 def generate_laporan_bulanan():
     """Generate a monthly recap PDF spanning every patient in the chosen month.
 
