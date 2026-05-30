@@ -1,19 +1,37 @@
-"""Authentication endpoints (login, me, logout).
+"""Authentication endpoints (login, register, me, logout).
 
 Every login attempt returns a generic ``invalid credentials`` error
-regardless of whether the username, the password, or both were
-wrong, to prevent user-enumeration probing. Successful logins
-return a signed JWT plus the stripped user record.
+regardless of which field was wrong, to prevent user-enumeration, and
+runs a dummy hash on the unknown-user path so response timing does not
+leak account existence. Failed attempts are rate limited with lockout.
+Self-service registration is scoped to the public roles only; the
+admin role can never be self-registered.
 """
 import logging
-from flask import Blueprint, request, g, jsonify
-from ..auth import verify_password, issue_token
+from flask import Blueprint, request, g
+
+from ..auth import (
+    verify_password,
+    issue_token,
+    hash_password,
+    needs_rehash,
+    verify_dummy,
+)
 from ..middleware import require_auth
-from ..storage import load_users
+from ..storage import load_users, save_users
+from ..security import validate_password
+from .. import ratelimit
 from ..helpers import ok, err
 
 logger = logging.getLogger(__name__)
 bp = Blueprint("auth_routes", __name__)
+
+_PUBLIC_ROLES = ("tenaga_kesehatan", "masyarakat")
+
+
+def _client_ip() -> str:
+    """Return the request client IP for rate-limit keying."""
+    return request.remote_addr or "unknown"
 
 
 @bp.route("/api/auth/login", methods=["POST"])
@@ -25,34 +43,120 @@ def login():
     Returns:
         HTTP 200 with ``{token, user}`` on success.
         HTTP 401 with ``{error: "invalid credentials"}`` for any
-        failure mode (missing field, unknown user, bad password).
+        failure. HTTP 429 when the username/IP pair is locked out.
     """
     data = request.get_json(silent=True) or {}
     username = (data.get("username") or "").strip()
     password = data.get("password") or ""
 
+    rl_key = f"login:{username.lower()}:{_client_ip()}"
+    locked, retry_after = ratelimit.check(rl_key)
+    if locked:
+        return err(
+            "too many attempts, try again later", 429, retry_after=retry_after
+        )
+
     if not username or not password:
+        ratelimit.record_failure(rl_key)
         return err("invalid credentials", 401)
 
     users = load_users()
-    for u in users:
-        if u.get("username") == username:
-            if verify_password(password, u.get("password_hash", "")):
-                token = issue_token(u["username"], u["role"], u.get("name", ""))
-                logger.info(f"login ok: {username} as {u['role']}")
-                return ok({
-                    "token": token,
-                    "user": {
-                        "username": u["username"],
-                        "role": u["role"],
-                        "name": u.get("name", ""),
-                    },
-                })
-            logger.warning(f"login bad password: {username}")
-            return err("invalid credentials", 401)
+    record = next((u for u in users if u.get("username") == username), None)
 
-    logger.warning(f"login user not found: {username}")
-    return err("invalid credentials", 401)
+    if record is None:
+        verify_dummy()  # equalise timing for unknown users
+        ratelimit.record_failure(rl_key)
+        logger.warning("login user not found")
+        return err("invalid credentials", 401)
+
+    stored = record.get("password_hash", "")
+    if not verify_password(password, stored):
+        ratelimit.record_failure(rl_key)
+        logger.warning("login bad password for %s", username)
+        return err("invalid credentials", 401)
+
+    # Transparently upgrade legacy bcrypt / outdated hashes to Argon2id.
+    if needs_rehash(stored):
+        try:
+            record["password_hash"] = hash_password(password)
+            save_users(users)
+            logger.info("upgraded password hash for %s", username)
+        except Exception as e:
+            logger.warning("hash upgrade failed for %s: %s", username, e)
+
+    ratelimit.reset(rl_key)
+    token = issue_token(record["username"], record["role"], record.get("name", ""))
+    logger.info("login ok: %s as %s", username, record["role"])
+    return ok({
+        "token": token,
+        "user": {
+            "username": record["username"],
+            "role": record["role"],
+            "name": record.get("name", ""),
+        },
+    })
+
+
+@bp.route("/api/auth/register", methods=["POST"])
+def register():
+    """Self-service registration for the public roles.
+
+    Request body: ``{username, password, name, role, phone?}``.
+    ``role`` must be ``tenaga_kesehatan`` or ``masyarakat``; ``admin``
+    is rejected. The password policy is enforced here regardless of any
+    client-side strength meter.
+
+    Returns:
+        HTTP 201 with ``{token, user}`` (auto-login) on success.
+        HTTP 400 on validation failure, HTTP 409 when the username is
+        taken, HTTP 429 when registration is rate limited.
+    """
+    rl_key = f"register:{_client_ip()}"
+    locked, retry_after = ratelimit.check(rl_key)
+    if locked:
+        return err("too many attempts, try again later", 429, retry_after=retry_after)
+
+    data = request.get_json(silent=True) or {}
+    username = (data.get("username") or "").strip()
+    password = data.get("password") or ""
+    name = (data.get("name") or "").strip()
+    phone = (data.get("phone") or "").strip()
+    role = (data.get("role") or "").strip()
+
+    if role not in _PUBLIC_ROLES:
+        return err("invalid role", 400)
+    if not username or len(username) < 3 or len(username) > 32:
+        return err("username harus 3 sampai 32 karakter", 400)
+    if not username.replace("_", "").isalnum():
+        return err("username hanya boleh huruf, angka, dan garis bawah", 400)
+    if not name:
+        return err("nama wajib diisi", 400)
+
+    valid, reason = validate_password(password, username)
+    if not valid:
+        ratelimit.record_failure(rl_key)
+        return err(reason, 400)
+
+    users = load_users()
+    if any(u.get("username", "").lower() == username.lower() for u in users):
+        return err("username sudah terdaftar", 409)
+
+    record = {
+        "username": username,
+        "password_hash": hash_password(password),
+        "role": role,
+        "name": name,
+        "phone": phone,
+    }
+    users.append(record)
+    save_users(users)
+    logger.info("registered new user %s as %s", username, role)
+
+    token = issue_token(username, role, name)
+    return ok({
+        "token": token,
+        "user": {"username": username, "role": role, "name": name},
+    }, 201)
 
 
 @bp.route("/api/auth/me", methods=["GET"])
