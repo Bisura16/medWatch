@@ -1,9 +1,0 @@
-==== TC-SCRAPE-001 ====
-Tanggal eksekusi: 2026-05-18T17:46:57+07:00
-Deskripsi: GET /api/info modules_loaded
-Perintah: curl http://127.0.0.1:8080/api/info
--- BEGIN RESPONSE --
-{"cloud_storage":false,"modules_loaded":{"anggota2.pasien_helper":true,"anggota4.data_loader":true,"anggota4.pencarian_obat":true,"anggota4.safety_checker":true,"anggota5.export_pdf":true},"project":"medwatch-polban-2026"}
-
--- HTTP_STATUS:200 TIME:0.000925s --
--- END RESPONSE --

@@ -1,9 +1,0 @@
-==== TC-PDF-004 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: PDF laporan-bulanan RBAC sebagai bidan (403)
-Perintah: curl -X POST http://127.0.0.1:8080/api/pdf/generate-laporan-bulanan -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"month":"2026-04"}
--- BEGIN RESPONSE --
-{"error":"forbidden"}
-
--- HTTP_STATUS:403 TIME:0.000860s --
--- END RESPONSE --

@@ -1,9 +1,0 @@
-==== TC-AUTH-004 ====
-Tanggal eksekusi: 2026-05-18T17:46:53+07:00
-Deskripsi: Login invalid password
-Perintah: curl -X POST http://127.0.0.1:8080/api/auth/login -H Content-Type: application/json -d {"username":"bidan_siti","password":"WRONG_PASSWORD"}
--- BEGIN RESPONSE --
-{"error":"invalid credentials"}
-
--- HTTP_STATUS:401 TIME:0.222368s --
--- END RESPONSE --

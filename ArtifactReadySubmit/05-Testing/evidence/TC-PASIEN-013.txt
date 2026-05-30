@@ -1,9 +1,0 @@
-==== TC-PASIEN-013 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: POST pasien tekanan darah out of range
-Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"nama":"Ny TD","S":{"keluhan":"x"},"A":{"diagnosa":"x"},"P":{"tindakan":"x"},"O":{"tekanan_darah":"999/80"}}
--- BEGIN RESPONSE --
-{"error":"Validasi gagal","fields":["Tekanan darah sistolik harus antara 60 dan 250."]}
-
--- HTTP_STATUS:400 TIME:0.000815s --
--- END RESPONSE --

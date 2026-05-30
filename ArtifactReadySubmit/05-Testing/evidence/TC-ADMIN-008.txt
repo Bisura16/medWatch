@@ -1,9 +1,0 @@
-==== TC-ADMIN-008 ====
-Tanggal eksekusi: 2026-05-18T17:48:31+07:00
-Deskripsi: Create user happy path
-Perintah: curl -X POST http://127.0.0.1:8080/api/admin/users -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"username":"qa_w5_tester","password":"testpass","role":"masyarakat","name":"QA Tester W5","phone":"081299999998"}
--- BEGIN RESPONSE --
-{"name":"QA Tester W5","phone":"081299999998","role":"masyarakat","username":"qa_w5_tester"}
-
--- HTTP_STATUS:201 TIME:0.219514s --
--- END RESPONSE --

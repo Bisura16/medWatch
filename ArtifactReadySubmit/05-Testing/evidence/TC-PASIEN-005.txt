@@ -1,9 +1,0 @@
-==== TC-PASIEN-005 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: Detail pasien ID tidak ada (404)
-Perintah: curl http://127.0.0.1:8080/api/patients/P999 -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-{"error":"not found"}
-
--- HTTP_STATUS:404 TIME:0.000942s --
--- END RESPONSE --

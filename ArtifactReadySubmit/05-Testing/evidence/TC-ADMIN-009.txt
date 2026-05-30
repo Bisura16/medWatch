@@ -1,8 +1,0 @@
-==== TC-ADMIN-009 ====
-Tanggal eksekusi: 2026-05-18T17:48:32+07:00
-Deskripsi: Delete user happy path
-Perintah: curl -X DELETE http://127.0.0.1:8080/api/admin/users/qa_w5_tester -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-
--- HTTP_STATUS:204 TIME:0.001128s --
--- END RESPONSE --

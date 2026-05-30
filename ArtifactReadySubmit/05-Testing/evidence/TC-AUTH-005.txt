@@ -1,9 +1,0 @@
-==== TC-AUTH-005 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: Login unknown username
-Perintah: curl -X POST http://127.0.0.1:8080/api/auth/login -H Content-Type: application/json -d {"username":"hacker","password":"anything"}
--- BEGIN RESPONSE --
-{"error":"invalid credentials"}
-
--- HTTP_STATUS:401 TIME:0.000977s --
--- END RESPONSE --

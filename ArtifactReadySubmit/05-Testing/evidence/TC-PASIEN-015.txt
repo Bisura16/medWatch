@@ -1,9 +1,0 @@
-==== TC-PASIEN-015 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: POST pasien BVA umur negatif (H01-1 fix)
-Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"nama":"Ny U-","umur":"-5","S":{"keluhan":"x"},"A":{"diagnosa":"x"},"P":{"tindakan":"x"}}
--- BEGIN RESPONSE --
-{"error":"Validasi gagal","fields":["Umur harus antara 0 dan 150."]}
-
--- HTTP_STATUS:400 TIME:0.000767s --
--- END RESPONSE --

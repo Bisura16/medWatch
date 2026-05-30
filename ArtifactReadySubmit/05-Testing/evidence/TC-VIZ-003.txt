@@ -1,9 +1,0 @@
-==== TC-VIZ-003 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: GET top-efek-samping (max 10)
-Perintah: curl http://127.0.0.1:8080/api/visualizations/top-efek-samping -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-[{"count":4,"kategori":"Gastrointestinal","nama_efek":"Mual","tingkat_keparahan":"ringan"},{"count":3,"kategori":"Neurologis","nama_efek":"Pusing","tingkat_keparahan":"ringan"},{"count":2,"kategori":"Dermatologis","nama_efek":"Ruam kulit","tingkat_keparahan":"sedang"},{"count":2,"kategori":"Imunologis","nama_efek":"Reaksi alergi berat","tingkat_keparahan":"serius"},{"count":2,"kategori":"Gastrointestinal","nama_efek":"Diare","tingkat_keparahan":"ringan"},{"count":1,"kategori":"Hepatik","nama_efek":"Peningkatan enzim hati","tingkat_keparahan":"sedang"},{"count":1,"kategori":"Gastrointestinal","nama_efek":"Nyeri lambung","tingkat_keparahan":"sedang"},{"count":1,"kategori":"Gastrointestinal","nama_efek":"Tukak lambung","tingkat_keparahan":"serius"},{"count":1,"kategori":"Renal","nama_efek":"Gangguan ginjal","tingkat_keparahan":"serius"},{"count":1,"kategori":"Respirasi","nama_efek":"Batuk kering","tingkat_keparahan":"ringan"}]
-
--- HTTP_STATUS:200 TIME:0.001434s --
--- END RESPONSE --
