@@ -1,21 +1,36 @@
+# Cloud Build upload hygiene for `gcloud run deploy --source`.
+# The backend container needs api/, the anggota modules, main.py, and exactly
+# one enriched drugs.db. Everything heavy and irrelevant is excluded so the
+# build context stays small (~250MB instead of ~4GB).
 .git
 .gitignore
 .gcloudignore
-__pycache__
+**/__pycache__
 *.pyc
 .env
 .env.local
 .env.example
-node_modules
-docs/
-diagrams/
-*.md
-*.drawio
-*.log
 .DS_Store
-Laporan_MedWatch.pdf
-anggota5/__pycache__
-**/__pycache__
+*.log
 .pytest_cache
 .vscode
 .idea
+
+# Heavy, not needed in the backend container
+**/.venv/
+.venv-desktop/
+anggota1/.venv/
+node_modules/
+build/
+dist/
+dist-windows/
+installer-based app/
+portable-app/
+docs/
+diagrams/
+*.drawio
+Laporan_MedWatch.pdf
+
+# Duplicate drugs.db copies; keep only the enriched dev-fallback the image bakes.
+**/drugs.db
+!anggota1/Hasil-Scrap/drugs.db
