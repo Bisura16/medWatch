@@ -17,7 +17,7 @@ mata_kuliah: Proyek 1 Pengembangan Perangkat Lunak Desktop, Kelas 1B-D4, Semeste
 | Judul | Panduan Pengguna Aplikasi MedWatch |
 | Versi | 1.0 |
 | Tanggal | 18-05-2026 |
-| Status | Final, Wave 2 |
+| Status | Final, Iterasi 2 |
 | Audiens | Tenaga kesehatan (bidan Faskes 1), masyarakat umum, administrator sistem |
 | Mata kuliah | Proyek 1 Pengembangan Perangkat Lunak Desktop |
 | Kelas | 1B-D4 Teknik Informatika |
@@ -525,4 +525,4 @@ Saluran lapor:
 
 ---
 
-Catatan: tangkapan layar (screenshot) untuk seluruh placeholder pada manual ini akan diisi pada Wave 5 setelah lingkungan Node 22 LTS disiapkan, sebagaimana didokumentasikan pada blocker `B-WAVE1-BUILD-1`. Sampai saat itu, placeholder bersifat informatif dan menunjuk pada lokasi rendering yang dijanjikan di bawah `screenshots/user-manual/`.
+Catatan: tangkapan layar (screenshot) untuk seluruh placeholder pada manual ini akan diisi pada Iterasi 5 setelah lingkungan Node 22 LTS disiapkan, sebagaimana didokumentasikan pada blocker `B-BUILD-1`. Sampai saat itu, placeholder bersifat informatif dan menunjuk pada lokasi rendering yang dijanjikan di bawah `screenshots/user-manual/`.

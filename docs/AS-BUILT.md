@@ -6,12 +6,12 @@ owner: Kelompok B5 - 1B-D4 Teknik Informatika, Politeknik Negeri Bandung
 kelompok: B5
 ticket: W2-D11
 standar_acuan: ISO/IEC/IEEE 15289:2019 (Information Item - System Documentation Description)
-status: AS-IMPLEMENTED setelah Wave 1 (bug B01..B11, akuisisi openFDA, NewestVisualization) dan Wave 2 batch 1+2 (PRD, SRS, SDD, ADR, API, DATA-DICTIONARY, INSTALL, SECURITY, diagram)
+status: AS-IMPLEMENTED setelah Iterasi 1 (bug B01..B11, akuisisi openFDA, NewestVisualization) dan Iterasi 2 batch 1+2 (PRD, SRS, SDD, ADR, API, DATA-DICTIONARY, INSTALL, SECURITY, diagram)
 ---
 
 # As-Built (As-Implemented) System Documentation MedWatch
 
-Dokumen ini disusun mengikuti **ISO/IEC/IEEE 15289:2019, Systems and Software Engineering - Content of Life-Cycle Information Items (Documentation)**, klausa 9 (System Documentation - Item) yang menetapkan struktur item dokumentasi as-built. As-Built MedWatch mendeskripsikan sistem sebagaimana terbangun dan diserahkan pada 25 Mei 2026 kepada dosen mata kuliah Proyek 1 Pengembangan Perangkat Lunak Desktop di D4 Teknik Informatika Politeknik Negeri Bandung. Dokumen tidak mengulang spesifikasi awal (lihat `docs/PRD.md` dan `docs/SRS.md`) melainkan merekam realita implementasi pasca Wave 1 perbaikan bug B01..B11, akuisisi data nyata openFDA, dan penambahan modul visualisasi `anggota3/NewestVisualization/` berbasis hasil scraping.
+Dokumen ini disusun mengikuti **ISO/IEC/IEEE 15289:2019, Systems and Software Engineering - Content of Life-Cycle Information Items (Documentation)**, klausa 9 (System Documentation - Item) yang menetapkan struktur item dokumentasi as-built. As-Built MedWatch mendeskripsikan sistem sebagaimana terbangun dan diserahkan pada 25 Mei 2026 kepada dosen mata kuliah Proyek 1 Pengembangan Perangkat Lunak Desktop di D4 Teknik Informatika Politeknik Negeri Bandung. Dokumen tidak mengulang spesifikasi awal (lihat `docs/PRD.md` dan `docs/SRS.md`) melainkan merekam realita implementasi pasca Iterasi 1 perbaikan bug B01..B11, akuisisi data nyata openFDA, dan penambahan modul visualisasi `anggota3/NewestVisualization/` berbasis hasil scraping.
 
 Setiap klaim teknis didukung dengan sitiran `file:line` pada repositori `medWatch/` (backend) atau `FrontendMedWatch/` (frontend). Standar pendukung lain yang dirujuk dokumen ini: IEEE 830-1998 dan ISO/IEC/IEEE 29148:2018 (SRS), IEEE 1016-2009 (SDD), C4 model oleh Brown (arsitektur), MADR (ADR), ISO/IEC/IEEE 26514 (User Documentation), OWASP Top 10 (2021) dan STRIDE (threat model).
 
@@ -33,11 +33,11 @@ Setiap klaim teknis didukung dengan sitiran `file:line` pada repositori `medWatc
 | Owner | Kelompok B5, 1B-D4 Teknik Informatika, Politeknik Negeri Bandung |
 | Mata kuliah | Proyek 1 Pengembangan Perangkat Lunak Desktop |
 | Semester | TA 2025/2026, Semester 2 |
-| Tiket misi | W2-D11 (Wave 2 batch 2) |
+| Tiket proyek | W2-D11 (Iterasi 2 batch 2) |
 
 ### 1.2 Tim Penulis dan Atribusi
 
-Semua lima anggota Kelompok B5 berkontribusi pada produk yang didokumentasikan di sini. Atribusi modul mengikuti pembagian peran kanonik di `CLAUDE.md` (Backend repo) Rule 1 (Git authorship) dan Team roster:
+Semua lima anggota Kelompok B5 berkontribusi pada produk yang didokumentasikan di sini. Atribusi modul mengikuti pembagian peran kanonik di konvensi proyek (Backend repo) Rule 1 (Git authorship) dan Team roster:
 
 | Nama lengkap | NIM | Peran utama | Modul Python yang dimiliki | GitHub |
 |---|---|---|---|---|
@@ -55,7 +55,7 @@ Semua lima anggota Kelompok B5 berkontribusi pada produk yang didokumentasikan d
 
 ### 1.4 Cakupan Dokumen
 
-Dokumen ini menggabungkan output Wave 1 (perbaikan bug, akuisisi data nyata, modul visualisasi tambahan) dan Wave 2 batch 1+2 (set dokumentasi lengkap dan diagram arsitektur). Lihat tabel ringkasan Bab 18 dan Lampiran A untuk daftar commit lengkap.
+Dokumen ini menggabungkan output Iterasi 1 (perbaikan bug, akuisisi data nyata, modul visualisasi tambahan) dan Iterasi 2 batch 1+2 (set dokumentasi lengkap dan diagram arsitektur). Lihat tabel ringkasan Bab 18 dan Lampiran A untuk daftar commit lengkap.
 
 ### 1.5 Dokumen Terkait (Cross-Link)
 
@@ -81,7 +81,7 @@ MedWatch adalah sistem pemantauan keamanan obat dan manajemen klinik untuk bidan
 
 Keputusan arsitektural utama yang membentuk sistem as-built: (a) pola Vercel Next.js proxy + Cloud Run backend dengan JWT httpOnly cookie (ADR-0001, ADR-0002); (b) skema Pasien SOAP kanonik dari `anggota2/pasien_helper.py` dengan ID `P001..P999` (ADR-0003); (c) pivot scraping dari drugs.com (HTTP 403 Akamai) ke openFDA REST API (ADR-0004), menghasilkan 74 rekord obat dengan 1850 reaction-term occurrences dan 6000 rekord recall (`anggota1/data/drug_safety_data.json` dan `drug_recalls.json`); (d) modul visualisasi tambahan `anggota3/NewestVisualization/` (5 chart) sebagai folder aditif tanpa menyentuh file Alia yang ada (ADR-0005); (e) heatmap kontinu 5-stop risk-matrix d3 sebagai pengganti bucketed 3-warna (ADR-0006).
 
-Deviasi terhadap PRD/SRS/SDD awal didokumentasikan secara eksplisit di Bagian 16 (tabel tiga-kolom). Hutang teknis yang diketahui dicatat di Bagian 15: B-WAVE1-BUILD-1 (Next.js 16.2.1 chunk-emit race pada Node 25, mitigasi Node 22 LTS), bobot heatmap saat ini menggunakan severity weighting (followup untuk pakai raw FAERS counts), audit log admin dashboard masih hardcoded sample (T1-ADMIN sudah membuat route `/dashboard/aktivitas` namun feed admin asli belum tersambung), atomic JSON write (SECURITY.md R6), dan residual risk R1..R8 lain. Semua bug B01..B11 yang dilaporkan dosen / auditor sudah diperbaiki dan terverifikasi live (lihat `.mission/findings/bugs/T1-*.md`); smoke test backend (`api/tests/smoke_test.py`, 14 assertion utama) hijau di lokal pada 18 Mei 2026.
+Deviasi terhadap PRD/SRS/SDD awal didokumentasikan secara eksplisit di Bagian 16 (tabel tiga-kolom). Hutang teknis yang diketahui dicatat di Bagian 15: B-BUILD-1 (Next.js 16.2.1 chunk-emit race pada Node 25, mitigasi Node 22 LTS), bobot heatmap saat ini menggunakan severity weighting (followup untuk pakai raw FAERS counts), audit log admin dashboard masih hardcoded sample (T1-ADMIN sudah membuat route `/dashboard/aktivitas` namun feed admin asli belum tersambung), atomic JSON write (SECURITY.md R6), dan residual risk R1..R8 lain. Semua bug B01..B11 yang dilaporkan dosen / auditor sudah diperbaiki dan terverifikasi live (lihat catatan internal proyek); smoke test backend (`api/tests/smoke_test.py`, 14 assertion utama) hijau di lokal pada 18 Mei 2026.
 
 ---
 
@@ -117,8 +117,8 @@ Mata kuliah memerlukan tim mahasiswa untuk membangun aplikasi desktop modular Py
 |---|---|---|
 | 17 Februari 2026 | Kick-off mata kuliah | Kalender akademik POLBAN |
 | 11 Mei 2026 | Scraping `drugs.com` live mengembalikan HTTP 403 di seluruh 64 URL `drugs.com/sfx/` (Akamai anti-bot) | `anggota1/scraper.log` baris 1-8, terkutip verbatim pada `docs/adr/0004-drugs-com-akamai-to-openfda-pivot.md` |
-| 18 Mei 2026 | Wave 1 selesai: B01..B11 fixed, openFDA data nyata, NewestVisualization | `.mission/findings/bugs/T1-*.md` dan log commit (lihat Lampiran A) |
-| 18 Mei 2026 | Wave 2 batch 1+2 selesai: PRD, SRS, SDD, ADR, API, DATA-DICTIONARY, INSTALL, SECURITY, AS-BUILT, USER-MANUAL, diagram | Commit dengan prefix `docs(*)` di Lampiran A |
+| 18 Mei 2026 | Iterasi 1 selesai: B01..B11 fixed, openFDA data nyata, NewestVisualization | catatan internal proyek dan log commit (lihat Lampiran A) |
+| 18 Mei 2026 | Iterasi 2 batch 1+2 selesai: PRD, SRS, SDD, ADR, API, DATA-DICTIONARY, INSTALL, SECURITY, AS-BUILT, USER-MANUAL, diagram | Commit dengan prefix `docs(*)` di Lampiran A |
 | 25 Mei 2026 | Deadline submission ke dosen | Tonggak utama |
 | 8 Juni 2026 (tentatif) | Sesi kelas presentasi pasca submission | Jadwal kelas |
 
@@ -197,7 +197,7 @@ Tiap diagram dilengkapi blok legend yang menjelaskan notasi. Lihat juga dekompos
 
 ## 5. Inventaris Fitur yang Diimplementasikan
 
-Tabel ini memetakan setiap Functional Requirement dari `docs/SRS.md` ke status implementasi nyata pada sistem AS-BUILT. Status: **Implemented** (selesai, terverifikasi), **Partial** (sebagian, ada caveat di kolom Catatan), atau **Deferred** (dipindah ke Wave 5 atau ProductionGrade-ImplementationPlan).
+Tabel ini memetakan setiap Functional Requirement dari `docs/SRS.md` ke status implementasi nyata pada sistem AS-BUILT. Status: **Implemented** (selesai, terverifikasi), **Partial** (sebagian, ada caveat di kolom Catatan), atau **Deferred** (dipindah ke Iterasi 5 atau ProductionGrade-ImplementationPlan).
 
 ### 5.1 Otentikasi dan Otorisasi
 
@@ -287,7 +287,7 @@ Tabel ini memetakan setiap Functional Requirement dari `docs/SRS.md` ke status i
 | - | Akuisisi data openFDA real (T1-DATA) | Implemented | `anggota1/openfda/fetch.py:1-468`; output 74 rekord obat + 6000 rekord recall |
 | - | NewestVisualization 5 chart (T1-VIZ) | Implemented | `anggota3/NewestVisualization/viz_*.py`; output PNG di `anggota3/NewestVisualization/output/` |
 
-**Statistik agregat AS-BUILT:** 40 FR-ID terdokumentasi di `docs/SRS.md`, 27 endpoint HTTP backend, 19 rute frontend aktif (Bagian 9), 11 bug B01..B11 selesai dan diverifikasi (lihat `.mission/findings/bugs/T1-*.md`).
+**Statistik agregat AS-BUILT:** 40 FR-ID terdokumentasi di `docs/SRS.md`, 27 endpoint HTTP backend, 19 rute frontend aktif (Bagian 9), 11 bug B01..B11 selesai dan diverifikasi (lihat catatan internal proyek).
 
 ---
 
@@ -316,7 +316,7 @@ Versi terkunci diambil dari `api/requirements.txt:1-11` (backend) dan `FrontendM
 
 | Paket | Versi | Sumber | Catatan |
 |---|---|---|---|
-| Node.js | 22 LTS (rekomendasi) | `package.json` (engines tidak di-pin; lihat B-WAVE1-BUILD-1) | Node 25 memicu chunk-emit race |
+| Node.js | 22 LTS (rekomendasi) | `package.json` (engines tidak di-pin; lihat B-BUILD-1) | Node 25 memicu chunk-emit race |
 | Next.js | 16.2.1 | `package.json` | App Router |
 | React | 19.2.4 | `package.json` | RSC default |
 | React DOM | 19.2.4 | `package.json` | |
@@ -379,7 +379,7 @@ Sumber kebenaran skema: `docs/DATA-DICTIONARY.md`. ERD tersedia di `docs/diagram
 
 ### 7.1 Skema Pasien Kanonik (ringkasan)
 
-Diturunkan dari `anggota2/pasien_helper.py` (CLAUDE.md Rule 3). Field wajib: `nama`, `S.keluhan`, `A.diagnosa`, `P.tindakan`. Field opsional `O.nadi`, `O.suhu_c`, `O.respirasi` (bidan tidak selalu mengukur). ID format `P001..P999` di-generate oleh `anggota2.pasien_helper.generate_id` atau fallback inline di `api/routes/patient_routes.py:162-187`. Tanggal `DD-MM-YYYY`.
+Diturunkan dari `anggota2/pasien_helper.py` (konvensi proyek). Field wajib: `nama`, `S.keluhan`, `A.diagnosa`, `P.tindakan`. Field opsional `O.nadi`, `O.suhu_c`, `O.respirasi` (bidan tidak selalu mengukur). ID format `P001..P999` di-generate oleh `anggota2.pasien_helper.generate_id` atau fallback inline di `api/routes/patient_routes.py:162-187`. Tanggal `DD-MM-YYYY`.
 
 ### 7.2 ERD
 
@@ -475,7 +475,7 @@ Catatan: peran `masyarakat` dibatasi secara eksplisit di `src/proxy.ts:73-82`. A
 
 ### 9.3 Placeholder Screenshot
 
-Screenshot live (untuk lampiran User Manual dan slide presentasi dosen) dijadwalkan diambil pada Wave 5. Saat ini direktori `FrontendMedWatch/screenshots/` sudah memuat screenshot Wave 1 untuk evidence T1-ADMIN (`screenshots/T1-ADMIN/01-admin-dashboard-with-cta.png`). Placeholder berikut akan diisi pada Wave 5:
+Screenshot live (untuk lampiran User Manual dan slide presentasi dosen) dijadwalkan diambil pada Iterasi 5. Saat ini direktori `FrontendMedWatch/screenshots/` sudah memuat screenshot Iterasi 1 untuk evidence T1-ADMIN (`screenshots/T1-ADMIN/01-admin-dashboard-with-cta.png`). Placeholder berikut akan diisi pada Iterasi 5:
 
 - `/login` (light + dark)
 - `/dashboard` (per role: tenaga_kesehatan, masyarakat, admin)
@@ -538,13 +538,13 @@ PORT=8080 JWT_SECRET=<dev-placeholder> .venv/bin/python -c "import sys; sys.path
 .venv/bin/python api/tests/smoke_test.py
 ```
 
-Catatan: command live yang dipakai bug-fixer Wave 1 ada di `.mission/findings/bugs/T1-ADMIN.md` Bagian 6 sebagai referensi.
+Catatan: command live yang dipakai tim Iterasi 1 ada di catatan internal proyek Bagian 6 sebagai referensi.
 
 ### 11.2 Local Frontend
 
 ```bash
 cd /Users/ghaisan/Documents/FrontendMedWatch
-# Pastikan Node 22 LTS aktif (lihat B-WAVE1-BUILD-1)
+# Pastikan Node 22 LTS aktif (lihat B-BUILD-1)
 node --version  # diharapkan v22.x
 npm install
 BACKEND_API_URL=http://127.0.0.1:8080 npm run dev
@@ -552,7 +552,7 @@ BACKEND_API_URL=http://127.0.0.1:8080 npm run dev
 BACKEND_API_URL=http://127.0.0.1:8080 npm run build && npm run start
 ```
 
-**Workaround B-WAVE1-BUILD-1 (Node 25):** jika Node 25 nightly menjadi default sistem, eksekusi `nvm use 22` atau set `NODE_VERSION=22` di Vercel Project Settings. Node 25 memicu chunk-emit race pada Turbopack production build (`InvariantError: client reference manifest does not exist` dan `ENOENT _buildManifest.js.tmp`).
+**Workaround B-BUILD-1 (Node 25):** jika Node 25 nightly menjadi default sistem, eksekusi `nvm use 22` atau set `NODE_VERSION=22` di Vercel Project Settings. Node 25 memicu chunk-emit race pada Turbopack production build (`InvariantError: client reference manifest does not exist` dan `ENOENT _buildManifest.js.tmp`).
 
 ### 11.3 Cloud Run Deploy (Backend)
 
@@ -597,7 +597,7 @@ export OPENFDA_API_KEY=<your-key-here>
 .venv/bin/python -m anggota1.openfda.fetch --max-recall-pages 6
 ```
 
-Output: `anggota1/data/drug_safety_data.json` (74 entri) dan `anggota1/data/drug_recalls.json` (6000 entri). Lihat `.mission/findings/visuals/T1-DATA.md` untuk transcript run.
+Output: `anggota1/data/drug_safety_data.json` (74 entri) dan `anggota1/data/drug_recalls.json` (6000 entri). Lihat catatan internal proyek untuk transcript run.
 
 ---
 
@@ -618,9 +618,9 @@ Berkas: `api/tests/smoke_test.py` (165 baris). 14 assertion utama, semuanya lulu
 
 Runtime < 2 detik di Cloud Run hangat.
 
-### 12.2 Bug Verification (Wave 1)
+### 12.2 Bug Verification (Iterasi 1)
 
-11 bug B01..B11 diverifikasi live via Playwright + curl. Bukti per bug di `.mission/findings/bugs/`:
+11 bug B01..B11 diverifikasi live via Playwright + curl. Bukti per bug di catatan internal proyek:
 
 - `T1-ADMIN.md` (B01, B02, B10)
 - `T1-PASIEN.md` (B03, B07)
@@ -632,7 +632,7 @@ Runtime < 2 detik di Cloud Run hangat.
 
 ### 12.3 Test Plan Lengkap
 
-Test plan formal kotak-hitam (TC-MOD-NNN) dengan teknik Boundary Value Analysis, Equivalence Partitioning, dan State Transition akan disusun pada Wave 5 oleh `test-documenter`. Persentase validasi dan skala Arikunto akan dihitung pada Wave 5. Atribusi test case mengikuti pembagian: Bimo (master plan + eksekusi mayoritas), Alia (RTM + viz tests), Iqbal (drug safety logic), Abhidal (auth, PDF, usability), Ghaisan (scraping + integrasi).
+Test plan formal kotak-hitam (TC-MOD-NNN) dengan teknik Boundary Value Analysis, Equivalence Partitioning, dan State Transition akan disusun pada Iterasi 5 oleh `tim QA`. Persentase validasi dan skala Arikunto akan dihitung pada Iterasi 5. Atribusi test case mengikuti pembagian: Bimo (master plan + eksekusi mayoritas), Alia (RTM + viz tests), Iqbal (drug safety logic), Abhidal (auth, PDF, usability), Ghaisan (scraping + integrasi).
 
 ---
 
@@ -647,7 +647,7 @@ Sumber lengkap: `docs/SECURITY.md`. Ringkasan per aset (STRIDE summary):
 | Patient PII SOAP | Sintetik untuk demo; storage GCS bucket private (`medwatch-polban-2026-state`) tanpa public IAM | Implemented |
 | openFDA API key | env-only; `_redact_params` di `anggota1/openfda/fetch.py:148-154` memastikan log dan source_url tidak bocor | Implemented |
 | Session cookie | httpOnly + SameSite=Lax + Secure di production (lewat Vercel proxy) | Implemented |
-| Audit log operasional | stdout Cloud Logging 30 hari; aktor login/logout/admin CRUD/scrape tercatat (`auth_routes.py:27, 36, 39`; `admin_routes.py:26, 84, 101`) | Implemented (durable audit di Wave Production) |
+| Audit log operasional | stdout Cloud Logging 30 hari; aktor login/logout/admin CRUD/scrape tercatat (`auth_routes.py:27, 36, 39`; `admin_routes.py:26, 84, 101`) | Implemented (durable audit di tahap produksi) |
 | Data scraping openFDA | Sumber legal publik; tidak ada PII pasien (de-identified by FDA) | Implemented |
 
 OWASP Top 10 (2021) mapping diuraikan di `docs/SECURITY.md` Bagian 4 (A01..A10). Header `Server` dihapus dari response (`api/app.py:58-61`). CORS allowlist tanpa wildcard (`api/config.py:21-25`).
@@ -683,31 +683,31 @@ OWASP Top 10 (2021) mapping diuraikan di `docs/SECURITY.md` Bagian 4 (A01..A10).
 
 ### 15.1 Open Blocker
 
-**B-WAVE1-BUILD-1: Next.js 16.2.1 chunk-emit race pada Node 25.** Saat menjalankan `npm run build` di workstation dengan Node 25 nightly, beberapa Wave 1 subagent (T1-PDF, T1-LOGIN, T1-HEATMAP, T1-PASIEN, T1-SAFETY) yang paralel me-rebuild cache `.next` memicu race condition: `InvariantError: client reference manifest does not exist` dan `ENOENT _buildManifest.js.tmp...`. Mitigasi sementara: rekomendasikan Node 22 LTS untuk lingkungan submission dosen; remediasi formal akan dilakukan di Wave 5 dengan swap explicit Node 22 LTS plus regression test ulang. Bukti: lihat `.mission/findings/bugs/T1-ADMIN.md` Bagian 6.3.
+**B-BUILD-1: Next.js 16.2.1 chunk-emit race pada Node 25.** Saat menjalankan `npm run build` di workstation dengan Node 25 nightly, beberapa proses build paralel Iterasi 1 (T1-PDF, T1-LOGIN, T1-HEATMAP, T1-PASIEN, T1-SAFETY) yang me-rebuild cache `.next` memicu race condition: `InvariantError: client reference manifest does not exist` dan `ENOENT _buildManifest.js.tmp...`. Mitigasi sementara: rekomendasikan Node 22 LTS untuk lingkungan submission dosen; remediasi formal akan dilakukan di Iterasi 5 dengan swap explicit Node 22 LTS plus regression test ulang. Bukti: lihat catatan internal proyek Bagian 6.3.
 
-### 15.2 Item Inconclusive dari W4-HUNT (deferred ke Wave-5-followup)
+### 15.2 Item Inconclusive dari W4-HUNT (deferred ke Iterasi 5-followup)
 
-Wave 4 bug-hunt menghasilkan empat item dengan status Inconclusive yang sepenuhnya bergantung pada penyelesaian B-WAVE1-BUILD-1 (Node 22 LTS swap) untuk dapat diverifikasi secara live. Tanpa Playwright MCP yang fungsional dan tanpa `npm run build` yang sukses, sweep berikut tidak dapat dieksekusi pada Wave 4:
+Iterasi 4 bug-hunt menghasilkan empat item dengan status Inconclusive yang sepenuhnya bergantung pada penyelesaian B-BUILD-1 (Node 22 LTS swap) untuk dapat diverifikasi secara live. Tanpa Playwright MCP yang fungsional dan tanpa `npm run build` yang sukses, sweep berikut tidak dapat dieksekusi pada Iterasi 4:
 
-1. **Browser/Responsive sweep deferred (Kategori 11 W4-HUNT).** Verifikasi visual viewports 360x800, 768x1024, 1280x800, 1920x1080 untuk halaman patient-create dan safety-checker membutuhkan Playwright keyboard-tab + screenshot. Static-review observation (W4-HUNT Bagian 11) sudah dilakukan: `src/app/dashboard/page.tsx:616-622` memuat breakpoint kpi grid 4 -> 2 -> 1 kolom, `src/components/shell/NavBar.tsx:206-213` melakukan swap TopNav-to-BottomNav di `<820px`, `src/app/safety-checker/page.tsx:1016-1018` collapse two-column ke single-column di `<=1080px`. Wave-5-followup karena B-WAVE1-BUILD-1 belum tertangani.
-2. **Focus rings audit deferred (H12-1 W4-HUNT).** Static grep di src/ menemukan sedikit literal `focus:` / `outline`; verifikasi WCAG 2.4.7 (kontras 3:1 pada elemen `:focus-visible`) memerlukan Playwright keyboard tab-through pada setiap halaman aktif. Kandidat file: `src/app/globals.css` plus class `.btn`, `.input`, `.chip`, `.nav-pill`. Wave-5-followup.
-3. **Bundle size sweep deferred (Kategori 14 W4-HUNT).** `.next/static/` tidak ada karena `npm run build` gagal di Node 25.6 (lihat 15.1). Pengukuran `du -sh .next/static/` per chunk, identifikasi route-level bundle penyumbang besar, dan verifikasi target `<400 KB initial JS` per route belum dapat dilakukan. Wave-5-followup setelah swap Node 22 LTS.
-4. **Dark-mode contrast sweep deferred.** Theme toggle ada di `src/components/shell/ThemeToggle.tsx`, CSS variable seragam (`var(--bg)`, `var(--ink)`); namun verifikasi rasio kontras WCAG 1.4.3 (4.5:1 normal text, 3:1 large text) di dark mode untuk seluruh route butuh Playwright screenshot otomatis per viewport. Wave-5-followup.
+1. **Browser/Responsive sweep deferred (Kategori 11 W4-HUNT).** Verifikasi visual viewports 360x800, 768x1024, 1280x800, 1920x1080 untuk halaman patient-create dan safety-checker membutuhkan Playwright keyboard-tab + screenshot. Static-review observation (W4-HUNT Bagian 11) sudah dilakukan: `src/app/dashboard/page.tsx:616-622` memuat breakpoint kpi grid 4 -> 2 -> 1 kolom, `src/components/shell/NavBar.tsx:206-213` melakukan swap TopNav-to-BottomNav di `<820px`, `src/app/safety-checker/page.tsx:1016-1018` collapse two-column ke single-column di `<=1080px`. Iterasi 5-followup karena B-BUILD-1 belum tertangani.
+2. **Focus rings audit deferred (H12-1 W4-HUNT).** Static grep di src/ menemukan sedikit literal `focus:` / `outline`; verifikasi WCAG 2.4.7 (kontras 3:1 pada elemen `:focus-visible`) memerlukan Playwright keyboard tab-through pada setiap halaman aktif. Kandidat file: `src/app/globals.css` plus class `.btn`, `.input`, `.chip`, `.nav-pill`. Iterasi 5-followup.
+3. **Bundle size sweep deferred (Kategori 14 W4-HUNT).** `.next/static/` tidak ada karena `npm run build` gagal di Node 25.6 (lihat 15.1). Pengukuran `du -sh .next/static/` per chunk, identifikasi route-level bundle penyumbang besar, dan verifikasi target `<400 KB initial JS` per route belum dapat dilakukan. Iterasi 5-followup setelah swap Node 22 LTS.
+4. **Dark-mode contrast sweep deferred.** Theme toggle ada di `src/components/shell/ThemeToggle.tsx`, CSS variable seragam (`var(--bg)`, `var(--ink)`); namun verifikasi rasio kontras WCAG 1.4.3 (4.5:1 normal text, 3:1 large text) di dark mode untuk seluruh route butuh Playwright screenshot otomatis per viewport. Iterasi 5-followup.
 
-Semua empat item di atas gating pada blocker yang sama (B-WAVE1-BUILD-1 di Bagian 15.1). Setelah Node 22 LTS swap selesai dan `npm run build` reproducible sukses, jalankan Playwright matrix 4 viewport x 2 theme = 8 kombinasi dan rekam screenshot per route ke `docs/testing/evidence/`.
+Semua empat item di atas gating pada blocker yang sama (B-BUILD-1 di Bagian 15.1). Setelah Node 22 LTS swap selesai dan `npm run build` reproducible sukses, jalankan Playwright matrix 4 viewport x 2 theme = 8 kombinasi dan rekam screenshot per route ke `docs/testing/evidence/`.
 
 ### 15.3 Hutang Teknis Lain
 
-1. **Atomic JSON write race.** `api/storage.py:38-43` (`_save_local`) menulis langsung ke file tanpa pola `write-to-temp + os.replace`. Crash di tengah write berpotensi men-korup file (`docs/SECURITY.md` Residual Risk R6). Mitigasi sementara: GCS object versioning di production memungkinkan rollback. Followup: implementasi pola atomic rename. (Catatan: Wave 5 W5-FIX-CRITICAL menambahkan `threading.Lock` di `api/routes/patient_routes.py` untuk mencegah race read-then-write di blok create/update/delete; lihat 16.B-1.)
+1. **Atomic JSON write race.** `api/storage.py:38-43` (`_save_local`) menulis langsung ke file tanpa pola `write-to-temp + os.replace`. Crash di tengah write berpotensi men-korup file (`docs/SECURITY.md` Residual Risk R6). Mitigasi sementara: GCS object versioning di production memungkinkan rollback. Followup: implementasi pola atomic rename. (Catatan: Iterasi 5 W5-FIX-CRITICAL menambahkan `threading.Lock` di `api/routes/patient_routes.py` untuk mencegah race read-then-write di blok create/update/delete; lihat 16.B-1.)
 2. **Tidak ada rate-limit / account lockout `/api/auth/login`** (`docs/SECURITY.md` R1). Bruteforce diperlambat hanya oleh bcrypt cost 12; di-acknowledge sebagai residual risk dengan plan production di `ProductionGrade-ImplementationPlan/04-hardening-plan.md`.
 3. **Audit trail minimal: hanya Cloud Logging 30 hari** (`docs/SECURITY.md` R2). Aksi admin tercatat di stdout; forensic post-30-hari sulit.
 4. **Tidak ada CSRF token state-changing route** (`docs/SECURITY.md` R3). Mitigasi: SameSite=Lax cookie + same-origin proxy Vercel.
 5. **Rotasi JWT secret manual** (`docs/SECURITY.md` R4). Belum ada dual-key window otomatis.
-6. **Dependency scanning belum di CI** (`docs/SECURITY.md` R5). `pip-audit` + `npm audit` jalan manual oleh security-analyst agent.
+6. **Dependency scanning belum di CI** (`docs/SECURITY.md` R5). `pip-audit` + `npm audit` jalan manual oleh tim keamanan.
 7. **Backend Cloud Run `--allow-unauthenticated`** (`docs/SECURITY.md` R7). RBAC backend tetap menolak token absen/invalid; production plan: Cloud Run IAM `roles/run.invoker` hanya untuk Vercel IP range atau VPC peering.
 8. **Frontend high-severity deps di `_archived/` paths** (`docs/SECURITY.md` R8). `react-simple-maps`, `react-force-graph-2d` dst tidak aktif runtime; uninstall ditunda agar `_archived/` tidak rusak.
 9. **Heatmap menggunakan severity weighting, bukan raw FAERS counts.** Per `src/lib/heatmap-colors.ts` dan `src/app/heatmap/page.tsx`, nilai sel dihitung sebagai `presence * severity_weight(effect)` dengan bobot ringan=1, sedang=2, serius=4 (T1-HEATMAP Bagian 3). Backend hanya mengembalikan presence biner 0/1 (`api/routes/visualization_routes.py:113-138`). Followup: ganti dengan raw FAERS counts dari `anggota1/data/drug_safety_data.json` (sudah punya `side_effects[]` real dari 74 rekord) jika waktu mengizinkan. Tidak blocking untuk submission.
-10. **Sisa hutang Minor W4-HUNT.** 20 finding Minor (H01-2, H01-3, H02-1, H03-1, H03-2, H04-1, H05-1, H06-4, H06-5, H06-6, H07-3, H09-1, H12-2, H13-1, H13-2, H14-1, H16-1, H16-3, H17-1, H17-2) tetap terbuka pasca Wave 5; rinci di `.mission/findings/bugs/W4-HUNT.md`. Dibadge `accept-and-document` untuk academic submission per skor severity; rencana remediasi formal di `ProductionGrade-ImplementationPlan/04-hardening-plan.md`.
+10. **Sisa hutang Minor W4-HUNT.** 20 finding Minor (H01-2, H01-3, H02-1, H03-1, H03-2, H04-1, H05-1, H06-4, H06-5, H06-6, H07-3, H09-1, H12-2, H13-1, H13-2, H14-1, H16-1, H16-3, H17-1, H17-2) tetap terbuka pasca Iterasi 5; rinci di catatan internal proyek. Dibadge `accept-and-document` untuk academic submission per skor severity; rencana remediasi formal di `ProductionGrade-ImplementationPlan/04-hardening-plan.md`.
 
 ### 15.3 Batasan Lingkup
 
@@ -728,34 +728,34 @@ Bagian ini adalah tabel tiga-kolom kanonik: **spesifikasi awal**, **implementasi
 
 | Spesifikasi Awal | Implementasi Final | Alasan |
 |---|---|---|
-| **Login opsional / autentikasi out-of-scope** (PRD asli `MedWatch_PRD.pdf` butir out-of-scope; lihat `docs/PRD.md` Bagian 4.3 dan `CLAUDE.md` Backend "PRD scope tension awareness") | **Login wajib dengan 3 peran kanonik** (`tenaga_kesehatan`, `masyarakat`, `admin`) plus JWT HS256 + bcrypt cost 12 + httpOnly cookie (`api/auth.py:1-39`, `api/middleware.py:17-51`, `api/data/users.json`) | Dosen demo memerlukan demo per peran (admin/bidan/umum) dengan tombol preset di `/login` (`src/app/login/page.tsx:18-43`). Implementasi diposisikan sebagai supplementary presentation layer di atas submission resmi desktop CustomTkinter, bukan mengganti PRD asli (ADR-0002, ADR-0001). |
-| **Sumber data utama: scraping `drugs.com/sfx/<nama>`** (PRD asli dan modul lama `anggota1/anggota1.py`) | **Sumber data utama: openFDA REST API (`drug/event.json` dan `drug/enforcement.json`) via modul aditif `anggota1/openfda/fetch.py`; 74 rekord obat + 1850 reaction terms + 6000 rekord recall** (`anggota1/data/drug_safety_data.json`, `anggota1/data/drug_recalls.json`) | Pada 11 Mei 2026 setiap request `drugs.com/sfx/` mengembalikan HTTP 403 Akamai (bukti verbatim `anggota1/scraper.log` baris 1-8). Tidak ada bypass anti-bot (etika riset + ToS). openFDA disetujui mission constraint 6 sebagai sumber legal sanksi. Schema output sengaja identik agar consumer downstream tidak rusak. ADR-0004. |
-| **Modul `anggota3` tunggal (satu visualisasi matplotlib `TampilGrafik.py` oleh Alia)** | **Modul tambahan `anggota3/NewestVisualization/` aditif dengan 5 chart informatif berbasis data openFDA** (`viz_top_obat_efek_samping.py`, `viz_distribusi_keparahan.py`, `viz_recall_class_per_tahun.py`, `viz_perusahaan_recall_top.py`, `viz_heatmap_obat_efek.py`; output PNG di `anggota3/NewestVisualization/output/`) | Mission Constraint 5 (teammate code read-only): file Alia tidak boleh dimodifikasi; NEW additive files di `anggota3/` diperbolehkan dan diatribusikan ke Alia. Visualisasi baru juga memanfaatkan data openFDA real yang sebelumnya tidak ada. ADR-0005. Atribusi: dokumenter Alia Ardani (NIM 251524035) per `anggota3/NewestVisualization/README.md:9-15`. |
+| **Login opsional / autentikasi out-of-scope** (PRD asli `MedWatch_PRD.pdf` butir out-of-scope; lihat `docs/PRD.md` Bagian 4.3 dan konvensi proyek bagian "PRD scope tension awareness") | **Login wajib dengan 3 peran kanonik** (`tenaga_kesehatan`, `masyarakat`, `admin`) plus JWT HS256 + bcrypt cost 12 + httpOnly cookie (`api/auth.py:1-39`, `api/middleware.py:17-51`, `api/data/users.json`) | Dosen demo memerlukan demo per peran (admin/bidan/umum) dengan tombol preset di `/login` (`src/app/login/page.tsx:18-43`). Implementasi diposisikan sebagai supplementary presentation layer di atas submission resmi desktop CustomTkinter, bukan mengganti PRD asli (ADR-0002, ADR-0001). |
+| **Sumber data utama: scraping `drugs.com/sfx/<nama>`** (PRD asli dan modul lama `anggota1/anggota1.py`) | **Sumber data utama: openFDA REST API (`drug/event.json` dan `drug/enforcement.json`) via modul aditif `anggota1/openfda/fetch.py`; 74 rekord obat + 1850 reaction terms + 6000 rekord recall** (`anggota1/data/drug_safety_data.json`, `anggota1/data/drug_recalls.json`) | Pada 11 Mei 2026 setiap request `drugs.com/sfx/` mengembalikan HTTP 403 Akamai (bukti verbatim `anggota1/scraper.log` baris 1-8). Tidak ada bypass anti-bot (etika riset + ToS). openFDA disetujui ketentuan proyek 6 sebagai sumber legal sanksi. Schema output sengaja identik agar consumer downstream tidak rusak. ADR-0004. |
+| **Modul `anggota3` tunggal (satu visualisasi matplotlib `TampilGrafik.py` oleh Alia)** | **Modul tambahan `anggota3/NewestVisualization/` aditif dengan 5 chart informatif berbasis data openFDA** (`viz_top_obat_efek_samping.py`, `viz_distribusi_keparahan.py`, `viz_recall_class_per_tahun.py`, `viz_perusahaan_recall_top.py`, `viz_heatmap_obat_efek.py`; output PNG di `anggota3/NewestVisualization/output/`) | ketentuan proyek 5 (teammate code read-only): file Alia tidak boleh dimodifikasi; NEW additive files di `anggota3/` diperbolehkan dan diatribusikan ke Alia. Visualisasi baru juga memanfaatkan data openFDA real yang sebelumnya tidak ada. ADR-0005. Atribusi: dokumenter Alia Ardani (NIM 251524035) per `anggota3/NewestVisualization/README.md:9-15`. |
 | **Heatmap sparse 3-bucket coloring** (`src/app/heatmap/page.tsx` pre-fix `:163-169` mem-bucket nilai 0-15 ke `null` -> latar belakang halaman; lihat T1-HEATMAP Bagian 1) | **Heatmap kontinu d3 5-stop risk-matrix (green-yellow-red), sorted descending oleh total baris/kolom, sel v=0 tetap diwarnai dengan green-tint** (`src/lib/heatmap-colors.ts` baru, `src/app/heatmap/page.tsx` re-write 370 baris; cell value = presence * severity_weight 1/2/4) | B11 dosen-flagged: pre-fix bukan heatmap visual karena mayoritas sel beige (lihat T1-HEATMAP Bagian 1 dan 2). Pilihan ramp 5-stop selaras palet MedWatch `--safe/--warn/--crit` dan canonical risk-matrix readability. ADR-0006. |
 | **List pasien default sort (insertion order: oldest-first di atas)** (kondisi pre-fix `api/routes/patient_routes.py`) | **List pasien sort newest-first by `tanggal_kunjungan` DESC dengan parser DD-MM-YYYY dan tiebreak id `P###` DESC** (`api/routes/patient_routes.py:135-146`) | B07 UX complaint: bidan harus scroll ke bawah untuk lihat kunjungan terbaru. Parser tanggal DD-MM-YYYY plus tiebreak numeric tail id memastikan `P010 (18-05-2026)` mendahului `P001`. ADR-0007. |
 | **Form pasien menerima input apapun (termasuk huruf di field numerik)** (kondisi pre-fix; lihat T1-PASIEN) | **Validasi numerik medis client+server**: BB `1..300 kg`, TB `30..300 cm`, LILA `8..60 cm`, Nadi `30..220 x/min`, Suhu `30..44 C`, Respirasi `5..80 x/min`, TD komposit `\d{1,3}/\d{1,3}` sistolik `60..250` diastolik `30..160` (`api/routes/patient_routes.py:17-99`, `src/lib/patient-validation.ts`) | B03 data quality complaint. Tanpa validasi, field numerik dapat menerima huruf dan menghasilkan error parsing downstream. Validasi mirror di server (otoritatif) dan client (UX). ADR-0009. |
-| **Eksport PDF hanya untuk SOAP rekam medis** (kondisi pre-fix; `anggota5/export_pdf.py` original) | **4 endpoint PDF: rekam-medis, laporan-bulanan, efek-samping, inventaris** (`api/routes/pdf_routes.py:169-511`) plus frontend `src/app/export-pdf/page.tsx` dengan 4 pilihan tipe dan step-2 UI berbeda per tipe | B04 dosen-flagged scope: PRD menjanjikan 4 tipe laporan; pre-fix hanya 1. Generator efek-samping dan inventaris diimplementasi in-process via `fpdf2` di `api/` (bukan modifikasi anggota5, sesuai mission constraint 5). ADR-0008. |
-| **Dashboard admin KPI hardcoded (mis. `Uptime API 99.94% / 30 hari`)** (`src/app/admin/dashboard/page.tsx` pre-fix `:56`) | **KPI real dari `GET /api/admin/system-stats` + helper `formatUptime(seconds)`** menampilkan uptime proses (`5m`, `3j 12m`, `2h 4j`) dengan label "sejak proses berjalan"; backend mengekspos `process_started_at` dan `uptime_seconds` (`api/routes/admin_routes.py:18, 106-127`; `src/app/admin/dashboard/page.tsx:43-81`) | B10 mission rule: "no fabrication, every claim must be verifiable". Pre-fix menampilkan angka palsu yang berisiko dosen mengira sistem benar-benar tracking SLO 30 hari. T1-ADMIN. |
+| **Eksport PDF hanya untuk SOAP rekam medis** (kondisi pre-fix; `anggota5/export_pdf.py` original) | **4 endpoint PDF: rekam-medis, laporan-bulanan, efek-samping, inventaris** (`api/routes/pdf_routes.py:169-511`) plus frontend `src/app/export-pdf/page.tsx` dengan 4 pilihan tipe dan step-2 UI berbeda per tipe | B04 dosen-flagged scope: PRD menjanjikan 4 tipe laporan; pre-fix hanya 1. Generator efek-samping dan inventaris diimplementasi in-process via `fpdf2` di `api/` (bukan modifikasi anggota5, sesuai ketentuan proyek 5). ADR-0008. |
+| **Dashboard admin KPI hardcoded (mis. `Uptime API 99.94% / 30 hari`)** (`src/app/admin/dashboard/page.tsx` pre-fix `:56`) | **KPI real dari `GET /api/admin/system-stats` + helper `formatUptime(seconds)`** menampilkan uptime proses (`5m`, `3j 12m`, `2h 4j`) dengan label "sejak proses berjalan"; backend mengekspos `process_started_at` dan `uptime_seconds` (`api/routes/admin_routes.py:18, 106-127`; `src/app/admin/dashboard/page.tsx:43-81`) | B10 ketentuan proyek: "no fabrication, every claim must be verifiable". Pre-fix menampilkan angka palsu yang berisiko dosen mengira sistem benar-benar tracking SLO 30 hari. T1-ADMIN. |
 | **Cek interaksi obat tanpa konteks pasien aktif** (kondisi pre-fix; user harus ketik manual obat yang sedang diresepkan) | **Cek interaksi otomatis menggabungkan `pasien_active_meds` dari `P.resep` pasien aktif via parser `parse_resep_to_meds`** (`api/routes/safety_routes.py:44-61`, `api/helpers.py:47-96`; frontend `src/app/safety-checker/page.tsx`) | B05 workflow gap: bidan harus mengetik ulang resep aktif pasien. Parser toleran terhadap dosage hints (`3x500mg`), parenthetical, dan latin frequency (`prn`, `bid`, `qd`, `tid`, `qid`). |
 | **Login submit langsung dari controlled state input** (kondisi pre-fix; lihat T1-LOGIN) | **Login submit dari `FormData(event.currentTarget)` untuk menghindari controlled-input race dengan browser autofill / password manager**; `Username dan password wajib diisi.` jika kosong (`src/app/login/page.tsx:80-98`) | B09: manual typed login gagal saat password manager mengisi field karena React state belum sync. FormData baca dari DOM langsung. ADR-0010. |
 | **Dashboard "Lihat semua" button inert tanpa onClick** (`src/app/dashboard/page.tsx:442-444` pre-fix) | **Link Next.js ke `/dashboard/aktivitas` baru dengan feed full per role** dan `data-testid="lihat-semua-aktivitas"` (`src/app/dashboard/page.tsx ~442-444`, route baru `src/app/dashboard/aktivitas/page.tsx`) | B02: tombol dead element. Rute baru menampilkan ActivityKind icon dan severity badge yang sama dengan panel asli. T1-ADMIN Bagian 4.3-4.4. |
 | **Admin dashboard tanpa CTA in-body ke scraper** (sidebar nav punya, body tidak) | **CTA prominen "Jalankan Scraper Obat" di body** dengan `data-testid="cta-scraper"` link ke `/admin/scraper` (`src/app/admin/dashboard/page.tsx:170-226`) | B01: navigasi sidebar saja tidak cukup, admin baru tidak menyadari jalur scraper. T1-ADMIN Bagian 4.2. |
 | **Safety-checker tanpa penjelasan inline verdikt** (kondisi pre-fix; user lihat skor tanpa konteks) | **Panel collapsible "Cara membaca verdikt dan obat aktif"** menjelaskan konsep obat aktif, formula `total_bobot / (jumlah_efek * 4) * 100`, threshold label, rasional banyak kartu (`src/app/safety-checker/page.tsx`) | B08 ux complaint: user awam tidak memahami arti angka. Panel default tertutup, dapat di-expand. T1-SAFETY Bagian 4. |
-| **`anggota5/auth.py` model akses single-tier (semua bisa segalanya)** (kondisi pre-mission per draft Abhidal) | **Role-aware auth dengan 3 peran (`tenaga_kesehatan`, `masyarakat`, `admin`)** plus `tkesehatan_crud.py` baru; pengecualian Phase 1 satu kali (CLAUDE.md Rule 2) modifikasi 4 file di `anggota5/` lewat PR `Abhidal_anggota5 -> main` di-merge oleh Ghaisan dengan otorisasi Abhidal | Permintaan formal Abhidal via Ghaisan. Setelah PR di-squash-merge, `anggota5/` kembali read-only. |
+| **`anggota5/auth.py` model akses single-tier (semua bisa segalanya)** (kondisi tahap awal per draft Abhidal) | **Role-aware auth dengan 3 peran (`tenaga_kesehatan`, `masyarakat`, `admin`)** plus `tkesehatan_crud.py` baru; pengecualian Phase 1 satu kali (konvensi proyek) modifikasi 4 file di `anggota5/` lewat PR `Abhidal_anggota5 -> main` di-merge oleh Ghaisan dengan otorisasi Abhidal | Permintaan formal Abhidal via Ghaisan. Setelah PR di-squash-merge, `anggota5/` kembali read-only. |
 | **Hardcoded `Pasien.json` di `anggota5/data/`** (legacy auth user file) | **Canonical user store di `api/data/users.json`** (NEW location); pasien tetap di `api/data/patients.json` atau GCS bucket | Menghindari konflik schema antara module Bimo (`anggota2/Pasien.json` canonical) dan legacy Abhidal (`anggota5/data/users.json`). Pasien ID `P001..P999` (uppercase + 3 digit) bukan `PSN-001` (draft Abhidal non-kanonikal). ADR-0003. |
 
-### 16.A Penyimpangan Tambahan dari Penemuan W4-HUNT dan Perbaikan Wave 5
+### 16.A Penyimpangan Tambahan dari Penemuan W4-HUNT dan Perbaikan Iterasi 5
 
 | Spesifikasi Awal | Implementasi Final | Alasan |
 |---|---|---|
-| **Safety check role gating: endpoint `POST /api/safety/check` open untuk semua role autentik tanpa pembatasan pasien_context (tidak di-spec dalam PRD/SRS asli)** (kondisi pasca Wave 1; lihat `api/routes/safety_routes.py` pre-fix yang dekorasi `@require_auth` tanpa role check di blok pasien_context) | **Wave 5 W5-FIX-CRITICAL gating `pasien_context` dan `pasien_active_meds` ke role `tenaga_kesehatan` dan `admin` saja; `masyarakat` selalu menerima `pasien_context: null` dan `pasien_active_meds: []` regardless of pasien_id supplied** (`api/routes/safety_routes.py`; commit b5a98e8 (backend) plus 40754cd (frontend)) | Bug-hunter W4-HUNT mengkonfirmasi H07-1 Critical: `umum_budi` dapat enumerasi P001..P020 dan memanen nama, diagnosa, kategori, kondisi_umum, dan active medications. Sumber: `.mission/findings/bugs/W4-HUNT.md` Bagian 7 dan `.mission/findings/audits/wave-04-audit.md` baris 91-117 reproduksi auditor independen. Wave 5 W5-FIX-CRITICAL menutup leak sebelum submission dosen 25 Mei 2026. Cite finding fix: `.mission/findings/bugs/W5-FIX-CRITICAL.md` (akan diverifikasi oleh W5-AUDIT). |
+| **Safety check role gating: endpoint `POST /api/safety/check` open untuk semua role autentik tanpa pembatasan pasien_context (tidak di-spec dalam PRD/SRS asli)** (kondisi pasca Iterasi 1; lihat `api/routes/safety_routes.py` pre-fix yang dekorasi `@require_auth` tanpa role check di blok pasien_context) | **Iterasi 5 W5-FIX-CRITICAL gating `pasien_context` dan `pasien_active_meds` ke role `tenaga_kesehatan` dan `admin` saja; `masyarakat` selalu menerima `pasien_context: null` dan `pasien_active_meds: []` regardless of pasien_id supplied** (`api/routes/safety_routes.py`; commit b5a98e8 (backend) plus 40754cd (frontend)) | Bug-hunter W4-HUNT mengkonfirmasi H07-1 Critical: `umum_budi` dapat enumerasi P001..P020 dan memanen nama, diagnosa, kategori, kondisi_umum, dan active medications. Sumber: catatan internal proyek Bagian 7 dan catatan internal proyek baris 91-117 reproduksi auditor independen. Iterasi 5 W5-FIX-CRITICAL menutup leak sebelum submission dosen 25 Mei 2026. Cite finding fix: catatan internal proyek (akan diverifikasi oleh W5-AUDIT). |
 | **Kepemilikan pasien lintas bidan: tidak di-spec dalam PRD/SRS asli** (PRD mengasumsikan single-bidan flow; tidak ada faskes_id atau bidan_id sebagai tenancy key) | **Implementasi final mempertahankan asumsi single-faskes single-bidan: semua `tenaga_kesehatan` JWT dapat membaca semua record pasien tanpa pemfilteran `created_by` atau `faskes_id`; ownership check hanya berlaku untuk `masyarakat` di `api/routes/patient_routes.py:175-195` (line 193 `owner_username` branch)** | W4-HUNT H07-2 Major mengidentifikasi: `bidan_putri` dapat membaca SOAP yang `created_by: bidan_siti`. Dokumentasi formal sebagai **single-faskes assumption** untuk academic submission dengan beban data kecil (21 pasien sintetik, 6 user demo). Multi-bidan tenancy dengan JWT `faskes_id` claim dan filter `list_patients`/`get_patient` dijadwalkan di `ProductionGrade-ImplementationPlan/04-hardening-plan.md`. Lihat juga `docs/SECURITY.md` Section 7.5 Asumsi Kepemilikan Pasien Lintas Bidan. |
-| **Audit log feed di admin dashboard tidak di-spec dalam PRD/SRS** (PRD hanya menyebut admin KPI scope; audit log fabricated panel ditambahkan secara opportunistic saat Wave 1 frontend build) | **Wave 5 W5-FIX-CRITICAL menghapus hardcoded sample `auditLog` array yang sebelumnya di `src/app/admin/dashboard/page.tsx` (referensi W4-HUNT: lines 102-108, 5 baris fabricated: `103.8.xx.xx`, `bidan_rina`, `Scrape BPOM cron berjalan, 132 entri baru`, dst); panel di-replace menjadi link ke `/dashboard/aktivitas` yang sudah ditambahkan Wave 1 T1-ADMIN dengan feed terstruktur per role** (commit b5a98e8 (backend) plus 40754cd (frontend)) | W4-HUNT H06-2 + H06-3 Major: panel `auditLog` dan tiga array `ACTIVITIES_BIDAN`/`ACTIVITIES_MASYARAKAT`/`ACTIVITIES_ADMIN` di `src/app/dashboard/aktivitas/page.tsx:29-57` adalah literal fabricated data. Hapus + redirect ke route real yang sudah ada menghindari fabrication sambil menjaga UI flow. Backend `GET /api/admin/audit-log` belum diimplementasi; followup di `ProductionGrade-ImplementationPlan/04-hardening-plan.md`. Lihat 15.3 item 1 untuk concurrency complement. |
-| **Validasi `umur` di form pasien tidak di-spec eksplisit dalam SRS** (SRS hanya menyebut `umur` sebagai integer optional dengan tipe `number`; tidak menetapkan range) | **Wave 5 W5-FIX-CRITICAL menambah backend range check `0 <= umur <= 150` di `api/routes/patient_routes.py` (penambahan ke `NUMERIC_RANGES` atau guard equivalent) plus mirror client-side `src/app/patients/new/page.tsx` dan `src/app/patients/[id]/page.tsx` yang merender inline error Bahasa Indonesia `umur harus antara 0 dan 150` (commit b5a98e8 (backend) plus 40754cd (frontend))** | W4-HUNT H01-1 Major: POST `/api/patients` menerima `umur: "9999"`, `umur: "-50"`, dan `umur: "abc"` tanpa rejection. Data quality concern: chart `umur` distribution dan filter age-group rusak. Range 0..150 mengakomodasi neonatus (0) sampai umur ekstrem (dokumentasi medis WHO mencantumkan 122 tahun sebagai record holder; 150 sebagai safety margin). |
-| **Concurrency safety POST/PUT/DELETE pasien tidak di-spec eksplisit dalam SDD** (SDD mendokumentasikan JSON file storage tanpa concurrent-access strategy) | **Wave 5 W5-FIX-CRITICAL menambah `threading.Lock` global di sekitar blok read-modify-write di `api/routes/patient_routes.py` create/update/delete handler** (commit b5a98e8 (backend) plus 40754cd (frontend)); Cloud Run gunicorn worker tetap single-threaded per request namun threadpool serialisasi via lock | W4-HUNT H10-1 Major: 5 paralel POST `/api/patients` dengan body sama menghasilkan 4 dari 5 response dengan `id: P022` dan persistensi final 21 -> 23 (kehilangan 3 record). Lock mencegah duplicate-id dan write race. Mitigasi lengkap di production: GCS preconditions (`if-generation-match`) untuk optimistic concurrency, lihat 15.3 item 1. |
-| **KPI `/dashboard` dan kontent feed `/dashboard/aktivitas` di-spec sebagai backend-sourced** (PRD/SRS FR untuk admin dashboard KPI di-spec real, namun frontend pra-Wave 5 ship hardcoded `value: 1247`, `value: 38`, `value: 89`, `value: 2` di `src/app/dashboard/page.tsx:302-307` per W4-HUNT H06-1) | **Wave 5 W5-FIX-CRITICAL menghapus literal hardcoded di admin branch `/dashboard`; admin sekarang membaca `/api/admin/system-stats` (endpoint sudah ada per `api/routes/admin_routes.py:18, 106-127`); bidan-scoped KPI dihapus jika belum ada endpoint atau diberi label "Data demo" jika sumber backend tidak ada** (commit b5a98e8 (backend) plus 40754cd (frontend)) | W4-HUNT H06-1 Major: literal `1247, 38, 89, 2` ditemukan persis sesuai daftar `.mission/bugs.md` B10 ("hardcoded 1247 pengguna, 38 faskes, 89 scrape, 2 error"). Auditor wave-04-audit.md baris 127 memverifikasi. Wave 5 menghapus literal sambil menjaga UI tidak kosong. |
+| **Audit log feed di admin dashboard tidak di-spec dalam PRD/SRS** (PRD hanya menyebut admin KPI scope; audit log fabricated panel ditambahkan secara opportunistic saat Iterasi 1 frontend build) | **Iterasi 5 W5-FIX-CRITICAL menghapus hardcoded sample `auditLog` array yang sebelumnya di `src/app/admin/dashboard/page.tsx` (referensi W4-HUNT: lines 102-108, 5 baris fabricated: `103.8.xx.xx`, `bidan_rina`, `Scrape BPOM cron berjalan, 132 entri baru`, dst); panel di-replace menjadi link ke `/dashboard/aktivitas` yang sudah ditambahkan Iterasi 1 T1-ADMIN dengan feed terstruktur per role** (commit b5a98e8 (backend) plus 40754cd (frontend)) | W4-HUNT H06-2 + H06-3 Major: panel `auditLog` dan tiga array `ACTIVITIES_BIDAN`/`ACTIVITIES_MASYARAKAT`/`ACTIVITIES_ADMIN` di `src/app/dashboard/aktivitas/page.tsx:29-57` adalah literal fabricated data. Hapus + redirect ke route real yang sudah ada menghindari fabrication sambil menjaga UI flow. Backend `GET /api/admin/audit-log` belum diimplementasi; followup di `ProductionGrade-ImplementationPlan/04-hardening-plan.md`. Lihat 15.3 item 1 untuk concurrency complement. |
+| **Validasi `umur` di form pasien tidak di-spec eksplisit dalam SRS** (SRS hanya menyebut `umur` sebagai integer optional dengan tipe `number`; tidak menetapkan range) | **Iterasi 5 W5-FIX-CRITICAL menambah backend range check `0 <= umur <= 150` di `api/routes/patient_routes.py` (penambahan ke `NUMERIC_RANGES` atau guard equivalent) plus mirror client-side `src/app/patients/new/page.tsx` dan `src/app/patients/[id]/page.tsx` yang merender inline error Bahasa Indonesia `umur harus antara 0 dan 150` (commit b5a98e8 (backend) plus 40754cd (frontend))** | W4-HUNT H01-1 Major: POST `/api/patients` menerima `umur: "9999"`, `umur: "-50"`, dan `umur: "abc"` tanpa rejection. Data quality concern: chart `umur` distribution dan filter age-group rusak. Range 0..150 mengakomodasi neonatus (0) sampai umur ekstrem (dokumentasi medis WHO mencantumkan 122 tahun sebagai record holder; 150 sebagai safety margin). |
+| **Concurrency safety POST/PUT/DELETE pasien tidak di-spec eksplisit dalam SDD** (SDD mendokumentasikan JSON file storage tanpa concurrent-access strategy) | **Iterasi 5 W5-FIX-CRITICAL menambah `threading.Lock` global di sekitar blok read-modify-write di `api/routes/patient_routes.py` create/update/delete handler** (commit b5a98e8 (backend) plus 40754cd (frontend)); Cloud Run gunicorn worker tetap single-threaded per request namun threadpool serialisasi via lock | W4-HUNT H10-1 Major: 5 paralel POST `/api/patients` dengan body sama menghasilkan 4 dari 5 response dengan `id: P022` dan persistensi final 21 -> 23 (kehilangan 3 record). Lock mencegah duplicate-id dan write race. Mitigasi lengkap di production: GCS preconditions (`if-generation-match`) untuk optimistic concurrency, lihat 15.3 item 1. |
+| **KPI `/dashboard` dan kontent feed `/dashboard/aktivitas` di-spec sebagai backend-sourced** (PRD/SRS FR untuk admin dashboard KPI di-spec real, namun frontend pra-Iterasi 5 ship hardcoded `value: 1247`, `value: 38`, `value: 89`, `value: 2` di `src/app/dashboard/page.tsx:302-307` per W4-HUNT H06-1) | **Iterasi 5 W5-FIX-CRITICAL menghapus literal hardcoded di admin branch `/dashboard`; admin sekarang membaca `/api/admin/system-stats` (endpoint sudah ada per `api/routes/admin_routes.py:18, 106-127`); bidan-scoped KPI dihapus jika belum ada endpoint atau diberi label "Data demo" jika sumber backend tidak ada** (commit b5a98e8 (backend) plus 40754cd (frontend)) | W4-HUNT H06-1 Major: literal `1247, 38, 89, 2` ditemukan persis sesuai daftar catatan internal proyek B10 ("hardcoded 1247 pengguna, 38 faskes, 89 scrape, 2 error"). Auditor iterasi 04-audit.md baris 127 memverifikasi. Iterasi 5 menghapus literal sambil menjaga UI tidak kosong. |
 
-**Total 14 deviasi awal + 6 deviasi tambahan W5 = 20 deviasi terdokumentasi.** Setiap deviasi terkait dengan ADR formal, bug ticket T1-*, finding W4-HUNT, atau fix Wave 5 untuk traceability. Setiap referensi commit SHA Wave 5 dapat diverifikasi di backend `git log --oneline | grep W5-FIX-CRITICAL` (otoritatif). Dokumen audit verifikasi: `.mission/findings/audits/wave-04-audit.md` + W5-AUDIT (Wave 5).
+**Total 14 deviasi awal + 6 deviasi tambahan W5 = 20 deviasi terdokumentasi.** Setiap deviasi terkait dengan ADR formal, bug ticket T1-*, finding W4-HUNT, atau fix Iterasi 5 untuk traceability. Setiap referensi commit SHA Iterasi 5 dapat diverifikasi di backend `git log --oneline | grep W5-FIX-CRITICAL` (otoritatif). Dokumen audit verifikasi: catatan internal proyek + W5-AUDIT (Iterasi 5).
 
 ---
 
@@ -847,7 +847,7 @@ Checklist serah-terima ke dosen (25 Mei 2026) dan ke maintainer berikutnya:
 - [x] `OPENFDA_API_KEY` env-driven (no hardcoded value); pola anti-leak `_redact_params` aktif (`anggota1/openfda/fetch.py:148-154`).
 - [x] `JWT_SECRET` di Secret Manager `medwatch-jwt-secret` (production), `dev-only` placeholder lokal.
 
-### 18.3 Dokumentasi (Wave 2)
+### 18.3 Dokumentasi (Iterasi 2)
 
 - [x] `docs/PRD.md` (W2-D01)
 - [x] `docs/SRS.md` (W2-D02)
@@ -866,11 +866,11 @@ Checklist serah-terima ke dosen (25 Mei 2026) dan ke maintainer berikutnya:
 
 ### 18.4 Kode dan Pengujian
 
-- [x] Semua Wave 1 commits di main backend (lihat Lampiran A): `cfa5c26 feat(data) openFDA`, `a0a3f99 feat(pdf) efek-samping inventaris`, `af78a6f fix(admin)`, `53c6ed2 fix(safety)`, `e4733b1 fix(patients)`, `64513e6 feat(viz) NewestVisualization`.
+- [x] Semua Iterasi 1 commits di main backend (lihat Lampiran A): `cfa5c26 feat(data) openFDA`, `a0a3f99 feat(pdf) efek-samping inventaris`, `af78a6f fix(admin)`, `53c6ed2 fix(safety)`, `e4733b1 fix(patients)`, `64513e6 feat(viz) NewestVisualization`.
 - [x] `python api/tests/smoke_test.py` 14/14 assertion hijau di lokal.
 - [x] Data openFDA real ada: `anggota1/data/drug_safety_data.json` (74 rekord), `anggota1/data/drug_recalls.json` (6000 rekord).
 - [x] 5 PNG NewestVisualization ada: `anggota3/NewestVisualization/output/viz_*.png`.
-- [x] B01..B11 fixed dan diverifikasi: `.mission/findings/bugs/T1-*.md` (7 file, semua done).
+- [x] B01..B11 fixed dan diverifikasi: catatan internal proyek (7 file, semua done).
 
 ### 18.5 Cloud Resources
 
@@ -880,11 +880,11 @@ Checklist serah-terima ke dosen (25 Mei 2026) dan ke maintainer berikutnya:
 - [x] Secret Manager `medwatch-jwt-secret` minimal 1 enabled version.
 - [x] Vercel project `medwatch` link aktif; frontend deployable ke `medwatch-frontend.vercel.app`.
 
-### 18.6 Item Wave Berikutnya (Wave 3, 4, 5)
+### 18.6 Item Iterasi Berikutnya (Iterasi 3, 4, 5)
 
-- [ ] Wave 3: code commenting + repo tidying (kedua repo).
-- [ ] Wave 4: security scan tree + history; 17-category bug-hunt read-only.
-- [ ] Wave 5: remediasi Critical/Major, sync AS-BUILT ke final code, `ArtifactReadySubmit/`, `FINAL-REPORT.md`.
+- [ ] Iterasi 3: code commenting + repo tidying (kedua repo).
+- [ ] Iterasi 4: security scan tree + history; 17-category bug-hunt read-only.
+- [ ] Iterasi 5: remediasi Critical/Major, sync AS-BUILT ke final code, `ArtifactReadySubmit/`, `FINAL-REPORT.md`.
 
 ---
 
@@ -894,7 +894,7 @@ Checklist serah-terima ke dosen (25 Mei 2026) dan ke maintainer berikutnya:
 
 | Istilah | Definisi |
 |---|---|
-| SOAP | Subjective, Objective, Assessment, Plan. Format standar rekam medis kunjungan. Schema kanonik di `anggota2/pasien_helper.py` (CLAUDE.md Rule 3). |
+| SOAP | Subjective, Objective, Assessment, Plan. Format standar rekam medis kunjungan. Schema kanonik di `anggota2/pasien_helper.py` (konvensi proyek). |
 | Faskes 1 | Fasilitas Kesehatan Tingkat Pertama (puskesmas, polindes, klinik bersalin kecil). Sasaran utama MedWatch. |
 | openFDA | API publik U.S. Food and Drug Administration di `https://api.fda.gov`. Sumber utama efek samping (`drug/event`) dan recall (`drug/enforcement`) pasca pivot ADR-0004. |
 | FAERS | FDA Adverse Event Reporting System. Basis data efek samping diekspos oleh `drug/event.json`. |
@@ -933,7 +933,7 @@ Standar dan dokumen yang dikutip dalam AS-BUILT ini:
 14. **NIST SP 800-63B** - Digital Identity Guidelines (Authentication and Lifecycle Management). Dirujuk via `docs/SECURITY.md`.
 15. **OWASP ASVS v4.0.3** - Application Security Verification Standard. Dirujuk informational di `docs/SECURITY.md`.
 
-### 19.3 Lampiran A: Commit List (Wave 1 + Wave 2 batch 1+2)
+### 19.3 Lampiran A: Commit List (Iterasi 1 + Iterasi 2 batch 1+2)
 
 Diturunkan dari `git log --oneline -30` di repositori backend, urutan terbaru di atas:
 
@@ -946,17 +946,17 @@ Diturunkan dari `git log --oneline -30` di repositori backend, urutan terbaru di
 | `7cdbee6` | `docs(data): add data dictionary and storage architecture (W2-D07)` | W2-D07 |
 | `462d724` | `docs(install): add installation deployment and developer guide (W2-D08)` | W2-D08 |
 | `c6f151f` | `docs(prd): add Product Requirements Document for academic submission (W2-D01)` | W2-D01 |
-| `99bd562` | `chore(mission): close Wave 1, mirror state at current_wave=2` | Mission |
-| `64513e6` | `feat(viz): anggota3/NewestVisualization additive module for Alia (T1-VIZ)` | T1-VIZ (Wave 1) |
+| `99bd562` | `chore(project): close Iterasi 1, update project state` | Project |
+| `64513e6` | `feat(viz): anggota3/NewestVisualization additive module for Alia (T1-VIZ)` | T1-VIZ (Iterasi 1) |
 | `e4733b1` | `fix(patients): server-side range validation and date-desc sort (T1-PASIEN)` | T1-PASIEN (B03, B07) |
 | `53c6ed2` | `fix(safety): surface patient active meds from P.resep (T1-SAFETY)` | T1-SAFETY (B05, B08) |
 | `af78a6f` | `fix(admin): expose process uptime for dashboard KPI (T1-ADMIN)` | T1-ADMIN (B01, B02, B10) |
 | `a0a3f99` | `feat(pdf): efek-samping and inventaris generators (T1-PDF)` | T1-PDF (B04) |
 | `cfa5c26` | `feat(data): openFDA real large-scale acquisition module (T1-DATA)` | T1-DATA |
-| `4b65745` | `chore(mission): bootstrap autonomous submission mission scaffold` | Wave 0 |
-| `1536100` | `data(anggota1): fixture sesuai schema scraper (workaround Akamai block, lihat README)` | pre-mission |
-| `8f5c232` | `Update README.md` | pre-mission |
-| `2a5f92b` | `docs: scrub agent attribution from security audit, remove CLAUDE.md from main` | pre-mission |
+| `4b65745` | `chore(project): bootstrap project scaffold` | tahap persiapan |
+| `1536100` | `data(anggota1): fixture sesuai schema scraper (workaround Akamai block, lihat README)` | tahap awal |
+| `8f5c232` | `Update README.md` | tahap awal |
+| `2a5f92b` | `docs: scrub internal attribution from security audit` | tahap awal |
 | `6685c64` | `feat: MedWatch backend integration (api/, integrasi/, anggota5 revision per Abhidal) (#17)` | Phase 1 integration |
 
 Commit berikutnya (akan ditambahkan saat ticket W2-D11 selesai):
@@ -965,13 +965,13 @@ Commit berikutnya (akan ditambahkan saat ticket W2-D11 selesai):
 |---|---|---|
 | `<pending>` | `docs(as-built): add 19-section As-Built System Documentation per ISO 15289 (W2-D11)` | W2-D11 |
 
-Frontend repository tidak menjadi target commit pada ticket ini (W2-D11). Commit Wave 1 frontend tercatat di `.mission/findings/bugs/T1-*.md` per ticket bug.
+Frontend repository tidak menjadi target commit pada ticket ini (W2-D11). Commit Iterasi 1 frontend tercatat di catatan internal proyek per ticket bug.
 
 ### 19.4 Lampiran B: Bug Register (B01..B11)
 
-Ringkasan singkat (sumber lengkap `.mission/bugs.md` dan `.mission/findings/bugs/T1-*.md`):
+Ringkasan singkat (sumber lengkap catatan internal proyek dan catatan internal proyek):
 
-| Bug | Deskripsi | Ticket bug-fixer | Status |
+| Bug | Deskripsi | Ticket tim | Status |
 |---|---|---|---|
 | B01 | Admin dashboard tidak ada CTA in-body ke `/admin/scraper` | T1-ADMIN | DONE |
 | B02 | Tombol "Lihat semua" inert (dead button) | T1-ADMIN | DONE |
@@ -1029,7 +1029,7 @@ Setiap diagram dilengkapi blok legend yang menjelaskan notasinya (lihat sumber `
 
 | Versi | Tanggal | Penulis | Perubahan |
 |---|---|---|---|
-| 1.0 | 18-05-2026 | Kelompok B5 (Ghaisan koordinator) | Penerbitan awal AS-BUILT pasca Wave 1 + Wave 2 batch 1+2. 19 bagian per ISO/IEC/IEEE 15289:2019. Deviasi table 14 baris. |
+| 1.0 | 18-05-2026 | Kelompok B5 (Ghaisan koordinator) | Penerbitan awal AS-BUILT pasca Iterasi 1 + Iterasi 2 batch 1+2. 19 bagian per ISO/IEC/IEEE 15289:2019. Deviasi table 14 baris. |
 
 ---
 

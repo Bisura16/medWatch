@@ -5,9 +5,9 @@ Versi: 1.0
 Tanggal: 12 sampai 18 Mei 2026
 Penanggung jawab: Bimo Surya Anggara, NIM 251524040, QA Kelompok B5
 
-Defect log ini memuat cacat historis (Wave 1 B01..B11) yang dideteksi oleh
-QA dan UI/UX kelompok, hasil bug-hunt Wave 4 (H01-1..H17-2), serta cacat baru
-yang ditemukan saat sesi pengujian Wave 5 (W5-RT-NNN).
+Defect log ini memuat cacat historis (Iterasi 1 B01..B11) yang dideteksi oleh
+QA dan UI/UX kelompok, hasil bug-hunt Iterasi 4 (H01-1..H17-2), serta cacat baru
+yang ditemukan saat sesi pengujian Iterasi 5 (W5-RT-NNN).
 
 Skala keparahan:
 - Critical: memblokir submission atau membahayakan data.
@@ -16,56 +16,56 @@ Skala keparahan:
 
 Status:
 - Open: belum diperbaiki.
-- Fixed in <wave>: telah diperbaiki dengan referensi wave.
+- Fixed in <iterasi>: telah diperbaiki dengan referensi iterasi.
 - Documented: didokumentasikan sebagai keputusan desain sengaja.
 - Inconclusive: tidak dapat dipastikan tanpa investigasi lebih lanjut.
 
 Sumber referensi:
-- `.mission/bugs.md` (Bug Register awal).
-- `.mission/findings/bugs/W4-HUNT.md` (bug-hunt Wave 4).
-- `.mission/waves/wave-01-results.md` (resolusi Wave 1).
-- `.mission/findings/bugs/W5-FIX-CRITICAL.md` (resolusi Wave 5).
+- catatan internal proyek (Bug Register awal).
+- catatan internal proyek (bug-hunt Iterasi 4).
+- catatan internal proyek (resolusi Iterasi 1).
+- catatan internal proyek (resolusi Iterasi 5).
 
-## 1. Cacat Historis Wave 1 (B01 sampai B11)
+## 1. Cacat Historis Iterasi 1 (B01 sampai B11)
 
-Cacat berikut ditemukan saat sesi UI testing dengan dosen pada minggu Wave 0.
-Semua telah diperbaiki di Wave 1.
+Cacat berikut ditemukan saat sesi UI testing dengan dosen pada minggu tahap persiapan.
+Semua telah diperbaiki di Iterasi 1.
 
 | ID | Keparahan | Modul | Deskripsi | File:Line referensi | Status | TC Reproduksi |
 |---|---|---|---|---|---|---|
-| B01 | Major | ADMIN | Admin dashboard tidak memiliki CTA ke halaman scraper. | `src/app/admin/dashboard/page.tsx:170-226` | Fixed in Wave 1 | TC-SCREEN-003 (Blocked B-WAVE1-BUILD-1) |
-| B02 | Major | DASHBOARD | Tombol "Lihat semua" pada panel aktivitas tidak memiliki target. | `src/app/dashboard/page.tsx:442`; route `src/app/dashboard/aktivitas/page.tsx` | Fixed in Wave 1 | TC-SCREEN-004 (Blocked B-WAVE1-BUILD-1) |
-| B03 | Major | PASIEN | Form pasien menerima huruf pada field numerik medis (BB, TB, LILA, dll). | `api/routes/patient_routes.py:17-99`; `src/lib/patient-validation.ts` | Fixed in Wave 1 | TC-PASIEN-008 sampai TC-PASIEN-014 |
-| B04 | Major | PDF | Export PDF hanya mendukung rekam medis (3 jenis lain hilang). | `api/routes/pdf_routes.py:169-511`; `src/app/export-pdf/page.tsx` | Fixed in Wave 1 | TC-PDF-001 sampai TC-PDF-007 |
-| B05 | Major | SAFETY | Cek interaksi obat tidak menampilkan obat aktif pasien. | `api/routes/safety_routes.py:44-61`; `src/app/safety-checker/page.tsx` | Fixed in Wave 1 | TC-SAFETY-005 |
-| B06 | Minor | ADMIN | Link scraper di admin dan KPI pengguna aktif "self-fixed". | `src/app/admin/dashboard/page.tsx` | Fixed in Wave 1 | TC-SCREEN-003, TC-ADMIN-001 |
-| B07 | Major | PASIEN | List pasien terurut newest-first salah, item terbaru di bawah. | `api/routes/patient_routes.py:135-146` | Fixed in Wave 1 | TC-PASIEN-001, TC-PASIEN-022 |
-| B08 | Major | SAFETY | Safety checker tidak menjelaskan inline cara membaca verdikt. | `src/app/safety-checker/page.tsx` | Fixed in Wave 1 | TC-SCREEN-005 (Blocked B-WAVE1-BUILD-1) |
-| B09 | Major | AUTH | Login manual yang diketik gagal; demo creds tidak terlihat. | `src/app/login/page.tsx:18-43, 80-109` | Fixed in Wave 1 | TC-SCREEN-001 (Blocked B-WAVE1-BUILD-1) |
-| B10 | Major | ADMIN | Admin dashboard menampilkan KPI hardcoded (1.247, 38, 89, 2). | `src/app/admin/dashboard/page.tsx:43-81` | Fixed in Wave 1 | TC-ADMIN-001 (backend), TC-SCREEN-002 (UI Blocked) |
-| B11 | Major | HEATMAP | Heatmap tidak benar-benar heatmap (warna tidak kontinu). | `src/app/heatmap/page.tsx`; `src/lib/heatmap-colors.ts` | Fixed in Wave 1 | TC-HEATMAP-001 (backend), TC-HEATMAP-003 (UI Blocked) |
+| B01 | Major | ADMIN | Admin dashboard tidak memiliki CTA ke halaman scraper. | `src/app/admin/dashboard/page.tsx:170-226` | Fixed in Iterasi 1 | TC-SCREEN-003 (Blocked B-BUILD-1) |
+| B02 | Major | DASHBOARD | Tombol "Lihat semua" pada panel aktivitas tidak memiliki target. | `src/app/dashboard/page.tsx:442`; route `src/app/dashboard/aktivitas/page.tsx` | Fixed in Iterasi 1 | TC-SCREEN-004 (Blocked B-BUILD-1) |
+| B03 | Major | PASIEN | Form pasien menerima huruf pada field numerik medis (BB, TB, LILA, dll). | `api/routes/patient_routes.py:17-99`; `src/lib/patient-validation.ts` | Fixed in Iterasi 1 | TC-PASIEN-008 sampai TC-PASIEN-014 |
+| B04 | Major | PDF | Export PDF hanya mendukung rekam medis (3 jenis lain hilang). | `api/routes/pdf_routes.py:169-511`; `src/app/export-pdf/page.tsx` | Fixed in Iterasi 1 | TC-PDF-001 sampai TC-PDF-007 |
+| B05 | Major | SAFETY | Cek interaksi obat tidak menampilkan obat aktif pasien. | `api/routes/safety_routes.py:44-61`; `src/app/safety-checker/page.tsx` | Fixed in Iterasi 1 | TC-SAFETY-005 |
+| B06 | Minor | ADMIN | Link scraper di admin dan KPI pengguna aktif "self-fixed". | `src/app/admin/dashboard/page.tsx` | Fixed in Iterasi 1 | TC-SCREEN-003, TC-ADMIN-001 |
+| B07 | Major | PASIEN | List pasien terurut newest-first salah, item terbaru di bawah. | `api/routes/patient_routes.py:135-146` | Fixed in Iterasi 1 | TC-PASIEN-001, TC-PASIEN-022 |
+| B08 | Major | SAFETY | Safety checker tidak menjelaskan inline cara membaca verdikt. | `src/app/safety-checker/page.tsx` | Fixed in Iterasi 1 | TC-SCREEN-005 (Blocked B-BUILD-1) |
+| B09 | Major | AUTH | Login manual yang diketik gagal; demo creds tidak terlihat. | `src/app/login/page.tsx:18-43, 80-109` | Fixed in Iterasi 1 | TC-SCREEN-001 (Blocked B-BUILD-1) |
+| B10 | Major | ADMIN | Admin dashboard menampilkan KPI hardcoded (1.247, 38, 89, 2). | `src/app/admin/dashboard/page.tsx:43-81` | Fixed in Iterasi 1 | TC-ADMIN-001 (backend), TC-SCREEN-002 (UI Blocked) |
+| B11 | Major | HEATMAP | Heatmap tidak benar-benar heatmap (warna tidak kontinu). | `src/app/heatmap/page.tsx`; `src/lib/heatmap-colors.ts` | Fixed in Iterasi 1 | TC-HEATMAP-001 (backend), TC-HEATMAP-003 (UI Blocked) |
 
-## 2. Cacat Wave 4 Bug Hunt (H01-1 sampai H17-2)
+## 2. Cacat Iterasi 4 Bug Hunt (H01-1 sampai H17-2)
 
-Bug-hunter Wave 4 melakukan 17-kategori sweep read-only. Total 22 temuan
+Bug-hunter Iterasi 4 melakukan 17-kategori sweep read-only. Total 22 temuan
 dengan klasifikasi sebagai berikut.
 
 ### 2.1 Critical (1 temuan)
 
 | ID | Keparahan | Modul | Deskripsi | File:Line | Status |
 |---|---|---|---|---|---|
-| H07-1 | Critical | SAFETY | Masyarakat dapat memanen PII (nama, diagnosa, kategori, obat aktif) pasien sembarang via POST `/api/safety/check` dengan `pasien_id`. | `api/routes/safety_routes.py:24-92` | Fixed in Wave 5; diverifikasi pada TC-SAFETY-006 (pasien_context:null, pasien_active_meds:[]) |
+| H07-1 | Critical | SAFETY | Masyarakat dapat memanen PII (nama, diagnosa, kategori, obat aktif) pasien sembarang via POST `/api/safety/check` dengan `pasien_id`. | `api/routes/safety_routes.py:24-92` | Fixed in Iterasi 5; diverifikasi pada TC-SAFETY-006 (pasien_context:null, pasien_active_meds:[]) |
 
 ### 2.2 Major (6 temuan)
 
 | ID | Keparahan | Modul | Deskripsi | File:Line | Status |
 |---|---|---|---|---|---|
-| H01-1 | Major | PASIEN | Field `umur` menerima sembarang teks termasuk negatif dan out-of-range. | `api/routes/patient_routes.py:26-33` | Fixed in Wave 5; diverifikasi TC-PASIEN-015, TC-PASIEN-016, TC-PASIEN-017 |
-| H06-1 | Major | DASHBOARD | Bidan/admin `/dashboard` KPI hardcoded (regresi B10 sebagian). | `src/app/dashboard/page.tsx:302-307` | Fixed in Wave 5 (frontend) |
-| H06-2 | Major | ADMIN | Admin dashboard `auditLog` panel hardcoded dengan IP palsu. | `src/app/admin/dashboard/page.tsx:102-108` | Fixed in Wave 5 (frontend) |
-| H06-3 | Major | DASHBOARD | `/dashboard/aktivitas` feed seluruhnya hardcoded. | `src/app/dashboard/aktivitas/page.tsx:29-57` | Fixed in Wave 5 (frontend) |
-| H07-2 | Major | PASIEN | Bidan dapat membaca rekam SOAP yang dibuat bidan lain (tidak ada multi-faskes scope). | `api/routes/patient_routes.py:175-195` | Documented (single-faskes assumption); didokumentasikan di SECURITY.md Wave 5 |
-| H10-1 | Major | PASIEN | Race condition POST `/api/patients`: duplikat ID dan hilang silently. | `api/routes/patient_routes.py:228-235`; `api/storage.py:51-56` | Fixed in Wave 5 (threading.Lock) |
+| H01-1 | Major | PASIEN | Field `umur` menerima sembarang teks termasuk negatif dan out-of-range. | `api/routes/patient_routes.py:26-33` | Fixed in Iterasi 5; diverifikasi TC-PASIEN-015, TC-PASIEN-016, TC-PASIEN-017 |
+| H06-1 | Major | DASHBOARD | Bidan/admin `/dashboard` KPI hardcoded (regresi B10 sebagian). | `src/app/dashboard/page.tsx:302-307` | Fixed in Iterasi 5 (frontend) |
+| H06-2 | Major | ADMIN | Admin dashboard `auditLog` panel hardcoded dengan IP palsu. | `src/app/admin/dashboard/page.tsx:102-108` | Fixed in Iterasi 5 (frontend) |
+| H06-3 | Major | DASHBOARD | `/dashboard/aktivitas` feed seluruhnya hardcoded. | `src/app/dashboard/aktivitas/page.tsx:29-57` | Fixed in Iterasi 5 (frontend) |
+| H07-2 | Major | PASIEN | Bidan dapat membaca rekam SOAP yang dibuat bidan lain (tidak ada multi-faskes scope). | `api/routes/patient_routes.py:175-195` | Documented (single-faskes assumption); didokumentasikan di SECURITY.md Iterasi 5 |
+| H10-1 | Major | PASIEN | Race condition POST `/api/patients`: duplikat ID dan hilang silently. | `api/routes/patient_routes.py:228-235`; `api/storage.py:51-56` | Fixed in Iterasi 5 (threading.Lock) |
 
 ### 2.3 Minor (15 temuan)
 
@@ -96,13 +96,13 @@ dengan klasifikasi sebagai berikut.
 
 | ID | Keparahan | Modul | Deskripsi | Catatan |
 |---|---|---|---|---|
-| H12-1 | Inconclusive | A11Y | Visible focus ring pada `.btn`, `.input`, `.chip`, `.nav-pill` perlu verifikasi Playwright keyboard tab-through. | Verifikasi Playwright tertunda karena B-WAVE1-BUILD-1. |
+| H12-1 | Inconclusive | A11Y | Visible focus ring pada `.btn`, `.input`, `.chip`, `.nav-pill` perlu verifikasi Playwright keyboard tab-through. | Verifikasi Playwright tertunda karena B-BUILD-1. |
 
-## 3. Cacat Baru Selama Pengujian Wave 5 (W5-RT-NNN)
+## 3. Cacat Baru Selama Pengujian Iterasi 5 (W5-RT-NNN)
 
-Tidak ditemukan cacat baru selama eksekusi 88 test case Wave 5. Semua TC
+Tidak ditemukan cacat baru selama eksekusi 88 test case Iterasi 5. Semua TC
 yang dieksekusi via curl Pass dengan hasil aktual sesuai harapan. TC Blocked
-adalah konsekuensi B-WAVE1-BUILD-1 (lingkungan build), bukan cacat aplikasi.
+adalah konsekuensi B-BUILD-1 (lingkungan build), bukan cacat aplikasi.
 
 Catatan observasi non-defect:
 - W5-OBS-001 (informational): Endpoint `/api/safety/check` mengembalikan `severity_score:60` untuk dua obat dan untuk tiga obat. Ini sesuai spesifikasi FR-031 karena skor adalah `round(max(skor_per_obat))`. Pengamatan informasional, bukan cacat.
@@ -112,7 +112,7 @@ Catatan observasi non-defect:
 
 | Klasifikasi | Total | Fixed | Documented | Open |
 |---|---|---|---|---|
-| B01-B11 (Wave 1) | 11 | 11 | 0 | 0 |
+| B01-B11 (Iterasi 1) | 11 | 11 | 0 | 0 |
 | H Critical | 1 | 1 | 0 | 0 |
 | H Major | 6 | 4 | 1 (H07-2 single-faskes) | 0 untuk Major yang harus-fix (H06-1, H06-2, H06-3 Fixed) |
 | H Minor | 18 | 0 | 5 (H03-1, H07-3, H09-1, H16-1, alasan di tabel 2.3) | 13 |
@@ -127,4 +127,4 @@ tanpa memblokir submission 25 Mei 2026.
 
 Disusun: Bimo Surya Anggara, NIM 251524040 (QA).
 Validasi historis: Ghaisan Khoirul Badruzaman, NIM 251524048 (Project Leader).
-Validasi keamanan: berdasarkan Wave 4 bug-hunt sweep yang independen.
+Validasi keamanan: berdasarkan Iterasi 4 bug-hunt sweep yang independen.

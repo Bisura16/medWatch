@@ -12,7 +12,6 @@ diagrams/
 *.md
 *.drawio
 *.log
-.claude/
 .DS_Store
 Laporan_MedWatch.pdf
 anggota5/__pycache__

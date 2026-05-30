@@ -31,13 +31,13 @@ Wall-clock build time on a 2024 M-series MacBook is about 3 minutes 24 seconds (
 
 ## Build from source on Windows host
 
-Follow Path B (GitHub Actions Windows runner) in `.mission/findings/wave-2-runbook-windows-build.md`. The workflow checks out the repo on `windows-latest`, runs PyInstaller against `medwatch_desktop.spec` to produce the real `medwatch-backend.exe`, copies the result into both variant `resources/` folders, then runs `npx electron-builder --config electron-builder.yml --win portable` from this folder.
+Follow Path B (GitHub Actions Windows runner) described in the team build runbook. The workflow checks out the repo on `windows-latest`, runs PyInstaller against `medwatch_desktop.spec` to produce the real `medwatch-backend.exe`, copies the result into both variant `resources/` folders, then runs `npx electron-builder --config electron-builder.yml --win portable` from this folder.
 
 ## What this contains
 
 The bundle ships these payloads under `resources/`:
 
-- Static Next.js export from Wave 3 (the renderer tree, about 2.5 MiB).
+- Static Next.js export (the renderer tree, about 2.5 MiB).
 - PyInstaller-bundled Flask backend as `medwatch-backend.exe` (PLACEHOLDER, see below).
 - SQLite drug database `drugs.db` (246 MiB, SHA256 `76be06d65ada4ac13dc17786a76214d36fc496ba08d3222aff1b4660f86b0bae`).
 
@@ -45,7 +45,7 @@ The Electron 36 main process spawns the backend as a child process, waits for th
 
 ## Known limitation (backend.exe)
 
-The `medwatch-backend.exe` inside this portable bundle is currently a 257 KiB placeholder, not a real PyInstaller bundle. The placeholder displays an error dialog and exits with code 1, so the application UI will show "Backend MedWatch gagal dimulai" on launch. The build host (macOS arm64) cannot run PyInstaller against a Windows Python interpreter because Wine in Docker crashes on Apple Silicon. The replacement procedure (Path A native Windows, Path B GitHub Actions Windows runner) is documented in `KNOWN_LIMITATION_BACKEND_EXE.md` at the repo root.
+The `medwatch-backend.exe` inside this portable bundle is currently a 257 KiB placeholder, not a real PyInstaller bundle. The placeholder displays an error dialog and exits with code 1, so the application UI will show "Backend MedWatch gagal dimulai" on launch. The build host (macOS arm64) cannot run PyInstaller against a Windows Python interpreter because Wine in Docker crashes on Apple Silicon. The replacement procedure (Path A native Windows, Path B GitHub Actions Windows runner) is described in the "Build from source on Windows host" section above.
 
 ## SmartScreen first-run warning
 
@@ -53,7 +53,7 @@ Windows SmartScreen warns on first run because the .exe is unsigned. Click `More
 
 ## Offline operation
 
-All drug data ships in `drugs.db`. The app does NOT require internet at runtime. Network isolation will be verified by the user on a Windows VM per `.mission/findings/wave-6-validation.md`.
+All drug data ships in `drugs.db`. The app does NOT require internet at runtime. Network isolation is verified by the user on a Windows VM as part of release validation.
 
 ## Portable launch behavior
 

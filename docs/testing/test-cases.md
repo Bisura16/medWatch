@@ -949,12 +949,12 @@ Singkatan endpoint: BASE = `http://127.0.0.1:8080`.
 - Langkah: 1. Buka `http://localhost:3000/heatmap`. 2. Inspeksi `circle` atau `rect` per sel; cek warna kontinu green-yellow-red.
 - Data Input: Halaman web.
 - Hasil yang Diharapkan: 102 sel memiliki warna unik per nilai; sel v=0 tetap berwarna tint pucat.
-- Hasil Aktual: Blocked. Frontend `http://localhost:3000/heatmap` mengembalikan HTTP 500 Internal Server Error karena blocker B-WAVE1-BUILD-1 (Next 16 + Node 25 incompat).
+- Hasil Aktual: Blocked. Frontend `http://localhost:3000/heatmap` mengembalikan HTTP 500 Internal Server Error karena blocker B-BUILD-1 (Next 16 + Node 25 incompat).
 - Status: Blocked
 - Tester: Alia Ardani
 - NIM: 251524035
 - Tanggal: 15 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`. Catatan: T1-HEATMAP.md di `.mission/findings/bugs/` sudah memverifikasi 102 sel ber-aria-label pada Wave 1 saat SSR masih berjalan.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`. Catatan: T1-HEATMAP.md di catatan internal proyek sudah memverifikasi 102 sel ber-aria-label pada Iterasi 1 saat SSR masih berjalan.
 
 ### TC-HEATMAP-004
 - Modul: HEATMAP
@@ -964,12 +964,12 @@ Singkatan endpoint: BASE = `http://127.0.0.1:8080`.
 - Langkah: Inspeksi DOM `/heatmap` cari `.legend` block.
 - Data Input: Halaman web.
 - Hasil yang Diharapkan: Legend memuat tiga tick `0`, `2`, `4` dan caption Bahasa Indonesia.
-- Hasil Aktual: Blocked karena B-WAVE1-BUILD-1.
+- Hasil Aktual: Blocked karena B-BUILD-1.
 - Status: Blocked
 - Tester: Alia Ardani
 - NIM: 251524035
 - Tanggal: 15 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`.
 
 ### TC-HEATMAP-005
 - Modul: HEATMAP
@@ -978,13 +978,13 @@ Singkatan endpoint: BASE = `http://127.0.0.1:8080`.
 - Prasyarat: Frontend SSR aktif.
 - Langkah: Inspeksi urutan baris dan kolom.
 - Data Input: Halaman web.
-- Hasil yang Diharapkan: Baris teratas adalah obat dengan total bobot tertinggi (Ibuprofen 12 per data Wave 1).
-- Hasil Aktual: Blocked karena B-WAVE1-BUILD-1.
+- Hasil yang Diharapkan: Baris teratas adalah obat dengan total bobot tertinggi (Ibuprofen 12 per data Iterasi 1).
+- Hasil Aktual: Blocked karena B-BUILD-1.
 - Status: Blocked
 - Tester: Alia Ardani
 - NIM: 251524035
 - Tanggal: 15 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`.
 
 ---
 
@@ -1287,10 +1287,10 @@ Singkatan endpoint: BASE = `http://127.0.0.1:8080`.
 
 ## Modul SCREEN (UI Usability + Responsiveness)
 
-Modul SCREEN menguji halaman SSR Next.js. Karena blocker B-WAVE1-BUILD-1
+Modul SCREEN menguji halaman SSR Next.js. Karena blocker B-BUILD-1
 (Next.js 16.2.1 + Node 25.6 ketidakcocokan build), semua test case modul
 SCREEN dicatat Blocked dengan rujukan ke bukti
-`docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`.
+`docs/testing/evidence/B-BUILD-1-frontend-check.txt`.
 
 ### TC-SCREEN-001
 - Modul: SCREEN
@@ -1305,7 +1305,7 @@ SCREEN dicatat Blocked dengan rujukan ke bukti
 - Tester: Abhidal Muhammad Gazza
 - NIM: 251524032
 - Tanggal: 17 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`. Alasan Blocked: B-WAVE1-BUILD-1.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`. Alasan Blocked: B-BUILD-1.
 
 ### TC-SCREEN-002
 - Modul: SCREEN
@@ -1320,7 +1320,7 @@ SCREEN dicatat Blocked dengan rujukan ke bukti
 - Tester: Abhidal Muhammad Gazza
 - NIM: 251524032
 - Tanggal: 17 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`. Endpoint backend `/api/admin/system-stats` sudah diverifikasi oleh TC-ADMIN-001 dan mengembalikan data real-time non-hardcoded.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`. Endpoint backend `/api/admin/system-stats` sudah diverifikasi oleh TC-ADMIN-001 dan mengembalikan data real-time non-hardcoded.
 
 ### TC-SCREEN-003
 - Modul: SCREEN
@@ -1330,12 +1330,12 @@ SCREEN dicatat Blocked dengan rujukan ke bukti
 - Langkah: Inspeksi link dengan `data-testid="cta-scraper"`.
 - Data Input: Halaman web.
 - Hasil yang Diharapkan: Link arahkan ke `/admin/scraper`.
-- Hasil Aktual: Blocked karena B-WAVE1-BUILD-1.
+- Hasil Aktual: Blocked karena B-BUILD-1.
 - Status: Blocked
 - Tester: Abhidal Muhammad Gazza
 - NIM: 251524032
 - Tanggal: 17 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`.
 
 ### TC-SCREEN-004
 - Modul: SCREEN
@@ -1345,12 +1345,12 @@ SCREEN dicatat Blocked dengan rujukan ke bukti
 - Langkah: Klik `data-testid="lihat-semua-aktivitas"` di `/dashboard`.
 - Data Input: Halaman web.
 - Hasil yang Diharapkan: Navigasi ke `/dashboard/aktivitas`.
-- Hasil Aktual: Blocked karena B-WAVE1-BUILD-1.
+- Hasil Aktual: Blocked karena B-BUILD-1.
 - Status: Blocked
 - Tester: Abhidal Muhammad Gazza
 - NIM: 251524032
 - Tanggal: 17 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`.
 
 ### TC-SCREEN-005
 - Modul: SCREEN
@@ -1360,12 +1360,12 @@ SCREEN dicatat Blocked dengan rujukan ke bukti
 - Langkah: Buka `/safety-checker`; klik collapsible "Cara membaca verdikt dan obat aktif".
 - Data Input: Halaman web.
 - Hasil yang Diharapkan: Panel terbuka memperlihatkan 3 seksi penjelas.
-- Hasil Aktual: Blocked karena B-WAVE1-BUILD-1.
+- Hasil Aktual: Blocked karena B-BUILD-1.
 - Status: Blocked
 - Tester: Abhidal Muhammad Gazza
 - NIM: 251524032
 - Tanggal: 17 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`.
 
 ### TC-SCREEN-006
 - Modul: SCREEN
@@ -1375,12 +1375,12 @@ SCREEN dicatat Blocked dengan rujukan ke bukti
 - Langkah: Resize browser ke 360px, 768px, 1280px, 1920px; verifikasi tidak ada layout break.
 - Data Input: Halaman web.
 - Hasil yang Diharapkan: Layout responsif tanpa overflow.
-- Hasil Aktual: Blocked karena B-WAVE1-BUILD-1.
+- Hasil Aktual: Blocked karena B-BUILD-1.
 - Status: Blocked
 - Tester: Abhidal Muhammad Gazza
 - NIM: 251524032
 - Tanggal: 18 Mei 2026
-- Bukti: `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`.
+- Bukti: `docs/testing/evidence/B-BUILD-1-frontend-check.txt`.
 
 ---
 

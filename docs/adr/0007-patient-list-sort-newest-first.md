@@ -9,8 +9,7 @@
 Bug register entry B07 melaporkan bahwa daftar pasien menampilkan
 kunjungan terbaru di bawah, sehingga bidan harus scroll untuk
 menemukan pasien yang baru saja masuk. Locale yang dipakai untuk
-`tanggal_kunjungan` adalah format Indonesia DD-MM-YYYY (lihat CLAUDE.md
-Rule 3 skema Visit/SOAP). Sorting alfabetis terhadap string DD-MM-YYYY
+`tanggal_kunjungan` adalah format Indonesia DD-MM-YYYY (lihat konvensi proyek skema Visit/SOAP). Sorting alfabetis terhadap string DD-MM-YYYY
 tidak menghasilkan urutan kronologis yang benar, dan sorting di
 frontend tidak dapat mengandalkan parser bawaan `Date(...)` karena
 ambiguitas dengan format Amerika MM-DD-YYYY.
@@ -77,4 +76,4 @@ yang dapat diprediksi.
 
 - ADR-0003 (skema canonical anggota2) memastikan ID `P001` yang
   digunakan oleh parser ini sesuai dengan format Bimo.
-- Bug B07 didokumentasikan dalam `.mission/bugs.md`.
+- Bug B07 didokumentasikan dalam catatan internal proyek.

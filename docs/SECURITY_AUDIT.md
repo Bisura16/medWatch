@@ -33,7 +33,7 @@ Verified after redeploy: `pip-audit -r api/requirements.txt` reports "No known v
 |---|---|---|---|
 | H5 | d3-color ReDoS (GHSA-36jr-mh4h-2g58) | transitive of `react-simple-maps` | ACCEPTED - react-simple-maps is only used by `_archived/indonesia-map`, no longer routable |
 | H6 | lodash code injection via `_.template` (GHSA-r5fr-rjxr-66jc) | transitive of `react-force-graph-2d` | ACCEPTED - react-force-graph-2d only used by `_archived/drug-network`, no longer routable |
-| H7 | Next.js DoS with Server Components (GHSA-q4gf-8mx6-v5v3) | next 16.2.1 | TO BE FIXED - `npm audit fix --force` to next 16.2.4. Patch-level upgrade considered safe but deferred to post-mission to avoid mid-flight Next.js version churn. Demo deployment is publicly accessible and Vercel applies platform-level DDoS mitigations. |
+| H7 | Next.js DoS with Server Components (GHSA-q4gf-8mx6-v5v3) | next 16.2.1 | TO BE FIXED - `npm audit fix --force` to next 16.2.4. Patch-level upgrade considered safe but deferred to post-project to avoid mid-flight Next.js version churn. Demo deployment is publicly accessible and Vercel applies platform-level DDoS mitigations. |
 
 H5 and H6 are isolated to archived page code paths. Even though the dependencies remain in `node_modules`, they are not loaded at runtime because the page files live under `src/app/_archived/` (private folder, no route). To fully eliminate, run `npm uninstall react-simple-maps react-force-graph-2d topojson-client d3-* three @react-three/*` after confirming the archived pages will not be restored.
 

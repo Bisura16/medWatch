@@ -11,7 +11,7 @@ Bug register entry B09 melaporkan dua gejala terkait login:
 kemudian menekan tombol login dengan cepat, request kadang terkirim
 dengan field kosong (login gagal 401). (2) Demo credential preset
 (`bidan_siti`, `umum_budi`, `admin_ghaisan`) tidak terlihat di
-halaman login. Investigasi Wave 1 menemukan penyebab gejala pertama:
+halaman login. Investigasi Iterasi 1 menemukan penyebab gejala pertama:
 state React `username` dan `password` mungkin belum sinkron dengan
 nilai input DOM saat handler `submit` dieksekusi, terutama setelah
 password manager autofill atau setelah klik preset yang menulis nilai
@@ -84,4 +84,4 @@ seluruh browser modern tanpa polyfill.
   yang dipanggil dari handler ini.
 - ADR-0001 mencatat alur cookie set yang terjadi di proxy setelah
   endpoint login mengembalikan token.
-- Bug B09 didokumentasikan dalam `.mission/bugs.md`.
+- Bug B09 didokumentasikan dalam catatan internal proyek.

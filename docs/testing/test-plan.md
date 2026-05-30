@@ -14,7 +14,7 @@ Rencana uji ini disusun mengikuti struktur IEEE Std 829-2008 untuk Software Test
 Documentation dan ISO/IEC/IEEE 29119-3:2013 Test Documentation. Rencana ini
 mengatur seluruh aktivitas pengujian black-box pada sistem MedWatch yaitu
 backend Flask (API) dan frontend Next.js (web showcase). Rencana ini melengkapi
-SRS (`docs/SRS.md`) dan Bug Register (lihat `.mission/bugs.md`).
+SRS (`docs/SRS.md`) dan Bug Register (lihat catatan internal proyek).
 
 ## 2. Lingkup Pengujian
 
@@ -25,7 +25,7 @@ beserta layer integrasi `api/` (modul Python di bawah `anggota1` hingga
 
 Frontend Next.js 16.2.1 di `http://localhost:3000` diuji untuk halaman SSR
 melalui pemeriksaan ketersediaan. Pengujian klik UI Playwright dijadwalkan
-tetapi dihalangi oleh blocker B-WAVE1-BUILD-1 (lihat lampiran).
+tetapi dihalangi oleh blocker B-BUILD-1 (lihat lampiran).
 
 ### 2.2 Fitur dalam Lingkup
 Pengujian mencakup sepuluh modul fungsional dengan kode test case
@@ -39,13 +39,13 @@ Pengujian mencakup sepuluh modul fungsional dengan kode test case
 - PDF: empat tipe laporan PDF (rekam medis, bulanan, efek samping, inventaris).
 - ADMIN: statistik sistem, manajemen user, pemicu scraper.
 - SCRAPE: endpoint pendukung scraping (info, health).
-- SCREEN: pengujian usability halaman UI SSR. Dihalangi B-WAVE1-BUILD-1.
+- SCREEN: pengujian usability halaman UI SSR. Dihalangi B-BUILD-1.
 
 ### 2.3 Fitur di Luar Lingkup
 - Pengujian load tingkat tinggi (>30 req/s) dilakukan terpisah pada fase deploy.
 - Pengujian penetration testing tingkat lanjut. Mengacu pada `docs/SECURITY.md`.
 - Pengujian klik UI bidan/admin halaman SSR dihalangi karena lingkungan build
-  Node 25 + Next 16 belum stabil (blocker B-WAVE1-BUILD-1). Status Blocked
+  Node 25 + Next 16 belum stabil (blocker B-BUILD-1). Status Blocked
   digunakan untuk modul SCREEN.
 
 ## 3. Pendekatan dan Strategi Pengujian
@@ -98,7 +98,7 @@ Workstation Apple MacBook Pro M2, RAM 16 GB, penyimpanan SSD 512 GB.
 - Python 3.11 dengan Flask 3.0 berjalan di `http://127.0.0.1:8080` (proses
   backend dijalankan via `python -m flask --app api.app run --port 8080`).
 - Node.js v25 dengan Next.js 16.2.1 di `http://localhost:3000` (status:
-  Internal Server Error pada SSR karena blocker B-WAVE1-BUILD-1).
+  Internal Server Error pada SSR karena blocker B-BUILD-1).
 - curl 8.7.1 sebagai alat utama pengujian HTTP.
 - pandoc 3.9.0.2 untuk konversi Markdown ke docx.
 - python3 untuk parsing JSON respons.
@@ -162,7 +162,7 @@ anggota Kelompok B5.
 
 | Kode Risiko | Deskripsi | Mitigasi |
 |---|---|---|
-| R-T-001 | Frontend SSR tidak dapat di-build (Next.js 16.2.1 + Node 25.6) menghalangi pengujian halaman UI. | Modul SCREEN ditandai Blocked dengan referensi B-WAVE1-BUILD-1. Pengujian alur API dijalankan setara via curl. |
+| R-T-001 | Frontend SSR tidak dapat di-build (Next.js 16.2.1 + Node 25.6) menghalangi pengujian halaman UI. | Modul SCREEN ditandai Blocked dengan referensi B-BUILD-1. Pengujian alur API dijalankan setara via curl. |
 | R-T-002 | Token JWT bocor melalui evidence file. | Token disimpan pada `/tmp/medwatch-test/` di luar repo. Evidence menyimpan respons aplikasi, bukan kredensial. |
 | R-T-003 | Data persistensi berubah selama uji (POST membuat pasien baru). | Eksekusi dirancang idempotent. Tester memverifikasi ID pasien sebelum dan sesudah. |
 | R-T-004 | Lingkungan macOS curl versi berbeda. | Versi curl direkam pada bagian 4.2. |
@@ -196,7 +196,7 @@ Setiap test case memuat atribut berikut sesuai ISO/IEC/IEEE 29119-3 clause
 
 Cacat dicatat di `docs/testing/defect-log.md`. Setiap cacat ditandai dengan
 keparahan: Critical (memblokir submission), Major (mempengaruhi narasi demo),
-Minor (kosmetik atau perbaikan masa depan). Cacat historis dari Wave 4 bug
+Minor (kosmetik atau perbaikan masa depan). Cacat historis dari Iterasi 4 bug
 hunt (`H01-1` sampai `H17-2`) dimasukkan sebagai input historis untuk
 keterlacakan.
 
@@ -229,11 +229,11 @@ Dosen Pengampu: Aprianti Nanda Sari, Ade Chandra Nugraha, Ardhian Ekawijana.
 7. MedWatch SRS, `docs/SRS.md`.
 8. MedWatch As-Built, `docs/AS-BUILT.md`.
 9. MedWatch Security, `docs/SECURITY.md`.
-10. Wave 4 Bug Hunt Findings, `.mission/findings/bugs/W4-HUNT.md`.
+10. Iterasi 4 Bug Hunt Findings, catatan internal proyek.
 
-## Lampiran A. Catatan Blocker B-WAVE1-BUILD-1
+## Lampiran A. Catatan Blocker B-BUILD-1
 
-Blocker ini dikenal sejak Wave 1. Penjelasan singkat. Versi Next.js 16.2.1
+Blocker ini dikenal sejak Iterasi 1. Penjelasan singkat. Versi Next.js 16.2.1
 tidak dapat menyelesaikan SSR build pada Node 25.6 di lingkungan macOS Darwin
 25.3.0 karena ketidakcocokan webpack chunk loader pada module resolution baru.
 Hasil pengamatan: `curl http://localhost:3000/` mengembalikan

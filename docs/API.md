@@ -295,7 +295,7 @@ Skema entitas pasien (Bimo) selengkapnya dijelaskan pada `docs/DATA-DICTIONARY.m
 - Method dan path: `GET /api/patients`.
 - Auth: role `tenaga_kesehatan` atau `admin`.
 - Query: tidak ada.
-- Response 200 (urut tanggal kunjungan menurun, tiebreak by id menurun, lihat Wave 1 T1-PASIEN):
+- Response 200 (urut tanggal kunjungan menurun, tiebreak by id menurun, lihat Iterasi 1 T1-PASIEN):
 
 ```json
 [
@@ -387,7 +387,7 @@ Skema entitas pasien (Bimo) selengkapnya dijelaskan pada `docs/DATA-DICTIONARY.m
 { "error": "nama required" }
 ```
 
-- Error 400 validasi multi-field (Wave 1 T1-PASIEN B03):
+- Error 400 validasi multi-field (Iterasi 1 T1-PASIEN B03):
 
 ```json
 {
@@ -406,7 +406,7 @@ Skema entitas pasien (Bimo) selengkapnya dijelaskan pada `docs/DATA-DICTIONARY.m
 - Method dan path: `PUT /api/patients/<pid>`.
 - Auth: role `tenaga_kesehatan` atau `admin`.
 - Body: parsial. Server melakukan deep-merge ke dokumen eksisting (`api/routes/patient_routes.py:125-132,198-202`).
-- Validasi: validasi rentang numerik berjalan sama dengan POST (Wave 1 T1-PASIEN). 400 dengan `fields: [...]` bila gagal.
+- Validasi: validasi rentang numerik berjalan sama dengan POST (Iterasi 1 T1-PASIEN). 400 dengan `fields: [...]` bila gagal.
 - Response 200: objek pasien hasil merge.
 - Error 404: bila `pid` tidak ditemukan.
 - Source: `api/routes/patient_routes.py:190-205`.
@@ -522,7 +522,7 @@ Skema entitas pasien (Bimo) selengkapnya dijelaskan pada `docs/DATA-DICTIONARY.m
 | `drugs` | array string | ya | Minimal 1 elemen. |
 | `pasien_id` | string | tidak | Bila diisi, server memuat record pasien dan mengisi konteks tambahan. |
 
-- Response 200 (Wave 1 T1-SAFETY menambah field `pasien_active_meds`):
+- Response 200 (Iterasi 1 T1-SAFETY menambah field `pasien_active_meds`):
 
 ```json
 {
@@ -675,7 +675,7 @@ Semua endpoint PDF mengembalikan response `application/pdf` sebagai attachment v
 - Error 503 atau 500 sesuai jalur kegagalan modul.
 - Source: `api/routes/pdf_routes.py:205-238`.
 
-#### 5.7.3 POST /api/pdf/generate-efek-samping (Wave 1 T1-PDF)
+#### 5.7.3 POST /api/pdf/generate-efek-samping (Iterasi 1 T1-PDF)
 
 - Method dan path: `POST /api/pdf/generate-efek-samping`.
 - Auth: role `tenaga_kesehatan` atau `admin`.
@@ -690,7 +690,7 @@ Semua endpoint PDF mengembalikan response `application/pdf` sebagai attachment v
 - Error 500 bila generator melempar exception.
 - Source: `api/routes/pdf_routes.py:241-385`. Helper severity `api/routes/pdf_routes.py:108-112`. Parser resep `api/routes/pdf_routes.py:115-132`.
 
-#### 5.7.4 POST /api/pdf/generate-inventaris (Wave 1 T1-PDF)
+#### 5.7.4 POST /api/pdf/generate-inventaris (Iterasi 1 T1-PDF)
 
 - Method dan path: `POST /api/pdf/generate-inventaris`.
 - Auth: role `tenaga_kesehatan` atau `admin`.
@@ -787,11 +787,11 @@ Semua endpoint PDF mengembalikan response `application/pdf` sebagai attachment v
 
 - Source: `api/routes/admin_routes.py:88-103`.
 
-#### 5.8.5 GET /api/admin/system-stats (Wave 1 T1-ADMIN)
+#### 5.8.5 GET /api/admin/system-stats (Iterasi 1 T1-ADMIN)
 
 - Method dan path: `GET /api/admin/system-stats`.
 - Auth: role `admin`.
-- Response 200 (field `process_started_at` dan `uptime_seconds` ditambahkan Wave 1 untuk menggantikan KPI hardcoded B10):
+- Response 200 (field `process_started_at` dan `uptime_seconds` ditambahkan Iterasi 1 untuk menggantikan KPI hardcoded B10):
 
 ```json
 {
@@ -829,9 +829,9 @@ Proxy pada `src/app/api/[...slug]/route.ts` adalah satu-satunya jalur publik di 
 - Bila `BACKEND_API_URL` belum diset, proxy membalas 502 dengan body `{ "error": "BACKEND_API_URL not configured" }` (`src/app/api/[...slug]/route.ts:20-25`).
 - Bila upstream tidak terjangkau, proxy membalas 502 dengan body `{ "error": "upstream unreachable", "detail": "<exception>" }` (`src/app/api/[...slug]/route.ts:52-58`).
 
-## 7. Pengaruh Wave 1 pada API
+## 7. Pengaruh Iterasi 1 pada API
 
-Wave 1 menambah atau mengubah perilaku endpoint berikut:
+Iterasi 1 menambah atau mengubah perilaku endpoint berikut:
 
 | Endpoint | Perubahan | Sumber |
 | --- | --- | --- |
@@ -1551,7 +1551,7 @@ paths:
               schema: { $ref: "#/components/schemas/Error" }
   /api/admin/system-stats:
     get:
-      summary: System counts plus process_started_at and uptime_seconds (Wave 1 T1-ADMIN)
+      summary: System counts plus process_started_at and uptime_seconds (Iterasi 1 T1-ADMIN)
       security:
         - cookieAuth: []
         - bearerAuth: []

@@ -3,7 +3,7 @@ title: Product Requirements Document (PRD) MedWatch
 version: 1.0
 owner: Kelompok B5, D4 Teknik Informatika Politeknik Negeri Bandung
 date: 18-05-2026
-status: AS-BUILT setelah Wave 1 (fix B01-B11, akuisisi data openFDA, modul NewestVisualization)
+status: AS-BUILT setelah Iterasi 1 (fix B01-B11, akuisisi data openFDA, modul NewestVisualization)
 audience: Dosen pengampu Proyek 1 PPLD, tim kelompok B5, reviewer eksternal
 ---
 
@@ -18,7 +18,7 @@ audience: Dosen pengampu Proyek 1 PPLD, tim kelompok B5, reviewer eksternal
 - Kelompok: B5.
 - Tanggal dokumen: 18 Mei 2026.
 - Tanggal penyerahan dosen: 25 Mei 2026.
-- Versi dokumen: 1.0 (AS-BUILT pasca Wave 1).
+- Versi dokumen: 1.0 (AS-BUILT pasca Iterasi 1).
 
 ### Tim penulis
 
@@ -53,7 +53,7 @@ audience: Dosen pengampu Proyek 1 PPLD, tim kelompok B5, reviewer eksternal
 
 ## 1. Ringkasan Eksekutif
 
-MedWatch adalah sistem desktop modular untuk bidan di Fasilitas Kesehatan Tingkat 1 (Faskes 1, contohnya puskesmas dan klinik kecil) yang menggabungkan lima kapabilitas operasional: pencatatan rekam medis pasien dengan format SOAP, pengecekan keamanan dan interaksi obat, akuisisi data keamanan obat dari sumber publik (openFDA), visualisasi tren kunjungan dan efek samping, serta ekspor laporan PDF. Implementasi modular dikerjakan oleh lima anggota Kelompok B5 di folder `anggota1/` sampai `anggota5/`, lalu diintegrasikan melalui lapisan REST API Flask di `api/` dan lapisan presentasi web Next.js 15 yang berfungsi sebagai showcase. Pasca Wave 1 (sebelas perbaikan defek B01-B11, modul visualisasi tambahan `anggota3/NewestVisualization/`, akuisisi data nyata openFDA dengan 74 rekord obat plus 6000 rekord recall), MedWatch siap diserahkan kepada dosen pada 25 Mei 2026 sebagai realisasi end-to-end dari spesifikasi awal mata kuliah.
+MedWatch adalah sistem desktop modular untuk bidan di Fasilitas Kesehatan Tingkat 1 (Faskes 1, contohnya puskesmas dan klinik kecil) yang menggabungkan lima kapabilitas operasional: pencatatan rekam medis pasien dengan format SOAP, pengecekan keamanan dan interaksi obat, akuisisi data keamanan obat dari sumber publik (openFDA), visualisasi tren kunjungan dan efek samping, serta ekspor laporan PDF. Implementasi modular dikerjakan oleh lima anggota Kelompok B5 di folder `anggota1/` sampai `anggota5/`, lalu diintegrasikan melalui lapisan REST API Flask di `api/` dan lapisan presentasi web Next.js 15 yang berfungsi sebagai showcase. Pasca Iterasi 1 (sebelas perbaikan defek B01-B11, modul visualisasi tambahan `anggota3/NewestVisualization/`, akuisisi data nyata openFDA dengan 74 rekord obat plus 6000 rekord recall), MedWatch siap diserahkan kepada dosen pada 25 Mei 2026 sebagai realisasi end-to-end dari spesifikasi awal mata kuliah.
 
 ---
 
@@ -79,7 +79,7 @@ Mata kuliah Proyek 1 PPLD memberi kerangka akademik untuk membangun aplikasi des
 
 ## 3. Pengguna dan Persona
 
-MedWatch melayani tiga persona dengan kebutuhan yang berbeda. Nomenklatur peran yang dipakai oleh kode adalah `tenaga_kesehatan`, `masyarakat`, dan `admin` (lihat aturan kanonik di `CLAUDE.md` bagian "Role nomenclature"). Label antarmuka dapat menampilkan "Bidan" atau "Pasien" agar ramah pengguna.
+MedWatch melayani tiga persona dengan kebutuhan yang berbeda. Nomenklatur peran yang dipakai oleh kode adalah `tenaga_kesehatan`, `masyarakat`, dan `admin` (lihat aturan kanonik di konvensi proyek bagian "Role nomenclature"). Label antarmuka dapat menampilkan "Bidan" atau "Pasien" agar ramah pengguna.
 
 ### 3.1 Persona 1: Tenaga Kesehatan (bidan Faskes 1)
 
@@ -108,7 +108,7 @@ MedWatch melayani tiga persona dengan kebutuhan yang berbeda. Nomenklatur peran 
   1. Memantau metrik sistem nyata (pengguna aktif per peran, jumlah pasien, jumlah obat di katalog, uptime proses) yang diserve oleh `GET /api/admin/system-stats` di `api/routes/admin_routes.py:106-127`.
   2. Memicu sinkronisasi katalog obat (mocked scraper, dengan path produksi mengarah ke modul akuisisi openFDA real) lewat `POST /api/admin/scrape` di `api/routes/admin_routes.py:21-38`.
   3. Mengelola akun pengguna melalui `GET/POST/DELETE /api/admin/users` di `api/routes/admin_routes.py:41-103`.
-- Catatan PRD: peran `admin` adalah ekstensi presentasi di luar PRD asli mata kuliah yang menyatakan autentikasi sebagai out-of-scope (`CLAUDE.md`, bagian "PRD scope tension awareness"). Admin di MedWatch hadir sebagai supplementary demo, bukan sebagai pengganti modul desktop CustomTkinter anggota1-5.
+- Catatan PRD: peran `admin` adalah ekstensi presentasi di luar PRD asli mata kuliah yang menyatakan autentikasi sebagai out-of-scope (konvensi proyek, bagian "PRD scope tension awareness"). Admin di MedWatch hadir sebagai supplementary demo, bukan sebagai pengganti modul desktop CustomTkinter anggota1-5.
 
 ---
 
@@ -142,7 +142,7 @@ MedWatch melayani tiga persona dengan kebutuhan yang berbeda. Nomenklatur peran 
 
 ### 4.3 Catatan tegangan dengan PRD asli
 
-PRD asli mata kuliah (`MedWatch_PRD.pdf`) menyatakan dua butir berikut sebagai out-of-scope: "Fitur login atau multi-user dengan autentikasi" dan "Deployment ke platform web atau mobile". Misi integrasi mata kuliah menambahkan keduanya sebagai supplementary demo (lihat `CLAUDE.md` bagian "PRD scope tension awareness"). Naratif kepada dosen: aplikasi desktop modular CustomTkinter anggota1-5 tetap submission utama; lapisan REST Flask (`api/`) di Cloud Run plus Next.js 15 di Vercel adalah lapisan presentasi yang menyajikan fitur yang sama dalam form factor web demo. PRD ini mendokumentasikan AS-BUILT termasuk supplementary auth, tanpa memodifikasi PRD asli secara retroaktif.
+PRD asli mata kuliah (`MedWatch_PRD.pdf`) menyatakan dua butir berikut sebagai out-of-scope: "Fitur login atau multi-user dengan autentikasi" dan "Deployment ke platform web atau mobile". Integrasi mata kuliah menambahkan keduanya sebagai supplementary demo (lihat konvensi proyek bagian "PRD scope tension awareness"). Naratif kepada dosen: aplikasi desktop modular CustomTkinter anggota1-5 tetap submission utama; lapisan REST Flask (`api/`) di Cloud Run plus Next.js 15 di Vercel adalah lapisan presentasi yang menyajikan fitur yang sama dalam form factor web demo. PRD ini mendokumentasikan AS-BUILT termasuk supplementary auth, tanpa memodifikasi PRD asli secara retroaktif.
 
 ### 4.4 Asumsi
 
@@ -226,7 +226,7 @@ Rincian lengkap, kuantifikasi, dan acceptance criteria dipindahkan ke `docs/SRS.
 
 ### 8.1 Sumber yang dipakai
 
-- openFDA `drug/event.json` (FDA Adverse Event Reporting System / FAERS) untuk daftar efek samping per obat. Output: `anggota1/data/drug_safety_data.json`, 74 rekord obat, 1850 kemunculan istilah efek samping total (`anggota1/openfda/fetch.py` ringkasan stdout pada T1-DATA mission run, 18 Mei 2026).
+- openFDA `drug/event.json` (FDA Adverse Event Reporting System / FAERS) untuk daftar efek samping per obat. Output: `anggota1/data/drug_safety_data.json`, 74 rekord obat, 1850 kemunculan istilah efek samping total (`anggota1/openfda/fetch.py` ringkasan stdout pada T1-DATA project run, 18 Mei 2026).
 - openFDA `drug/enforcement.json` (FDA Recall Enterprise System) untuk recall obat. Output: `anggota1/data/drug_recalls.json`, 6000 rekord recall, distribusi kelas Class II=4946, Class I=552, Class III=501, Not Yet Classified=1.
 - Basis data lokal `anggota4/data/drug_database.json` (obat formularium lokal, owner Iqbal) dan `anggota4/data/effect_database.json` (efek samping terklasifikasi: ringan / sedang / serius).
 - Basis data lokal `anggota2/Pasien.json` (skema kanonik pasien SOAP, owner Bimo).
@@ -245,20 +245,20 @@ Awalnya `anggota1/anggota1.py` melakukan scraping `drugs.com/sfx/<nama>` untuk d
 
 ## 9. Metrik Sukses (Acceptance KPIs)
 
-| Kode | Metrik | Target | Status saat ini (Wave 1) |
+| Kode | Metrik | Target | Status saat ini (Iterasi 1) |
 |---|---|---|---|
 | M-01 | Defek B01-B11 terverifikasi live (Playwright atau curl + ferry-back) | 11/11 fix lulus verifikasi dosen | 11/11 (lihat `findings/bugs/T1-*.md`) |
 | M-02 | Rekord adverse-event openFDA real | >= 1000 kemunculan istilah efek samping | 1850 kemunculan, 74 rekord obat |
 | M-03 | Rekord recall openFDA real | >= 5000 rekord | 6000 rekord |
 | M-04 | Visualisasi baru di `anggota3/NewestVisualization/` | >= 4 chart informatif | 5 chart (top obat efek, distribusi keparahan, recall per tahun, perusahaan recall top, heatmap) |
 | M-05 | ID pasien sesuai format `P001..P999` | 100% format kanonik | 100% (validasi di `api/routes/patient_routes.py:102-112`) |
-| M-06 | Tidak ada nilai kredensial di repo / dokumen | nol leak | nol (per-commit secret-scan `.claude/scripts/secret-scan.sh`) |
+| M-06 | Tidak ada nilai kredensial di repo / dokumen | nol leak | nol (secret-scan pre-commit hook) |
 | M-07 | Dashboard admin uptime nyata (bukan hardcoded) | KPI uptime dihitung dari `process_started_at` | Lulus (lihat `api/routes/admin_routes.py:106-127`) |
 | M-08 | Heatmap continuous color scale 5-stop risk | non-binary | Lulus per ADR-006 (`docs/adr/0006-heatmap-continuous-color-scale.md`) |
 | M-09 | Daftar pasien sort descending tanggal | Terbaru paling atas | Lulus (`api/routes/patient_routes.py:135-146`) |
 | M-10 | Tipe PDF tersedia | >= 4 (rekam medis, laporan bulanan, efek samping, inventaris) | 4/4 (`api/routes/pdf_routes.py`) |
-| M-11 | Dokumentasi standar dikutip | PRD, SRS, SDD, ADR, API, As-Built, USER-MANUAL ada | Sedang dibangun di Wave 2 |
-| M-12 | Mesin build Frontend dan Backend lulus | Build OK, lint OK | Lulus dengan catatan B-WAVE1-BUILD-1 (Node 22 LTS direkomendasikan, Node 25 punya bug) |
+| M-11 | Dokumentasi standar dikutip | PRD, SRS, SDD, ADR, API, As-Built, USER-MANUAL ada | Sedang dibangun di Iterasi 2 |
+| M-12 | Mesin build Frontend dan Backend lulus | Build OK, lint OK | Lulus dengan catatan B-BUILD-1 (Node 22 LTS direkomendasikan, Node 25 punya bug) |
 
 ---
 
@@ -271,10 +271,10 @@ Awalnya `anggota1/anggota1.py` melakukan scraping `drugs.com/sfx/<nama>` untuk d
 | R-03 | Node 25 punya bug `EBADF` saat run `next build` di lingkungan dev Ghaisan | Pasti (sudah teramati) | Rendah-Sedang | Lingkungan submission dosen rekomendasi Node 22 LTS; dokumentasi di `docs/INSTALL.md` dan As-Built `Known Issues / Technical Debt`. |
 | R-04 | Cloud Run cold start menambah latensi pertama | Sedang | Rendah | min-instances=0 dipilih untuk biaya; first-request latency dijelaskan ke dosen sebagai trade-off free tier. |
 | R-05 | Vercel free tier punya batas function execution | Rendah | Rendah | Proxy `app/api/[...slug]/route.ts` ringan; semua kerja berat ada di backend. |
-| R-06 | Schema teammate (`anggota2/Pasien.json`) berubah saat merge ke main | Rendah | Sedang | Read-only contract di `CLAUDE.md` Rule 2; canonical schema dikunci di `docs/DATA-DICTIONARY.md`. |
-| R-07 | API key openFDA bocor ke repo | Rendah | Tinggi | Per-commit secret-scan `.claude/scripts/secret-scan.sh` blokir pola `api_key=...`, env-only loading di `api/config.py`. |
+| R-06 | Schema teammate (`anggota2/Pasien.json`) berubah saat merge ke main | Rendah | Sedang | Read-only contract di konvensi proyek; canonical schema dikunci di `docs/DATA-DICTIONARY.md`. |
+| R-07 | API key openFDA bocor ke repo | Rendah | Tinggi | Secret-scan pre-commit hook memblokir pola `api_key=...`, env-only loading di `api/config.py`. |
 | R-08 | PDF gagal untuk karakter non-Latin-1 (helvetica fpdf2) | Sedang | Rendah | `_safe()` di `api/routes/pdf_routes.py:42-45` mengencode ulang ke Latin-1 dengan replacement char. |
-| R-09 | Bidan menulis data SOAP semi-terstruktur (mis. "tespek positif") yang tidak masuk struktur ketat | Tinggi (sudah dipahami) | Rendah | Field `O.catatan` sebagai catch-all (lihat `CLAUDE.md`, "Bidan workflow reality"). |
+| R-09 | Bidan menulis data SOAP semi-terstruktur (mis. "tespek positif") yang tidak masuk struktur ketat | Tinggi (sudah dipahami) | Rendah | Field `O.catatan` sebagai catch-all (lihat konvensi proyek, "Bidan workflow reality"). |
 | R-10 | Dosen menjalankan kode di mesin tanpa Python 3.13 | Rendah | Rendah | `docs/INSTALL.md` mengarahkan Python 3.11+ (Cloud Run runtime 3.11), venv terdokumentasi. |
 
 ---
@@ -283,11 +283,11 @@ Awalnya `anggota1/anggota1.py` melakukan scraping `drugs.com/sfx/<nama>` untuk d
 
 | Nama | NIM | Peran utama | Tanggung jawab teknis pada AS-BUILT |
 |---|---|---|---|
-| Ghaisan Khoirul Badruzaman | 251524048 | Project Leader / Team Coordinator | Modul `anggota1` (scraping); modul aditif `anggota1/openfda/`; lapisan integrasi `api/`; lapisan frontend `FrontendMedwatch`; orchestration mission. |
+| Ghaisan Khoirul Badruzaman | 251524048 | Project Leader / Team Coordinator | Modul `anggota1` (scraping); modul aditif `anggota1/openfda/`; lapisan integrasi `api/`; lapisan frontend `FrontendMedwatch`; orchestration project. |
 | Bimo Surya Anggara | 251524040 | Quality Assurance | Modul `anggota2` (CRUD pasien SOAP); schema kanonik pasien; QA test plan dan eksekusi mayoritas test case. |
 | Alia Ardani | 251524035 | System Analyst | Modul `anggota3` (visualisasi); folder baru `anggota3/NewestVisualization/` dengan 5 chart berbasis openFDA. |
 | Muhammad Iqbal | 251524057 | Programmer | Modul `anggota4` (drug safety check); basis data obat dan efek samping lokal. |
-| Abhidal Muhammad Gazza | 251524032 | UI/UX Designer | Modul `anggota5` (PDF export, autentikasi); revisi anggota5 untuk role-based auth (lihat Phase 1 exception di `CLAUDE.md`). |
+| Abhidal Muhammad Gazza | 251524032 | UI/UX Designer | Modul `anggota5` (PDF export, autentikasi); revisi anggota5 untuk role-based auth (lihat Phase 1 exception di konvensi proyek). |
 
 ### Atribusi tester
 
@@ -307,7 +307,7 @@ Test plan dan eksekusi didistribusikan lintas anggota:
 |---|---|---|
 | 17 Februari 2026 | Awal Semester 2 TA 2025/2026 | Kick-off mata kuliah Proyek 1 PPLD. |
 | 11 Mei 2026 | Scraping live `drugs.com` mengembalikan HTTP 403 | Pivot dimulai (ADR-004). |
-| 18 Mei 2026 | Wave 1 selesai: B01-B11 fixed, openFDA data nyata, NewestVisualization | Dokumen PRD versi 1.0 dirilis (file ini). |
+| 18 Mei 2026 | Iterasi 1 selesai: B01-B11 fixed, openFDA data nyata, NewestVisualization | Dokumen PRD versi 1.0 dirilis (file ini). |
 | 25 Mei 2026 | Submission deadline ke dosen | Tonggak utama. |
 | 8 Juni 2026 | Kemungkinan kelas presentasi pasca-submission | Tentatif. |
 
@@ -317,7 +317,7 @@ Test plan dan eksekusi didistribusikan lintas anggota:
 
 | Istilah | Definisi |
 |---|---|
-| SOAP | Subjective, Objective, Assessment, Plan. Format standar rekam medis berbasis catatan, dipakai oleh skema pasien MedWatch (`api/routes/patient_routes.py:1-30`, schema kanonik di `CLAUDE.md` bagian "Schema source of truth"). |
+| SOAP | Subjective, Objective, Assessment, Plan. Format standar rekam medis berbasis catatan, dipakai oleh skema pasien MedWatch (`api/routes/patient_routes.py:1-30`, schema kanonik di konvensi proyek bagian "Schema source of truth"). |
 | Faskes 1 | Fasilitas Kesehatan Tingkat 1, mencakup puskesmas, polindes, klinik bersalin kecil. Sasaran utama pengguna MedWatch. |
 | openFDA | API publik U.S. Food and Drug Administration di `https://open.fda.gov`. Sumber utama data efek samping (`drug/event`) dan recall (`drug/enforcement`) pada MedWatch pasca pivot. |
 | FAERS | FDA Adverse Event Reporting System, basis data yang diekspos oleh openFDA endpoint `drug/event`. |
@@ -382,4 +382,4 @@ Test plan dan eksekusi didistribusikan lintas anggota:
 
 | Versi | Tanggal | Penulis | Ringkasan perubahan |
 |---|---|---|---|
-| 1.0 | 18-05-2026 | Kelompok B5 (Ghaisan koordinator) | Revisi AS-BUILT setelah Wave 1: bug B01-B11 fixed, openFDA data nyata, `anggota3/NewestVisualization/` ditambahkan; struktur PRD selaras dengan misi penyerahan dosen 25-05-2026. |
+| 1.0 | 18-05-2026 | Kelompok B5 (Ghaisan koordinator) | Revisi AS-BUILT setelah Iterasi 1: bug B01-B11 fixed, openFDA data nyata, `anggota3/NewestVisualization/` ditambahkan; struktur PRD selaras dengan proyek penyerahan dosen 25-05-2026. |

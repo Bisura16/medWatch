@@ -1,7 +1,7 @@
 # anggota1/Hasil-Scrap/drugs.db Manifest
 
-Mission: medwatch-windows-installers-2026-05-25
-Wave: 4 (openFDA prescription drug scrape)
+Component: MedWatch Windows installer data bundle
+Stage: openFDA prescription drug scrape
 
 ## Provenance
 
@@ -115,7 +115,7 @@ cd /path/to/medWatch
 .venv-desktop/bin/python scripts/scrape_openfda.py verify
 ```
 
-`OPENFDA_API_KEY` must be exported in the launching shell. The script is resumable from `.mission/scrape_checkpoint.sqlite`.
+`OPENFDA_API_KEY` must be exported in the launching shell. The script is resumable from its local scrape checkpoint database.
 
 ## License and attribution
 

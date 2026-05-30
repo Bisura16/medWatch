@@ -163,7 +163,7 @@ def test_role_enforcement():
 
 
 def test_safety_check_masyarakat_no_pii_leak():
-    """H07-1 (Wave 5): masyarakat must not receive another patient's PII.
+    """H07-1: masyarakat must not receive another patient's PII.
 
     Login as the demo masyarakat user, call /api/safety/check with a
     pasien_id that is NOT owned by that user, and assert the response

@@ -3,14 +3,14 @@ title: MedWatch Security and Threat Model
 version: 1.0
 owner: Ghaisan Khoirul Badruzaman (NIM 251524048, Project Leader Kelompok B5)
 date: 2026-05-18
-status: As-Built (post-Wave-1)
+status: As-Built (post-Iterasi 1)
 references:
   - OWASP Top 10 (2021 edition, owasp.org/Top10/)
   - Microsoft STRIDE threat-modeling framework
   - NIST SP 800-63B (digital identity, password hashing guidance)
   - OWASP ASVS v4.0.3 (informational)
 related_docs:
-  - docs/SECURITY_AUDIT.md (Wave 1 hands-on audit, 2026-05-04)
+  - docs/SECURITY_AUDIT.md (Iterasi 1 hands-on audit, 2026-05-04)
   - docs/SDD.md (design viewpoints)
   - docs/AS-BUILT.md (deviations table)
 ---
@@ -19,7 +19,7 @@ related_docs:
 
 Dokumen ini menjabarkan postur keamanan sistem MedWatch pada titik pengiriman tugas akhir Proyek 1 Pengembangan Perangkat Lunak Desktop kepada dosen Politeknik Negeri Bandung pada 25 Mei 2026. Cakupan: aplikasi desktop modul `anggota1..anggota5/`, integration layer Flask di `api/`, frontend Next.js di repo `FrontendMedWatch/`, deployment Cloud Run + Vercel, dan jalur data scraping openFDA.
 
-Dokumen ini melengkapi `docs/SECURITY_AUDIT.md` (audit Wave 1 tanggal 4 Mei 2026) dengan pemetaan formal terhadap OWASP Top 10 (2021) dan tabel STRIDE per aset. Klaim teknis dirujuk ke file:line aktual dalam repositori; tidak ada kontrol yang diklaim tanpa basis kode yang dapat diverifikasi.
+Dokumen ini melengkapi `docs/SECURITY_AUDIT.md` (audit Iterasi 1 tanggal 4 Mei 2026) dengan pemetaan formal terhadap OWASP Top 10 (2021) dan tabel STRIDE per aset. Klaim teknis dirujuk ke file:line aktual dalam repositori; tidak ada kontrol yang diklaim tanpa basis kode yang dapat diverifikasi.
 
 ---
 
@@ -30,7 +30,7 @@ Dokumen ini melengkapi `docs/SECURITY_AUDIT.md` (audit Wave 1 tanggal 4 Mei 2026
 | Komponen | Lokasi | Termasuk |
 |---|---|---|
 | Backend integration layer | `api/` | Auth, RBAC middleware, routes Patient/Drug/Safety/Admin/PDF/Visualization, storage |
-| Modul mahasiswa | `anggota1/`..`anggota5/` | Desktop CustomTkinter (read-only oleh mission), dipanggil via `api/bootstrap.py` |
+| Modul mahasiswa | `anggota1/`..`anggota5/` | Desktop CustomTkinter (read-only oleh project), dipanggil via `api/bootstrap.py` |
 | Frontend showcase | `FrontendMedWatch/` | Next.js 15 App Router, proxy edge, RBAC middleware client side |
 | Deployment cloud | Cloud Run `medwatch-api` + Vercel `medwatch-frontend` | Container image, env, IAM, jaringan |
 | Data scraping openFDA | `anggota1/openfda/fetch.py` | Pengambilan adverse-events + recall via `api.fda.gov` |
@@ -68,7 +68,7 @@ MedWatch versi presentasi memproses **data sintetik demo**, bukan PHI (Protected
 | A6 | Session token | Cookie `medwatch_token`, httpOnly + Secure + SameSite=Lax, max-age 12 jam; di-set oleh `src/app/api/[...slug]/route.ts:82` | confidential | Browser + proxy Vercel |
 | A7 | Audit/operational logs | stdout Cloud Run -> Cloud Logging (otomatis); format Python `logging` di `api/app.py:20` | internal | Cloud Logging |
 
-Resource names yang digunakan dokumen ini (project `medwatch-polban-2026`, bucket `medwatch-polban-2026-state`, service `medwatch-api`, secret `medwatch-jwt-secret`) adalah identifier publik yang aman dicantumkan sesuai mission constraint 12. Nilai kredensial produksi tidak ada di repo. Satu nilai dev-only (WT-04 dev loopback `JWT_SECRET`) ter-commit pre-mission dan didokumentasikan sebagai Known Accepted Finding pada Section 7.6 di bawah; user (Ghaisan, Project Leader) menerima risiko ini secara eksplisit setelah review konteks dev-loopback only.
+Resource names yang digunakan dokumen ini (project `medwatch-polban-2026`, bucket `medwatch-polban-2026-state`, service `medwatch-api`, secret `medwatch-jwt-secret`) adalah identifier publik yang aman dicantumkan sesuai ketentuan proyek 12. Nilai kredensial produksi tidak ada di repo. Satu nilai dev-only (WT-04 dev loopback `JWT_SECRET`) ter-commit tahap awal dan didokumentasikan sebagai Known Accepted Finding pada Section 7.6 di bawah; user (Ghaisan, Project Leader) menerima risiko ini secara eksplisit setelah review konteks dev-loopback only.
 
 ---
 
@@ -153,8 +153,8 @@ Sumber kategori: OWASP Top 10:2021 (owasp.org/Top10/). Setiap baris berisi Risk 
 - **Mitigation:**
   - Versi backend di-pin: `api/requirements.txt:1`-`11` (Flask 3.1.3, Flask-Cors 6.0.0, PyJWT 2.12.0, bcrypt 4.2.1, google-cloud-storage 2.18.2, gunicorn 23.0.0, requests 2.33.0, beautifulsoup4 4.12.3, matplotlib 3.9.2, numpy 1.26.4, fpdf2 2.8.1).
   - Versi frontend di-pin di `FrontendMedWatch/package.json` (Next.js 16.2.1, React 19.2.4, dst.).
-  - Hasil `pip-audit -r api/requirements.txt` post-remediation Wave 1: "No known vulnerabilities found" (bukti di `docs/SECURITY_AUDIT.md` Section pip-audit).
-- **Residual Risk:** Tidak ada CI yang menjalankan `pip-audit` / `npm audit` otomatis di setiap PR; audit dijalankan manual oleh `security-analyst` agent (lihat Wave 4). Frontend memiliki 3 high vulns yang terisolasi pada `_archived/` paths (H5, H6, H7 di `docs/SECURITY_AUDIT.md`).
+  - Hasil `pip-audit -r api/requirements.txt` post-remediation Iterasi 1: "No known vulnerabilities found" (bukti di `docs/SECURITY_AUDIT.md` Section pip-audit).
+- **Residual Risk:** Tidak ada CI yang menjalankan `pip-audit` / `npm audit` otomatis di setiap PR; audit dijalankan manual oleh `security-analyst` agent (lihat Iterasi 4). Frontend memiliki 3 high vulns yang terisolasi pada `_archived/` paths (H5, H6, H7 di `docs/SECURITY_AUDIT.md`).
 
 ### A07 Identification and Authentication Failures
 
@@ -223,7 +223,7 @@ STRIDE (Microsoft): Spoofing, Tampering, Repudiation, Information Disclosure, De
 | R | Tidak ada bukti siapa yang mengubah record | `created_by` di-stamp pada create (`api/routes/patient_routes.py:183`); log line per CRUD (`api/routes/patient_routes.py:186`, `api/routes/patient_routes.py:216`). | Tidak ada `updated_by` / `updated_at` history per field (R2). |
 | I | Exposure di response, PDF, atau log | `password_hash` tidak relevan pada pasien; SOAP data hanya dikembalikan untuk role berhak. PDF export di `api/routes/pdf_routes.py` membutuhkan auth. Logs memuat patient id, bukan PII full. | Demo public berisi data sintetik; aturan PHI tidak berlaku karena data bukan real. |
 | D | Hapus seluruh pasien massal | Delete pasien membutuhkan role admin (`api/routes/patient_routes.py:209`); GCS object versioning fallback. | Tidak ada confirmation step UI untuk bulk delete; tidak relevan karena UI hanya delete satu per satu. |
-| E | Masyarakat mengakses pasien orang lain | Ownership check eksplisit (`api/routes/patient_routes.py:157`) mengembalikan 403. | Tested via IDOR di Wave 1 audit. |
+| E | Masyarakat mengakses pasien orang lain | Ownership check eksplisit (`api/routes/patient_routes.py:157`) mengembalikan 403. | Tested via IDOR di Iterasi 1 audit. |
 
 ### 5.3 A3 openFDA API key
 
@@ -243,7 +243,7 @@ STRIDE (Microsoft): Spoofing, Tampering, Repudiation, Information Disclosure, De
 | S | Login dengan password tebakan | bcrypt cost 12 (`api/auth.py:12`) memperlambat percobaan; error generik mencegah enumeration (A07). | **Tidak ada rate-limit / lockout** (R1). |
 | T | Modifikasi hash di storage | Hash mutation tanpa kunci bcrypt menghasilkan login gagal. File JSON write membutuhkan akses fs/GCS (admin SA). | File JSON tidak atomic (lihat A08). |
 | R | Tidak ada bukti login terjadi | Setiap login di-log dengan username dan hasil (`api/routes/auth_routes.py:27`/`:36`/`:39`). | Cloud Logging 30 hari default. |
-| I | Hash bocor lewat response | `strip_password_fields` (`api/helpers.py:16`) dipanggil di list_users (`api/routes/admin_routes.py:45`) dan create_user (`api/routes/admin_routes.py:85`); login response tidak memuat hash (`api/routes/auth_routes.py:28`-`35`). | Tested di Wave 1. |
+| I | Hash bocor lewat response | `strip_password_fields` (`api/helpers.py:16`) dipanggil di list_users (`api/routes/admin_routes.py:45`) dan create_user (`api/routes/admin_routes.py:85`); login response tidak memuat hash (`api/routes/auth_routes.py:28`-`35`). | Tested di Iterasi 1. |
 | D | Akun kunci dihapus -> tidak ada admin | Delete admin terakhir di-block: `api/routes/admin_routes.py:96`-`98`. | None. |
 | E | Plaintext password masih ada di seed | Auto-hash on first read di `api/storage.py:90`-`98` me-replace `password_plain` dengan `password_hash`. | Seed JSON tetap memuat plaintext sampai server pertama kali jalan; mitigasi: file ada di `.gitignore` tidak relevan (seed memang di-commit untuk dev); demo credentials terbuka by design (lihat L1). |
 
@@ -284,11 +284,11 @@ STRIDE (Microsoft): Spoofing, Tampering, Repudiation, Information Disclosure, De
 
 ## 6. Postur Keamanan Saat Pengiriman
 
-Snapshot per 2026-05-18 (status implementasi mengikuti Wave 1 selesai + Wave 2 dokumentasi).
+Snapshot per 2026-05-18 (status implementasi mengikuti Iterasi 1 selesai + Iterasi 2 dokumentasi).
 
 | Aset | Status | Last Verified | Notes |
 |---|---|---|---|
-| A1 JWT signing key | Tersimpan di Secret Manager (`medwatch-jwt-secret`); dev secret terpisah | 2026-05-04 (audit Wave 1) | Rotasi manual; lihat R4. |
+| A1 JWT signing key | Tersimpan di Secret Manager (`medwatch-jwt-secret`); dev secret terpisah | 2026-05-04 (audit Iterasi 1) | Rotasi manual; lihat R4. |
 | A2 Patient PII | RBAC backend aktif; data sintetik | 2026-05-04 | IDOR tested PASS. |
 | A3 openFDA key | Env-only; secret-scan hook aktif | 2026-05-13 (run scraping real openFDA) | Tidak pernah ter-commit. |
 | A4 bcrypt hashes | Cost 12; password_hash never returned | 2026-05-04 | A07 residual rate-limit. |
@@ -296,16 +296,16 @@ Snapshot per 2026-05-18 (status implementasi mengikuti Wave 1 selesai + Wave 2 d
 | A6 Cookie token | httpOnly + Secure + SameSite=Lax | 2026-05-04 | CSRF token belum ada. |
 | A7 Logs | INFO level, no PII full, no password | 2026-05-04 | 30-day retention default Cloud Logging. |
 
-Ringkasan capaian terhadap acceptance keamanan mission:
+Ringkasan capaian terhadap acceptance keamanan project:
 
 - A01..A10 OWASP: 9 PASS, 1 PARTIAL (A04 karena CSRF token + rate-limit residual). Sumber: `docs/SECURITY_AUDIT.md` Section OWASP Top 10 Mapping.
 - bcrypt cost 12, JWT issuer-validated, cookie httpOnly+Secure+SameSite, CORS allowlist eksplisit.
-- Tidak ada nilai kredensial produksi di repo (verified secret-scan; lihat Section 8). Satu nilai dev-only (WT-04 dev loopback `JWT_SECRET`) ter-commit pre-mission sebagai Known Accepted Finding (Section 7.6 di bawah); tidak pernah menyentuh produksi karena prod menggunakan GCP Secret Manager `medwatch-jwt-secret`. Frasa "zero credential VALUES exposed anywhere" pada acceptance criterion misi karenanya dilaporkan sebagai "partial: 1 known LOW dev-loopback secret, accepted by user, documented".
+- Tidak ada nilai kredensial produksi di repo (verified secret-scan; lihat Section 8). Satu nilai dev-only (WT-04 dev loopback `JWT_SECRET`) ter-commit tahap awal sebagai Known Accepted Finding (Section 7.6 di bawah); tidak pernah menyentuh produksi karena prod menggunakan GCP Secret Manager `medwatch-jwt-secret`. Frasa "zero credential VALUES exposed anywhere" pada acceptance criterion proyek karenanya dilaporkan sebagai "partial: 1 known LOW dev-loopback secret, accepted by user, documented".
 - Service account JSON keys tidak pernah di-commit (gunakan default Cloud Run SA / Workload Identity di Vercel).
 
-Update pasca Wave 4 + Wave 5:
+Update pasca Iterasi 4 + Iterasi 5:
 
-- **H07-1 Critical RBAC PII leak RESOLVED dalam Wave 5** (commit b5a98e8 (backend) plus 40754cd (frontend)). Sebelumnya: `umum_budi` dapat POST `/api/safety/check` dengan `pasien_id=P001` dan menerima `pasien_context: {nama, diagnosa, kategori, kondisi_umum}` plus `pasien_active_meds: [...]`. Sekarang: untuk role `masyarakat`, kedua field selalu null/empty regardless of pasien_id; bidan dan admin tetap menerima konteks pasien sebagaimana semula. Verifikasi: smoke test baru di `api/tests/smoke_test.py` assertion pasca-fix; auditor independen W5-AUDIT memverifikasi. Asersi inti: **masyarakat-cannot-access-pasien-via-safety-check**.
+- **H07-1 Critical RBAC PII leak RESOLVED dalam Iterasi 5** (commit b5a98e8 (backend) plus 40754cd (frontend)). Sebelumnya: `umum_budi` dapat POST `/api/safety/check` dengan `pasien_id=P001` dan menerima `pasien_context: {nama, diagnosa, kategori, kondisi_umum}` plus `pasien_active_meds: [...]`. Sekarang: untuk role `masyarakat`, kedua field selalu null/empty regardless of pasien_id; bidan dan admin tetap menerima konteks pasien sebagaimana semula. Verifikasi: smoke test baru di `api/tests/smoke_test.py` assertion pasca-fix; auditor independen W5-AUDIT memverifikasi. Asersi inti: **masyarakat-cannot-access-pasien-via-safety-check**.
 - **H07-2 Major bidan-to-bidan SOAP read di-document sebagai single-faskes assumption** (Section 7.5 di bawah). Tidak dilakukan code change; rasionalisasi formal di-tulis untuk dosen sebagai design choice.
 - **H10-1 Major race POST/PUT/DELETE pasien** ditutup dengan `threading.Lock` di `api/routes/patient_routes.py`. Mengkomplementasi R6 (atomic write).
 - **H01-1 Major umur validation** ditutup dengan range check 0..150 di backend plus client-side mirror.
@@ -321,51 +321,51 @@ Update pasca Wave 4 + Wave 5:
 | R2 | Audit trail minimal: admin actions hanya di stdout (Cloud Logging 30 hari) | Forensik insiden sulit setelah 30 hari | Rendah | Cloud Logging Cloud Run otomatis; log line memuat aktor | Backend | Production: durable audit log di Cloud Storage + retention 1 tahun. |
 | R3 | Tidak ada CSRF token untuk state-changing route | CSRF attack via same-origin theoretical | Rendah | SameSite=Lax cookie + same-origin proxy Vercel | Frontend | Production: double-submit cookie atau header `X-Requested-With` validation. |
 | R4 | Rotasi JWT secret manual | Compromise kunci akan mempengaruhi seluruh token aktif sampai expiry 12 jam | Rendah | Secret di Secret Manager; bukan inline kode | Sysadmin | Production: rotasi quarterly via Secret Manager versions + dual-key window. |
-| R5 | Dependency scanning belum di CI | CVE baru hanya terdeteksi saat audit manual | Rendah | `pip-audit` + `npm audit` jalan saat security-analyst agent | DevOps | Tambah GitHub Actions `pip-audit` + `npm audit --omit=dev` per PR. |
-| R6 | Penulisan JSON tidak atomic (`api/storage.py:38`) | Crash di tengah write -> file korup | Rendah | GCS object versioning untuk recovery + `threading.Lock` di create/update/delete (Wave 5 W5-FIX-CRITICAL untuk H10-1) | Backend | Implementasi `write-to-temp + os.replace` pattern. |
+| R5 | Dependency scanning belum di CI | CVE baru hanya terdeteksi saat audit manual | Rendah | `pip-audit` + `npm audit` jalan saat tim keamanan | DevOps | Tambah GitHub Actions `pip-audit` + `npm audit --omit=dev` per PR. |
+| R6 | Penulisan JSON tidak atomic (`api/storage.py:38`) | Crash di tengah write -> file korup | Rendah | GCS object versioning untuk recovery + `threading.Lock` di create/update/delete (Iterasi 5 W5-FIX-CRITICAL untuk H10-1) | Backend | Implementasi `write-to-temp + os.replace` pattern. |
 | R7 | Direct backend Cloud Run `--allow-unauthenticated` | Bypass proxy memungkinkan secara teknis | Rendah | Backend RBAC tetap menolak token absen/invalid (defense in depth) | Sysadmin | Production: Cloud Run IAM `roles/run.invoker` hanya untuk Vercel IP range atau private VPC peering. |
 | R8 | Frontend high-severity deps di `_archived/` paths (H5, H6) | Tidak runtime; risiko jika archived route di-restore | Rendah | Tidak ada route aktif yang me-load paket bermasalah | Frontend | `npm uninstall react-simple-maps react-force-graph-2d ...` setelah konfirmasi pages tidak di-restore. |
-| ~~R9~~ (sebelumnya direncanakan untuk H07-1) | Masyarakat dapat memanen patient PII via POST /api/safety/check dengan pasien_id arbitrer | **RESOLVED dalam Wave 5 (commit b5a98e8 (backend) plus 40754cd (frontend))** | N/A pasca-fix | Role gating pada `pasien_context` dan `pasien_active_meds` di `api/routes/safety_routes.py`: jika `g.user['role'] == 'masyarakat'`, kedua field selalu di-set `null` dan `[]` regardless of pasien_id supplied; assertion baru di `api/tests/smoke_test.py` memverifikasi behavior pasca-fix. Bukti reproduction pre-fix di `.mission/findings/bugs/W4-HUNT.md` Bagian 7 H07-1 dan auditor verification di `.mission/findings/audits/wave-04-audit.md` baris 91-117. | Backend (Ghaisan) | Closed pasca W5-AUDIT verification. Tidak ada residual; masyarakat tetap dapat memanggil safety check untuk obat-saja (drugs[]) tanpa menerima konteks pasien apapun. |
+| ~~R9~~ (sebelumnya direncanakan untuk H07-1) | Masyarakat dapat memanen patient PII via POST /api/safety/check dengan pasien_id arbitrer | **RESOLVED dalam Iterasi 5 (commit b5a98e8 (backend) plus 40754cd (frontend))** | N/A pasca-fix | Role gating pada `pasien_context` dan `pasien_active_meds` di `api/routes/safety_routes.py`: jika `g.user['role'] == 'masyarakat'`, kedua field selalu di-set `null` dan `[]` regardless of pasien_id supplied; assertion baru di `api/tests/smoke_test.py` memverifikasi behavior pasca-fix. Bukti reproduction pre-fix di catatan internal proyek Bagian 7 H07-1 dan auditor verification di catatan internal proyek baris 91-117. | Backend (Ghaisan) | Closed pasca W5-AUDIT verification. Tidak ada residual; masyarakat tetap dapat memanggil safety check untuk obat-saja (drugs[]) tanpa menerima konteks pasien apapun. |
 
 ### 7.6 Known Accepted Findings (User-Accepted, Bukan Self-Waive Agen)
 
-Temuan ini ditemukan oleh audit Wave 4 (`.mission/findings/security/W4-SEC.md`) dan diterima sebagai risiko residual oleh user (Ghaisan Khoirul Badruzaman, NIM 251524048, Project Leader Kelompok B5) selama closeout pada 2026-05-19. Penerimaan risiko dilakukan oleh user, bukan oleh agen otomatis; mission acceptance criterion melarang agen menutup temuan secret secara mandiri.
+Temuan ini ditemukan oleh audit Iterasi 4 (catatan internal proyek) dan diterima sebagai risiko residual oleh user (Ghaisan Khoirul Badruzaman, NIM 251524048, Project Leader Kelompok B5) selama closeout pada 2026-05-19. Penerimaan risiko dilakukan oleh user, bukan oleh agen otomatis; project acceptance criterion melarang agen menutup temuan secret secara mandiri.
 
 #### WT-04 Dev-loopback `JWT_SECRET` literal ter-commit (LOW, accepted)
 
 - **Lokasi (working tree dan history)**: nilai literal `JWT_SECRET=<dev-loopback-secret>` (string aktual sengaja tidak diulang di sini) muncul di berkas-berkas dokumentasi berikut yang sudah ter-commit pre-closeout:
-  - `medWatch/.mission/waves/wave-01-plan.md` (perintah restart backend lokal di lingkungan dev)
-  - `medWatch/.mission/findings/audits/wave-01-audit.md`, `wave-03-audit.md`, `wave-05-audit.md` (transkrip perintah audit)
-  - `medWatch/.mission/findings/bugs/T1-ADMIN.md`, `medWatch/.mission/findings/docs/W3-CMT-PY.md`, `medWatch/.mission/findings/docs/W3-TIDY-BE.md` (transkrip perintah uji)
-  - `medWatch/.mission/findings/security/W4-SEC.md` baris 44 (mencatat temuan itu sendiri)
+  - `medWatch/catatan internal proyek` (perintah restart backend lokal di lingkungan dev)
+  - `medWatch/catatan internal proyek`, `iterasi 03-audit.md`, `iterasi 05-audit.md` (transkrip perintah audit)
+  - `medWatch/catatan internal proyek`, `medWatch/catatan internal proyek`, `medWatch/catatan internal proyek` (transkrip perintah uji)
+  - `medWatch/catatan internal proyek` baris 44 (mencatat temuan itu sendiri)
   - `medWatch/CONTRIBUTING.md` baris sekitar 64 (panduan kontributor lokal)
 - **Mengapa LOW**: nilai ini hanya dipakai untuk menandatangani JWT terhadap backend Flask yang `bind` ke `127.0.0.1:8080` (loopback localhost dev). Backend produksi di Cloud Run membaca env `JWT_SECRET` dari GCP Secret Manager melalui flag `--set-secrets` yang memetakan env var ke secret resource `medwatch-jwt-secret` versi `latest`. Token yang ditandatangani dengan secret loopback tidak valid terhadap backend produksi (signature mismatch karena secret berbeda). Tidak ada eskalasi ke produksi.
 - **Path rotasi (bila perlu)**:
   1. Pilih nilai dev baru per sesi (mis. `JWT_SECRET=$(openssl rand -hex 32)`); jangan tulis ke berkas.
-  2. Ubah perintah di `CONTRIBUTING.md` dan `wave-01-plan.md` agar menggunakan placeholder `JWT_SECRET=<your-dev-secret>`; jangan tulis nilai literal lagi.
-  3. Pre-existing literal di transkrip audit dan findings tetap berada di history karena history-rewrite dilarang (`git filter-branch`/`filter-repo` akan mengubah SHA seluruh commit pasca-Wave 0 dan dilarang oleh mission rule 10). Risiko diterima karena nilai hanya valid untuk localhost loopback.
+  2. Ubah perintah di `CONTRIBUTING.md` dan `iterasi 01-plan.md` agar menggunakan placeholder `JWT_SECRET=<your-dev-secret>`; jangan tulis nilai literal lagi.
+  3. Pre-existing literal di transkrip audit dan findings tetap berada di history karena history-rewrite dilarang (`git filter-branch`/`filter-repo` akan mengubah SHA seluruh commit pasca-tahap persiapan dan dilarang oleh ketentuan proyek 10). Risiko diterima karena nilai hanya valid untuk localhost loopback.
   4. Untuk audit lanjutan: anggota tim dapat memutuskan untuk menulis ulang panduan `CONTRIBUTING.md` sehingga developer baru tidak meng-copy-paste nilai literal ini.
-- **Pengambil keputusan menerima risiko**: Ghaisan Khoirul Badruzaman (251524048) sebagai Project Leader Kelompok B5, didokumentasikan pada closeout 2026-05-19. Keputusan menyetujui penerimaan ini direkam di `.mission/outbox/CLOSEOUT-EVIDENCE.md` dan `.mission/outbox/FINAL-REPORT.md` Section 13.
+- **Pengambil keputusan menerima risiko**: Ghaisan Khoirul Badruzaman (251524048) sebagai Project Leader Kelompok B5, didokumentasikan pada closeout 2026-05-19. Keputusan menyetujui penerimaan ini direkam di catatan internal proyek dan catatan internal proyek Section 13.
 - **Status acceptance**: LOW severity, user-accepted untuk submission akademik 25 Mei 2026. Untuk hand-over produksi klinik, rotasi minimum item 1 dan 2 di atas dieksekusi sebelum live.
 
 #### Catatan untuk auditor masa depan
 
-Mission acceptance criterion menyatakan "zero credential VALUES exposed anywhere". Status sebenarnya pada closeout 2026-05-19 adalah satu LOW dev-loopback secret diterima oleh user. Frasa "zero credential VALUE PASS" yang muncul di draft awal W4-SEC summary telah diperbarui pada closeout 2026-05-19 menjadi "1 known LOW dev-loopback secret, accepted, documented".
+Project acceptance criterion menyatakan "zero credential VALUES exposed anywhere". Status sebenarnya pada closeout 2026-05-19 adalah satu LOW dev-loopback secret diterima oleh user. Frasa "zero credential VALUE PASS" yang muncul di draft awal W4-SEC summary telah diperbarui pada closeout 2026-05-19 menjadi "1 known LOW dev-loopback secret, accepted, documented".
 
 ### 7.5 Asumsi Kepemilikan Pasien Lintas Bidan (Single-Faskes Assumption)
 
-Wave 4 W4-HUNT H07-2 Major mengidentifikasi bahwa `bidan_putri` dapat membaca SOAP record yang `created_by: bidan_siti` melalui `GET /api/patients/P001`. Reproduksi: `auditor` Wave 4 melakukan login dua bidan terpisah dan mengonfirmasi HTTP 200 dengan body `created_by: bidan_siti, nama: Ny. Dewi Lestari` ketika `bidan_putri` memanggil `GET /api/patients/P001` (sumber: `.mission/findings/audits/wave-04-audit.md` baris 133).
+Iterasi 4 W4-HUNT H07-2 Major mengidentifikasi bahwa `bidan_putri` dapat membaca SOAP record yang `created_by: bidan_siti` melalui `GET /api/patients/P001`. Reproduksi: `auditor` Iterasi 4 melakukan login dua bidan terpisah dan mengonfirmasi HTTP 200 dengan body `created_by: bidan_siti, nama: Ny. Dewi Lestari` ketika `bidan_putri` memanggil `GET /api/patients/P001` (sumber: catatan internal proyek baris 133).
 
-**Keputusan Wave 5: dokumentasikan sebagai asumsi desain, bukan defect.**
+**Keputusan Iterasi 5: dokumentasikan sebagai asumsi desain, bukan defect.**
 
 Rasionalisasi:
 
-1. **Cakupan academic submission.** MedWatch Wave 0-5 mission disusun untuk submission akademik (D4 Teknik Informatika POLBAN Kelas 1B-D4 Kelompok B5 deadline 25 Mei 2026) dengan satu Faskes simulasi dan 6 akun demo (`bidan_siti`, `bidan_putri`, `umum_budi`, `umum_dewi`, `admin_ghaisan`, `admin_sistem`). Tenancy lintas-Faskes tidak menjadi requirement PRD asli (`docs/PRD.md` Bagian 4.3) maupun supplementary integration mission.
+1. **Cakupan academic submission.** MedWatch disusun untuk submission akademik (D4 Teknik Informatika POLBAN Kelas 1B-D4 Kelompok B5 deadline 25 Mei 2026) dengan satu Faskes simulasi dan 6 akun demo (`bidan_siti`, `bidan_putri`, `umum_budi`, `umum_dewi`, `admin_ghaisan`, `admin_sistem`). Tenancy lintas-Faskes tidak menjadi requirement PRD asli (`docs/PRD.md` Bagian 4.3) maupun supplementary integration project.
 2. **Token claim model saat ini.** JWT memuat klaim `{username, role, iat, exp, iss}` saja (`api/auth.py:23-34`); tidak ada `faskes_id` atau `bidan_id`. Penambahan klaim baru memerlukan migrasi `users.json` schema, re-issue token semua user, dan filter di `list_patients`/`get_patient` di `api/routes/patient_routes.py:135-195`. Beban implementasi vs hasil tidak proporsional untuk submission akademik dengan dataset 21 pasien sintetik.
 3. **Ekspos data.** Semua data pasien adalah sintetik (lihat A2 di Section 2). Tidak ada PHI nyata yang bocor jika `bidan_putri` membaca record `bidan_siti`. Bidan tetap menyaksikan record sesama Faskes dalam realitas kolaborasi klinik bidan, sehingga semantik UI tidak misleading.
 4. **Defense in depth tetap berlaku.** `masyarakat` tetap di-block oleh ownership check `owner_username` di `api/routes/patient_routes.py:193-194`; non-auth tetap di-block oleh `@require_auth`; admin scope tidak berubah. Yang di-permit hanya cross-bidan read intra-tenaga-kesehatan dalam Faskes yang sama.
 
-**Rencana production (bukan dalam scope Wave 5):**
+**Rencana production (bukan dalam scope Iterasi 5):**
 
 Lihat `ProductionGrade-ImplementationPlan/04-hardening-plan.md` Bagian "Multi-tenant RBAC enhancement". Solusi:
 
@@ -379,19 +379,19 @@ Lihat `ProductionGrade-ImplementationPlan/04-hardening-plan.md` Bagian "Multi-te
 
 Dari tabel 5.2 A2 Patient PII SOAP, kolom E (Elevation of Privilege) saat ini mencatat "Masyarakat mengakses pasien orang lain | Ownership check eksplisit | 403". Ekstensi:
 
-- **Tenaga kesehatan A mengakses pasien yang di-create oleh tenaga kesehatan B di Faskes berbeda (hipotetis multi-Faskes deployment):** mitigasi saat ini = tidak ada (single-faskes assumption). Mitigasi production = JWT `faskes_id` claim + filter di `list_patients`/`get_patient`. Residual saat submission akademik: accepted-and-documented karena scope mission. Tidak ada PII real terbocor karena dataset sintetik.
+- **Tenaga kesehatan A mengakses pasien yang di-create oleh tenaga kesehatan B di Faskes berbeda (hipotetis multi-Faskes deployment):** mitigasi saat ini = tidak ada (single-faskes assumption). Mitigasi production = JWT `faskes_id` claim + filter di `list_patients`/`get_patient`. Residual saat submission akademik: accepted-and-documented karena scope project. Tidak ada PII real terbocor karena dataset sintetik.
 
 ---
 
 ## 8. Praktik Operasional
 
-Section ini menjabarkan disiplin operasional yang dipertahankan tim selama mission, sesuai mission constraint 7 (Indonesian context + dokumentasi formal), 10 (no destructive git/push), dan 12 (credential anti-leak).
+Section ini menjabarkan disiplin operasional yang dipertahankan tim selama proyek, sesuai ketentuan proyek 7 (Indonesian context + dokumentasi formal), 10 (no destructive git/push), dan 12 (credential anti-leak).
 
-### 8.1 Per-commit secret scan (mission constraint 12)
+### 8.1 Per-commit secret scan
 
-Setiap commit di-block oleh script `.claude/scripts/secret-scan.sh` jika staged diff memuat pola berbahaya:
+Setiap commit di-block oleh git pre-commit hook jika staged diff memuat pola berbahaya:
 
-- `sk-...` (OpenAI / Anthropic API key)
+- `sk-...` (vendor LLM API key)
 - `ghp_`, `gho_` (GitHub PAT)
 - `AKIA[0-9A-Z]{16}` (AWS access key id)
 - `xox[abprs]-` (Slack token)
@@ -411,7 +411,7 @@ Pada match, commit di-abort, finding di-record sebagai `open_blocker`, dan diff 
 
 ### 8.3 Verifikasi .gitignore (deliverable W2-D10)
 
-Saat dokumen ini ditulis, `.gitignore` backend memuat (line numbers per state Wave 2):
+Saat dokumen ini ditulis, `.gitignore` backend memuat (line numbers per state Iterasi 2):
 
 ```
 .env
@@ -430,14 +430,14 @@ gcp-key*.json
 
 Jika real secret terdeteksi di history git:
 
-1. Mark file sebagai compromised di `.mission/findings/security/`.
+1. Mark file sebagai compromised di catatan internal proyek.
 2. **Rotate dahulu** (Cloud Console: Secret Manager `Add new version`; openFDA: re-issue key).
 3. Update Cloud Run revision / `.env.local` developer dengan versi baru.
-4. **Tidak melakukan** `git filter-branch`, `bfg`, atau `git push --force`; history rewriting di-block oleh mission constraint 10 untuk repo academic. Catat di `.mission/blockers/` jika dosen meminta history clean.
+4. **Tidak melakukan** `git filter-branch`, `bfg`, atau `git push --force`; history rewriting di-block oleh ketentuan proyek 10 untuk repo academic. Catat di catatan internal proyek jika dosen meminta history clean.
 
 ### 8.5 Akun terlarang
 
-Akun `dudungdotnet@gmail.com` tidak boleh dilibatkan di operasi GCP/Vercel manapun (mission constraint). Verifikasi rutin: `gcloud projects get-iam-policy medwatch-polban-2026 --format=json | grep dudungdotnet` harus tidak ada hasil.
+Akun `dudungdotnet@gmail.com` tidak boleh dilibatkan di operasi GCP/Vercel manapun (ketentuan proyek). Verifikasi rutin: `gcloud projects get-iam-policy medwatch-polban-2026 --format=json | grep dudungdotnet` harus tidak ada hasil.
 
 ---
 
@@ -520,7 +520,7 @@ Sebelum sesi presentasi di hadapan dosen pendamping (Aprianti Nanda Sari, Ade Ch
 | `src/app/api/[...slug]/route.ts` | Catch-all proxy Vercel -> Cloud Run + cookie set/clear |
 | `.gitignore` (backend) | Excludes `.env*`, `*.pem`, service-account JSON, dst |
 | `FrontendMedWatch/.gitignore` | Excludes `.env*`, `*.pem`, `.vercel` |
-| `docs/SECURITY_AUDIT.md` | Hands-on audit Wave 1 (sumber komplementer) |
+| `docs/SECURITY_AUDIT.md` | Hands-on audit Iterasi 1 (sumber komplementer) |
 
 ---
 

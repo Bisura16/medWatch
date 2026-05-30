@@ -10,7 +10,7 @@ Modul scraping awal `anggota1/anggota1.py` mengandalkan parsing HTML
 drugs.com untuk dua dataset utama (efek samping per obat dan recall
 obat). Pada Mei 2026 setiap request HTTP dari modul tersebut dibalas
 oleh proteksi anti-bot Akamai dengan status 403, sehingga jumlah baris
-yang berhasil di-scrape menjadi nol untuk kedua dataset. Mission ini
+yang berhasil di-scrape menjadi nol untuk kedua dataset. Project ini
 membutuhkan dataset real dengan skala besar (>= 5000 baris recall) dan
 tidak boleh melakukan bypass anti-bot.
 
@@ -18,10 +18,10 @@ tidak boleh melakukan bypass anti-bot.
 
 - Tidak boleh melakukan teknik bypass anti-bot (CAPTCHA solver,
   rotating residential proxy, browser fingerprint spoofing): melanggar
-  ToS drugs.com dan etika riset (lihat aturan mission section 6 dan
-  CLAUDE.md "All resources must be free").
+  ToS drugs.com dan etika riset (lihat aturan project section 6 dan
+  konvensi proyek "All resources must be free").
 - Modul `anggota1.py` tetap milik Ghaisan namun di-treat sebagai
-  read-only dalam mission ini agar kontrak tidak bercabang.
+  read-only dalam project ini agar kontrak tidak bercabang.
 - Output schema harus tetap kompatibel dengan downstream consumer
   (anggota3 visualisasi, anggota4 safety checker, backend `api/`,
   frontend) tanpa modifikasi.
@@ -41,7 +41,7 @@ tidak boleh melakukan bypass anti-bot.
 Chosen option: "openFDA REST API", karena merupakan satu-satunya
 sumber gratis, legal, dan lengkap yang cocok untuk kedua dataset yang
 dibutuhkan (efek samping per obat dan recall obat) dan secara eksplisit
-disetujui dalam constraint mission section 6: "openFDA adalah API data
+disetujui dalam constraint project section 6: "openFDA adalah API data
 obat eksternal yang disanksi."
 
 ### Consequences
@@ -53,7 +53,7 @@ obat eksternal yang disanksi."
   `anggota1/data/drug_recalls.json` (42001 baris JSON terformat).
 - Good: Endpoint openFDA mengembalikan data yang sudah
   de-identified oleh FDA (tidak ada PII pasien), sesuai dengan
-  preferensi privasi mission.
+  preferensi privasi project.
 - Good: API key openFDA gratis memberikan kuota 120000 request per
   24 jam (vs 1000 tanpa key); cukup untuk regenerasi penuh dengan
   margin yang besar.
@@ -126,5 +126,5 @@ bahwa modul lama tidak menghasilkan data, sehingga pivot dilakukan.
 - Sumber data, ToS openFDA, dan basis legal pivot ada di section
   "Dasar legal" pada `anggota1/openfda/README.md:113-119`.
 - Bypass anti-bot tidak dipertimbangkan kembali dalam ADR ini atau di
-  mana pun dalam mission; setiap usulan ke arah itu harus dimulai
+  mana pun dalam project; setiap usulan ke arah itu harus dimulai
   dari ADR baru yang secara eksplisit men-supersede ADR-0004.

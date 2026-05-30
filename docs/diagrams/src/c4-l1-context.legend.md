@@ -15,6 +15,6 @@ Diagram ini menggunakan notasi C4 (Brown, https://c4model.com) tingkat 1: System
 Level 1 tidak menggambar boundary internal karena hanya satu sistem yang dibahas. Level 2 (`c4-l2-container.mmd`) memecah sistem MedWatch menjadi container.
 
 ## Sumber data
-- Tiga peran pengguna berasal dari `api/data/users.json` schema dan didefinisikan di `CLAUDE.md` rule 4.
+- Tiga peran pengguna berasal dari `api/data/users.json` schema dan didefinisikan dalam konvensi proyek.
 - openFDA endpoint berasal dari `anggota1/openfda/fetch.py`.
 - Secret Manager dipakai backend Cloud Run via IAM (lihat `docs/SECURITY.md`).

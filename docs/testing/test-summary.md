@@ -4,15 +4,15 @@ Dokumen: Ringkasan Eksekusi Pengujian Black-Box
 Versi: 1.1 (rekonsiliasi closeout 19 Mei 2026)
 Tanggal: 18 Mei 2026 (penutup sesi pengujian 12-18 Mei 2026)
 Penanggung jawab: Bimo Surya Anggara, NIM 251524040, QA Kelompok B5
-Pemilik mission: Ghaisan Khoirul Badruzaman, NIM 251524048, Project Leader
+Pemilik project: Ghaisan Khoirul Badruzaman, NIM 251524048, Project Leader
 
 Catatan revisi 1.1: angka utama Persentase Validasi diubah menjadi
 Pass dibagi Total (89.77 persen) agar transparan terhadap 9 TC Blocked yang
-tidak dieksekusi karena blocker lingkungan B-WAVE1-BUILD-1. Angka konvensi
+tidak dieksekusi karena blocker lingkungan B-BUILD-1. Angka konvensi
 ISO/IEC/IEEE 29119-3 (Pass dibagi Pass tambah Fail, Blocked tidak dihitung
 = 100.00 persen) dipertahankan sebagai konteks sekunder yang diberi label
 eksplisit. Tidak ada perubahan data Pass, Fail, Blocked. Lihat
-`.mission/outbox/CLOSEOUT-EVIDENCE.md` untuk bukti dan rasionalisasi.
+catatan internal proyek untuk bukti dan rasionalisasi.
 
 Dokumen ini merangkum hasil eksekusi 88 test case TC-MOD-NNN terhadap aplikasi
 MedWatch yang berjalan nyata di lingkungan lokal. Hasil dijabarkan per modul,
@@ -29,7 +29,7 @@ ISO/IEC/IEEE 29119-3:2013 clause 6.4.2.
 - Periode eksekusi: 12 sampai 18 Mei 2026.
 - Lingkungan: Backend Flask di `http://127.0.0.1:8080` (versi 1.0.0).
   Frontend Next.js 16.2.1 di `http://localhost:3000` (status: HTTP 500 SSR
-  karena blocker B-WAVE1-BUILD-1; lihat lampiran A pada test-plan.md).
+  karena blocker B-BUILD-1; lihat lampiran A pada test-plan.md).
 - Alat pengujian: curl 8.7.1.
 
 ## 2. Hasil Per Modul
@@ -52,7 +52,7 @@ denominator); angka dalam tanda kurung adalah konvensi sekunder Pass dibagi
 | SCREEN | 6 | 0 | 0 | 6 | 0.00 % | N/A (denominator nol) |
 | Total | 88 | 79 | 0 | 9 | **89.77 %** | 100.00 % |
 
-Mengapa 9 TC Blocked: blocker B-WAVE1-BUILD-1 menyebabkan Next.js 16.2.1
+Mengapa 9 TC Blocked: blocker B-BUILD-1 menyebabkan Next.js 16.2.1
 build pada Node 25.6 gagal mengemit `client reference manifest` sehingga
 halaman SSR mengembalikan HTTP 500 di lingkungan lokal. Tiga TC HEATMAP UI
 dan enam TC SCREEN tidak dapat diklik melalui Playwright, sehingga
@@ -74,7 +74,7 @@ Persentase Validasi Utama = (Sum status Pass / Sum status Total) x 100 persen
 Konvensi ini menyertakan Blocked di denominator agar pembaca melihat secara
 transparan berapa banyak test case yang benar-benar dieksekusi. 88 test case
 direncanakan, 79 dieksekusi sebagai Pass, 9 tidak dapat dieksekusi karena
-blocker lingkungan B-WAVE1-BUILD-1.
+blocker lingkungan B-BUILD-1.
 
 ### 3.2 Perhitungan Utama
 
@@ -118,7 +118,7 @@ baik. Kedua angka memberikan verdikt yang sama: sangat baik.
 ## 5. Distribusi Eksekusi Per Anggota Tim
 
 Pembagian aktual berdasarkan modul yang dimiliki setiap tester, sesuai
-dengan ketentuan tester attribution mission dan wave plan.
+dengan ketentuan tester attribution project dan iterasi plan.
 
 | Anggota | NIM | Peran | TC dieksekusi | Pass | Blocked |
 |---|---|---|---|---|---|
@@ -138,9 +138,9 @@ membutuhkan SSR yang sedang terhalang.
 
 Tidak ada cacat baru ditemukan selama 88 TC dieksekusi. Lihat
 `docs/testing/defect-log.md` untuk daftar lengkap cacat historis (B01-B11
-dari Wave 1 dan H01-1..H17-2 dari Wave 4) beserta status resolusi.
+dari Iterasi 1 dan H01-1..H17-2 dari Iterasi 4) beserta status resolusi.
 
-Verifikasi Critical fix Wave 5 berhasil terbukti melalui:
+Verifikasi Critical fix Iterasi 5 berhasil terbukti melalui:
 - TC-SAFETY-006: peran masyarakat menerima `pasien_context:null` dan
   `pasien_active_meds:[]` saat mencoba akses pasien P001 (yang dimiliki
   bidan_siti). H07-1 Critical PII leak telah ditutup.
@@ -151,10 +151,10 @@ Verifikasi Critical fix Wave 5 berhasil terbukti melalui:
 
 ## 7. Catatan Lingkungan dan Limitasi
 
-- Blocker B-WAVE1-BUILD-1 (Next.js 16.2.1 + Node 25.6) menyebabkan halaman
+- Blocker B-BUILD-1 (Next.js 16.2.1 + Node 25.6) menyebabkan halaman
   SSR mengembalikan HTTP 500 Internal Server Error. Sembilan TC modul SCREEN
   dan HEATMAP UI tidak dapat dieksekusi. Bukti reproduksi tersimpan di
-  `docs/testing/evidence/B-WAVE1-BUILD-1-frontend-check.txt`.
+  `docs/testing/evidence/B-BUILD-1-frontend-check.txt`.
 - Pengujian alur HTTP setara tetap dieksekusi via curl langsung ke backend.
   Semua endpoint terverifikasi sehat dan sesuai kontrak SRS.
 - Pengujian load tingkat tinggi (NFR-PERF-004 30 req/s) ditangguhkan ke fase
@@ -162,7 +162,7 @@ Verifikasi Critical fix Wave 5 berhasil terbukti melalui:
 
 ## 8. Rekomendasi
 
-1. Setelah blocker B-WAVE1-BUILD-1 diselesaikan (Node downgrade ke 22 LTS
+1. Setelah blocker B-BUILD-1 diselesaikan (Node downgrade ke 22 LTS
    atau menunggu Next.js 16.x patch), eksekusi ulang sembilan TC Blocked.
 2. Beberapa Minor defects (H06-4, H06-5, H06-6, H13-1, H13-2) berhubungan
    dengan konten UI hardcoded yang dapat dihilangkan pada iterasi UI

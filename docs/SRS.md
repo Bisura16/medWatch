@@ -3,7 +3,7 @@ title: Software Requirements Specification (SRS / SKPL) - MedWatch
 version: 1.0
 owner: Kelompok B5 - 1B-D4 Teknik Informatika, Politeknik Negeri Bandung
 date: 2026-05-18
-status: AS-BUILT (pasca Wave 1)
+status: AS-BUILT (pasca Iterasi 1)
 standards: IEEE 830-1998, ISO/IEC/IEEE 29148:2018
 ---
 
@@ -13,7 +13,7 @@ Dokumen ini disusun mengikuti struktur Software Requirements Specification yang
 direkomendasikan oleh IEEE 830-1998 dan dengan terminologi yang diselaraskan
 terhadap ISO/IEC/IEEE 29148:2018 (Systems and software engineering -- Life
 cycle processes -- Requirements engineering). SRS ini mendeskripsikan sistem
-MedWatch sebagaimana terbangun (as-built) setelah perbaikan Wave 1 (bug B01
+MedWatch sebagaimana terbangun (as-built) setelah perbaikan Iterasi 1 (bug B01
 sampai B11), bukan rancangan awal sebelum integrasi.
 
 Penomoran bab mengikuti template IEEE 830-1998 bab 5 (Specific Requirements
@@ -230,7 +230,7 @@ diakui sebagai deviasi pada tabel deviasi `docs/AS-BUILT.md`.
 3. Frontend Next.js 16 dijalankan pada Node 22 LTS sebagaimana
    didokumentasikan pada `docs/INSTALL.md`. Node 25 (terbaru, belum
    LTS) tidak kompatibel dengan turbopack production build saat tulisan
-   ini (lihat blocker B-WAVE1-BUILD-1 di
+   ini (lihat blocker B-BUILD-1 di
    `docs/AS-BUILT.md` bagian Known Issues).
 4. Tidak ada lisensi proprietary; seluruh perpustakaan adalah open
    source dengan lisensi permissive (MIT, BSD-3, Apache-2.0).
@@ -252,7 +252,7 @@ diakui sebagai deviasi pada tabel deviasi `docs/AS-BUILT.md`.
 5. Akun GCP `medwatch-polban-2026` dengan service account default
    tersedia ketika frontend showcase di-deploy ulang.
 6. Schema kanonikal data pasien mengikuti `anggota2/pasien_helper.py`
-   dengan ID format `P001..P999` (lihat `CLAUDE.md` Rule 3 di repositori).
+   dengan ID format `P001..P999` (lihat konvensi proyek di repositori).
 7. Browser JavaScript runtime di sisi frontend memiliki kemampuan
    menyimpan dan mengirim cookie httpOnly (semua browser modern
    mendukung).
@@ -480,9 +480,9 @@ Response sukses (200):
 
 #### 3.1.10 Matriks Keterunutan Bug Register ke FR-ID
 
-Tabel ini menghubungkan setiap bug yang ditangani Wave 1 dengan
+Tabel ini menghubungkan setiap bug yang ditangani Iterasi 1 dengan
 persyaratan fungsional yang dipengaruhi dan bukti perbaikan
-(lihat `.mission/findings/bugs/T1-*.md`):
+(lihat catatan internal proyek):
 
 | Bug ID | Deskripsi singkat | FR yang terkait | Bukti perbaikan |
 |---|---|---|---|
@@ -502,7 +502,7 @@ persyaratan fungsional yang dipengaruhi dan bukti perbaikan
 
 | ID | Aturan |
 |---|---|
-| BR-001 | Pasien diidentifikasi unik dengan ID format `P` + 3 digit (`P001`..`P999`) per `CLAUDE.md` Rule 3 schema source-of-truth. Tidak ada migrasi ke `PSN-001` (draf Abhidal non-kanonikal). |
+| BR-001 | Pasien diidentifikasi unik dengan ID format `P` + 3 digit (`P001`..`P999`) per konvensi proyek schema source-of-truth. Tidak ada migrasi ke `PSN-001` (draf Abhidal non-kanonikal). |
 | BR-002 | Tanggal kunjungan disimpan dalam format `DD-MM-YYYY` (literal hyphen). Tanggal yang tidak parse-able dipertahankan tetapi diurutkan ke bawah pada list newest-first. |
 | BR-003 | Field `O.nadi`, `O.suhu_c`, `O.respirasi` dianggap optional karena bidan tidak selalu mengukurnya; field wajib hanya `nama`, `S.keluhan`, `A.diagnosa`, `P.tindakan` (sesuai workflow bidan di Faskes 1). |
 | BR-004 | Bobot keparahan efek samping mengikuti `anggota4.safety_checker.BOBOT_KEPARAHAN`: `ringan=1`, `sedang=2`, `serius=4`. Threshold label aggregate mengikuti `_label_risiko` di modul yang sama. |
@@ -567,7 +567,7 @@ operasional minimum bagi pengguna:
 | fpdf2 | 2.7+ | `api/routes/pdf_routes.py:22` |
 | matplotlib | 3.9+ (untuk modul anggota3) | `anggota3/TampilGrafik.py` |
 | google-cloud-storage | 2.x (opsional, hanya bila USE_CLOUD_STORAGE=true) | `api/storage.py:25` |
-| Node.js | 22 LTS (Vercel Hobby) | `package.json`, lihat blocker B-WAVE1-BUILD-1 untuk Node 25 incompatibility |
+| Node.js | 22 LTS (Vercel Hobby) | `package.json`, lihat blocker B-BUILD-1 untuk Node 25 incompatibility |
 | Next.js | 16.x App Router | `package.json` |
 | TypeScript | 5.x strict mode | `tsconfig.json` |
 | Tailwind CSS | v4 | `tailwind.config.ts` |
@@ -615,11 +615,11 @@ Annex B.
 | NFR-SEC-002 | Password MUST di-hash dengan bcrypt cost factor 12 (default kuat). Password mentah TIDAK boleh disimpan persisten; helper `_ensure_users_hashed` mengkonversi `password_plain` ke `password_hash` saat first load. | `api/auth.py:11-12`; `api/storage.py:90-98` |
 | NFR-SEC-003 | JWT MUST diterbitkan dengan klaim `iss="medwatch-api"` dan diverifikasi dengan parameter `issuer` agar token dari sistem lain ditolak. | `api/auth.py:30, 37` |
 | NFR-SEC-004 | JWT MUST disimpan pada cookie httpOnly + Secure + SameSite=Lax di sisi frontend Next.js, tidak pada localStorage. | Pola proksi Vercel API route, lihat `docs/SECURITY.md` |
-| NFR-SEC-005 | Tidak ada service account key JSON yang di-commit ke repositori. Cloud Run menggunakan identity-bound default service account. | Tinjauan tree dan history pada Wave 4 |
+| NFR-SEC-005 | Tidak ada service account key JSON yang di-commit ke repositori. Cloud Run menggunakan identity-bound default service account. | Tinjauan tree dan history pada Iterasi 4 |
 | NFR-SEC-006 | CORS allowlist MUST membatasi origin pada URL Vercel showcase dan localhost pengembang. Tidak ada wildcard `*`. | `api/config.py:21-25` |
 | NFR-SEC-007 | Endpoint admin MUST mencegah penghapusan admin terakhir untuk menjaga ketersediaan jalur administratif. | `api/routes/admin_routes.py:93-98` |
 | NFR-SEC-008 | Field `password_hash`, `password_plain`, `password` MUST di-strip dari setiap respon yang berisi data user. | `api/helpers.py:16-18`; digunakan di `admin_routes.py:45, 85` |
-| NFR-SEC-009 | Tidak ada nilai kredensial (token, password, secret) yang ditulis ke dokumen mana pun, termasuk SRS ini. Nama resource (project, bucket, service, secret name) diizinkan. | Per-commit `secret-scan.sh` pada mission protocol |
+| NFR-SEC-009 | Tidak ada nilai kredensial (token, password, secret) yang ditulis ke dokumen mana pun, termasuk SRS ini. Nama resource (project, bucket, service, secret name) diizinkan. | Per-commit `secret-scan.sh` pada project protocol |
 | NFR-SEC-010 | Header `Server` Flask MUST dihapus dari respon (`strip_server_headers` after_request) untuk mengurangi information disclosure. | `api/app.py:58-61` |
 
 #### 3.3.3 NFR-USA (Usability)
@@ -651,13 +651,13 @@ Annex B.
 | NFR-COMP-001 | Seluruh infrastruktur MUST menggunakan free tier: openFDA, Vercel Hobby plan, Google Cloud Platform free trial credit. |
 | NFR-COMP-002 | Sistem MUST tetap fungsional saat openFDA tidak tersedia, dengan fallback ke data cache lokal pada `anggota1/data/`. |
 | NFR-COMP-003 | Backend Cloud Run MUST mendukung cold start < 5 detik agar UX showcase tidak terdegradasi. |
-| NFR-COMP-004 | Frontend MUST dapat di-build di Node 22 LTS. Node 25 nightlies tidak didukung (lihat blocker B-WAVE1-BUILD-1). |
+| NFR-COMP-004 | Frontend MUST dapat di-build di Node 22 LTS. Node 25 nightlies tidak didukung (lihat blocker B-BUILD-1). |
 
 #### 3.3.6 NFR-PORT (Portability dan Konsistensi Lintas-Platform)
 
 | ID | Persyaratan |
 |---|---|
-| NFR-PORT-001 | Schema entitas (Pasien, Drug, Side effect, User) MUST identik antara aplikasi desktop CustomTkinter dan web showcase. Kanonikalisasi diatur pada `CLAUDE.md` Rule 3. |
+| NFR-PORT-001 | Schema entitas (Pasien, Drug, Side effect, User) MUST identik antara aplikasi desktop CustomTkinter dan web showcase. Kanonikalisasi diatur pada konvensi proyek. |
 | NFR-PORT-002 | Backend MUST mendukung penyimpanan ganda: lokal JSON (`api/data/`) untuk pengembang dan GCS bucket (`medwatch-polban-2026-state`) untuk produksi, dipilih via env `USE_CLOUD_STORAGE`. |
 | NFR-PORT-003 | Modul anggota1..5 MUST tetap dapat dijalankan terisolasi sebagai aplikasi desktop CustomTkinter melalui `main.py`. |
 
@@ -723,7 +723,7 @@ Persyaratan persistensi:
 ## 4. Asumsi Verifikasi dan Strategi Pengujian
 
 SRS ini bertindak sebagai dasar test plan kotak-hitam yang disusun
-secara terpisah pada `docs/TEST-PLAN.md` (Wave 5). Pengelompokan test
+secara terpisah pada `docs/TEST-PLAN.md` (Iterasi 5). Pengelompokan test
 case mengikuti urutan FR-ID. Strategi pengujian ringkas:
 
 1. **Test atomic per endpoint backend**. Setiap endpoint diuji untuk
@@ -735,7 +735,7 @@ case mengikuti urutan FR-ID. Strategi pengujian ringkas:
    3.2.1 dijalankan Playwright scenario: berhasil render, RBAC
    enforce (redirect 307 atau forbidden card), interaksi utama
    memberikan respon yang diharapkan.
-3. **Test integrasi B01..B11**. Setiap bug Wave 1 memiliki tiket
+3. **Test integrasi B01..B11**. Setiap bug Iterasi 1 memiliki tiket
    T1-* yang menyimpan transcript curl, snapshot Playwright, atau
    screenshot sebagai bukti perbaikan. Lihat tabel di 3.1.10.
 4. **Test cek skema data**. JSON pasien dan user diverifikasi
@@ -748,7 +748,7 @@ case mengikuti urutan FR-ID. Strategi pengujian ringkas:
 
 Setiap test case akan ditautkan kembali ke FR-ID atau NFR-ID melalui
 Requirements Traceability Matrix (RTM) yang disusun oleh System
-Analyst (Alia Ardani, NIM 251524035) pada Wave 5.
+Analyst (Alia Ardani, NIM 251524035) pada Iterasi 5.
 
 ### 4.1 Lingkungan Verifikasi
 
@@ -768,18 +768,18 @@ Suatu FR dianggap memenuhi definition-of-done bila:
 1. Implementasi tersedia di kode (file:line dirujuk pada SRS).
 2. Acceptance criteria pada tabel masing-masing terlewati melalui
    skenario test dokumentasi (smoke test, Playwright, atau curl).
-3. Bukti tersimpan: file `T1-*.md` pada `.mission/findings/bugs/` atau
-   transcript verifikasi pada `.mission/findings/audits/`.
+3. Bukti tersimpan: file `T1-*.md` pada catatan internal proyek atau
+   transcript verifikasi pada catatan internal proyek.
 4. Tidak terdapat regresi pada smoke test backend
    (`api/tests/smoke_test.py`).
-5. Auditor Wave 2 memberikan status PASS untuk tiket terkait.
+5. Auditor Iterasi 2 memberikan status PASS untuk tiket terkait.
 
 ### 4.3 Risiko Implementasi yang Diketahui
 
 | ID | Risiko | Mitigasi |
 |---|---|---|
-| RISK-001 | Next.js 16.2.1 build artifact gagal merender route klien (`InvariantError: client reference manifest...`) ketika dibuild dengan Node 25 nightly. | Mengunci versi Node ke 22 LTS dan menyusun ulang `.next` setelah `rm -rf node_modules/.cache`; didokumentasikan pada B-WAVE1-BUILD-1. |
-| RISK-002 | Turbopack cache race condition di macOS saat banyak subagent berjalan paralel dengan `rm -rf .next`. | Disertasikan pada laporan T1-PASIEN; mitigasi: gunakan `npm run build && npm run start` urutan setelah agen lain selesai. |
+| RISK-001 | Next.js 16.2.1 build artifact gagal merender route klien (`InvariantError: client reference manifest...`) ketika dibuild dengan Node 25 nightly. | Mengunci versi Node ke 22 LTS dan menyusun ulang `.next` setelah `rm -rf node_modules/.cache`; didokumentasikan pada B-BUILD-1. |
+| RISK-002 | Turbopack cache race condition di macOS saat beberapa proses build berjalan paralel dengan `rm -rf .next`. | Disertasikan pada laporan T1-PASIEN; mitigasi: gunakan `npm run build && npm run start` secara berurutan setelah proses build lain selesai. |
 | RISK-003 | openFDA API tidak responsif pada saat demo. | Sistem memiliki fallback cache lokal pada `anggota1/data/`, sehingga safety check tetap berfungsi dengan dataset terakhir. |
 | RISK-004 | GCS bucket region berbeda dari Cloud Run region menyebabkan latency. | Bucket dan service ditetapkan keduanya pada `asia-southeast1`. |
 | RISK-005 | Token JWT bocor melalui XSS bila disimpan di localStorage. | Sistem menyimpan token pada cookie httpOnly + SameSite=Lax + Secure (NFR-SEC-004). |
@@ -833,7 +833,7 @@ sumber `docs/diagrams/src/use-case.mmd`):
 | Versi | Tanggal | Penulis | Catatan |
 |---|---|---|---|
 | 0.1 | 2026-04-30 | Bimo Surya Anggara (QA) | Draf awal pre-integrasi mengikuti PRD asli (tanpa otentikasi, tanpa web tier). |
-| 1.0 | 2026-05-18 | Ghaisan Khoirul Badruzaman (Project Leader) | Revisi as-built pasca Wave 1, menambahkan tier web showcase, RBAC, dan dokumentasi tiap perbaikan B01..B11. Dicocokkan dengan kode aktual baris per baris. |
+| 1.0 | 2026-05-18 | Ghaisan Khoirul Badruzaman (Project Leader) | Revisi as-built pasca Iterasi 1, menambahkan tier web showcase, RBAC, dan dokumentasi tiap perbaikan B01..B11. Dicocokkan dengan kode aktual baris per baris. |
 
-Dokumen ini adalah artefak submission Wave 2 (W2-D02) dari mission MedWatch
+Dokumen ini adalah artefak submission Iterasi 2 (W2-D02) dari project MedWatch
 Kelompok B5 untuk presentasi 25 Mei 2026.
