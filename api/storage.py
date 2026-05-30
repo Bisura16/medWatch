@@ -13,8 +13,12 @@ beyond the first server start.
 """
 import json
 import logging
+import os
+import shutil
+import tempfile
+import threading
 from typing import Any
-from .config import DATA_DIR, USE_CLOUD_STORAGE, GCS_BUCKET
+from .config import DATA_DIR, SEED_DIR, USE_CLOUD_STORAGE, GCS_BUCKET
 from .auth import hash_password
 
 logger = logging.getLogger(__name__)
@@ -23,6 +27,32 @@ USERS_KEY = "users.json"
 PATIENTS_KEY = "patients.json"
 
 _gcs_client = None
+# Serialises every local read-modify-write so concurrent admin/patient
+# mutations cannot drop each other (last-writer-wins) on the JSON store.
+_store_lock = threading.RLock()
+
+
+def ensure_seeded() -> None:
+    """Seed the writable data dir from the bundled seed on first launch.
+
+    No-op when ``DATA_DIR == SEED_DIR`` (web/dev) or when the data dir
+    already holds ``users.json``. In desktop mode ``DATA_DIR`` is a
+    writable per-user directory that starts empty, so the bundled
+    ``users.json`` / ``patients.json`` are copied in so login works and
+    patient records persist across restarts.
+    """
+    if USE_CLOUD_STORAGE or DATA_DIR == SEED_DIR:
+        return
+    try:
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        for name in (USERS_KEY, PATIENTS_KEY):
+            target = DATA_DIR / name
+            seed = SEED_DIR / name
+            if not target.exists() and seed.exists():
+                shutil.copyfile(seed, target)
+                logger.info("seeded %s into writable data dir", name)
+    except OSError as e:
+        logger.error("seeding data dir failed: %s", e)
 
 
 def _gcs():
@@ -49,11 +79,24 @@ def _load_local(filename: str) -> Any:
 
 
 def _save_local(filename: str, data: Any) -> None:
-    """Serialise ``data`` as pretty UTF-8 JSON under ``DATA_DIR/filename``."""
+    """Atomically write ``data`` as pretty UTF-8 JSON under ``DATA_DIR``.
+
+    Writes to a temp file in the same directory and ``os.replace``s it
+    into place so a crash mid-write can never truncate the live file.
+    """
     path = DATA_DIR / filename
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=f".{filename}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
 
 
 def _load_gcs(key: str) -> Any:

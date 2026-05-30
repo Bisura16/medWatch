@@ -10,6 +10,7 @@ friendly maintenance message instead of crashing.
 import logging
 from flask import Blueprint, request
 from ..bootstrap import get_module
+from .. import drug_db
 from ..helpers import ok, err
 
 logger = logging.getLogger(__name__)
@@ -28,20 +29,28 @@ def _pencarian():
 
 @bp.route("/api/drugs", methods=["GET"])
 def list_drugs():
-    """List the full drug catalog, optionally filtered by category.
+    """List the drug catalog, optionally filtered and paginated.
+
+    Prefers the bundled SQLite catalog (full openFDA dataset) and
+    falls back to the anggota4 JSON when no database is present.
 
     Query parameters:
-        category: Case-insensitive ``kategori`` filter.
+        category: Case-insensitive category/route filter.
+        limit / offset: Pagination over the SQLite catalog.
 
     Returns:
-        HTTP 200 with a list of drug records. HTTP 503 when the
-        anggota4 data_loader module failed to load.
+        HTTP 200 with ``{items, total}`` (SQLite) or a list
+        (anggota4). HTTP 503 when neither source is available.
     """
+    category = request.args.get("category")
+    if drug_db.available():
+        limit = request.args.get("limit", 100)
+        offset = request.args.get("offset", 0)
+        return ok(drug_db.list_drugs(category=category, limit=limit, offset=offset))
     dl = _data_loader()
     if not dl:
         return err("drug catalog unavailable", 503)
     drugs = dl.muat_database_obat()
-    category = request.args.get("category")
     if category:
         drugs = [d for d in drugs if d.get("kategori", "").lower() == category.lower()]
     return ok(drugs)
@@ -51,18 +60,21 @@ def list_drugs():
 def search_drugs():
     """Full-text search across the drug catalog.
 
+    Prefers the SQLite FTS5 index, falling back to anggota4 search.
+
     Query parameters:
         q: Search term. Empty string short-circuits to an empty list
             so the frontend autocomplete UI never sees a 4xx for a
             blank input.
 
     Returns:
-        HTTP 200 with the ``hasil`` array from anggota4's
-        ``cari_obat``. HTTP 503 when search is unavailable.
+        HTTP 200 with a list of matched drug records.
     """
     q = (request.args.get("q") or "").strip()
     if not q:
         return ok([])
+    if drug_db.available():
+        return ok(drug_db.search_drugs(q))
     pen = _pencarian()
     if not pen:
         return err("search unavailable", 503)
@@ -74,18 +86,29 @@ def search_drugs():
 def get_drug(nama_obat: str):
     """Return the full safety profile for a single drug.
 
+    Prefers the SQLite catalog detail record and falls back to
+    anggota4's ``ambil_profil_keamanan_lengkap``.
+
     Args:
-        nama_obat: Drug name from the URL; passed through to
-            anggota4's ``ambil_profil_keamanan_lengkap``.
+        nama_obat: Drug name from the URL.
 
     Returns:
-        HTTP 200 with the profile. HTTP 404 when anggota4 reports
-        the drug as not found. HTTP 503 when the module is missing.
+        HTTP 200 with the profile. HTTP 404 when not found.
+        HTTP 503 when no source is available.
     """
+    if drug_db.available():
+        profil = drug_db.get_drug(nama_obat)
+        if profil:
+            return ok(profil)
+        # Fall through to anggota4 for curated drugs not matched in SQLite.
     pen = _pencarian()
     if not pen:
-        return err("drug profile unavailable", 503)
-    profil = pen.ambil_profil_keamanan_lengkap(nama_obat)
-    if profil.get("status") != "found":
+        return err("not found", 404) if drug_db.available() else err("drug profile unavailable", 503)
+    try:
+        profil = pen.ambil_profil_keamanan_lengkap(nama_obat)
+    except Exception as e:
+        logger.warning("anggota4 profile lookup failed for %s: %s", nama_obat, e)
+        return err("not found", 404)
+    if not profil or profil.get("status") != "found":
         return err("not found", 404)
     return ok(profil)

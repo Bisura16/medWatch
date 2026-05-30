@@ -17,13 +17,14 @@ from pathlib import Path
 # (cwd=/app/api) and when running locally via `flask --app app run`.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
-from api.config import CORS_ORIGINS, DEBUG, PORT, API_DIR
+from api.config import CORS_ORIGINS, DEBUG, PORT, API_DIR, RENDERER_DIR
 from api.routes import auth_routes, health
 from api.routes import patient_routes, drug_routes, safety_routes
 from api.routes import visualization_routes, pdf_routes, admin_routes
+from api.storage import ensure_seeded
 
 
 logging.basicConfig(
@@ -31,6 +32,40 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+
+def _register_renderer(app: Flask) -> None:
+    """Serve the bundled Next.js static export as a loopback SPA (desktop).
+
+    Resolves trailingSlash routes (``/login/`` -> ``login/index.html``),
+    serves ``/_next`` assets and root files, and falls back to the root
+    ``index.html`` for unknown non-API paths so the client router can
+    take over. ``/api/*`` paths are never intercepted; an unknown one
+    yields the JSON 404 from the error handler.
+    """
+    renderer = RENDERER_DIR
+
+    def _send(rel: str):
+        return send_from_directory(str(renderer), rel)
+
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def serve_renderer(path: str):
+        if path.startswith("api/") or path == "api":
+            return jsonify({"error": "not found"}), 404
+        candidate = renderer / path
+        if path and candidate.is_file():
+            return _send(path)
+        index_in_dir = renderer / path / "index.html"
+        if index_in_dir.is_file():
+            return _send(f"{path}/index.html" if path else "index.html")
+        html_file = renderer / f"{path}.html"
+        if path and html_file.is_file():
+            return _send(f"{path}.html")
+        # SPA fallback: boot the app shell so the client router can route.
+        if (renderer / "index.html").is_file():
+            return _send("index.html")
+        return jsonify({"error": "not found"}), 404
 
 
 def create_app() -> Flask:
@@ -61,10 +96,17 @@ def create_app() -> Flask:
     app.register_blueprint(pdf_routes.bp)
     app.register_blueprint(admin_routes.bp)
 
-    @app.route("/")
-    def root():
-        """Serve the bundled static landing page from ``api/static/``."""
-        return send_from_directory(str(API_DIR / "static"), "index.html")
+    # Seed the writable data dir from the bundled seed on first desktop launch
+    # (no-op in web/dev where DATA_DIR == SEED_DIR).
+    ensure_seeded()
+
+    if RENDERER_DIR is not None:
+        _register_renderer(app)
+    else:
+        @app.route("/")
+        def root():
+            """Serve the bundled API landing page (web/cloud mode)."""
+            return send_from_directory(str(API_DIR / "static"), "index.html")
 
     @app.errorhandler(404)
     def not_found(e):

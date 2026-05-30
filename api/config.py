@@ -11,7 +11,22 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 API_DIR = Path(__file__).resolve().parent
-DATA_DIR = API_DIR / "data"
+
+# Seed data ships read-only inside the bundle at api/data. The desktop
+# launcher points MEDWATCH_DATA_DIR at a writable per-user directory so
+# patients/users persist across restarts; on first launch the seed is
+# copied there. In web/dev mode both resolve to api/data (no copy).
+SEED_DIR = API_DIR / "data"
+_DATA_DIR_ENV = os.environ.get("MEDWATCH_DATA_DIR")
+DATA_DIR = Path(_DATA_DIR_ENV).resolve() if _DATA_DIR_ENV else SEED_DIR
+
+# When set (desktop), Flask serves the bundled Next.js static export from
+# this directory as a single-page app over the loopback port. When unset
+# (web/Cloud Run), Vercel serves the renderer and Flask only exposes /api.
+# Resolved to an absolute path because Flask's send_from_directory treats a
+# relative directory as relative to the app root, not the process cwd.
+_RENDERER_DIR_ENV = os.environ.get("MEDWATCH_RENDERER_DIR")
+RENDERER_DIR = Path(_RENDERER_DIR_ENV).resolve() if _RENDERER_DIR_ENV else None
 
 ANGGOTA_DIRS = {
     "anggota1": BASE_DIR / "anggota1",
