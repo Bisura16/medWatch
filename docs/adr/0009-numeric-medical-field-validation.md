@@ -51,7 +51,7 @@ parallel sehingga drift mudah dideteksi via code review.
   generic "invalid input".
 - Bad: Threshold harus disinkronkan manual antara
   `src/lib/patient-validation.ts` dan
-  `api/routes/patient_routes.py`. Tes integrasi sederhana di Wave 5
+  `api/routes/patient_routes.py`. Tes integrasi sederhana di Iterasi 5
   dapat menjaga sinkron.
 - Bad: Tidak ada single source of truth file untuk threshold; risiko
   kecil drift saat refactor.
@@ -89,4 +89,4 @@ Frontend rules:
 - ADR-0007 menggunakan field `tanggal_kunjungan` yang juga DD-MM-YYYY;
   pola validasi parsing mengikuti gaya yang sama (tuple parser yang
   toleran terhadap input bermasalah).
-- Bug B03 didokumentasikan dalam `.mission/bugs.md`.
+- Bug B03 didokumentasikan dalam catatan internal proyek.

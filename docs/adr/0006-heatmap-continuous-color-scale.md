@@ -81,7 +81,7 @@ luar grid.
 
 ## More Information
 
-- B11 bug register entry: see `.mission/bugs.md` (mission constitution).
+- B11 bug register entry: see catatan internal proyek (project constitution).
 - ADR-0005 menyebutkan modul Alia `viz_heatmap_obat_efek.py` yang
   mengikuti palet keparahan yang sama (ringan `#A6D96A`, sedang
   `#FDAE61`, serius `#D7191C`).

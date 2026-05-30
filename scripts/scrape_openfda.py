@@ -5,7 +5,7 @@ and drug/enforcement.json into a single SQLite database with FTS5.
 
 Resumable via a checkpoint table. Reads OPENFDA_API_KEY from env, never logs it.
 
-Mission: medwatch-windows-installers-2026-05-25 wave 4.
+Part of the MedWatch Windows installer data bundle (openFDA prescription drug scrape).
 """
 
 from __future__ import annotations
@@ -32,13 +32,13 @@ ALL_ENDPOINTS = (ENDPOINT_DRUGS, ENDPOINT_REACTIONS, ENDPOINT_RECALLS)
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(REPO_ROOT, "anggota1", "Hasil-Scrap", "drugs.db")
-CHECKPOINT_DB_PATH = os.path.join(REPO_ROOT, ".mission", "scrape_checkpoint.sqlite")
-PROGRESS_JSONL = os.path.join(REPO_ROOT, ".mission", "scrape_progress.jsonl")
+CHECKPOINT_DB_PATH = os.path.join(REPO_ROOT, ".scrape-cache", "scrape_checkpoint.sqlite")
+PROGRESS_JSONL = os.path.join(REPO_ROOT, ".scrape-cache", "scrape_progress.jsonl")
 
 REQUEST_DELAY_SEC = 0.2
 MAX_BACKOFF_SEC = 60.0
 REQUEST_TIMEOUT_SEC = 60
-USER_AGENT = "MedWatch-OpenFDA-Scraper/1.0 (POLBAN; Wave4)"
+USER_AGENT = "MedWatch-OpenFDA-Scraper/1.0 (POLBAN)"
 
 # Page size for paged endpoints (drugs/recalls).
 PAGE_LIMIT = 1000

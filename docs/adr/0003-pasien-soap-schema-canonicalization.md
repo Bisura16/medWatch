@@ -16,8 +16,7 @@ frontend.
 
 ## Decision Drivers
 
-- Mandat read-only untuk file di `anggota2/`..`anggota5/` (.md
-  Rule 2): perubahan skema teman tidak boleh dilakukan dari `api/`.
+- Mandat read-only untuk file di `anggota2/`..`anggota5/` (konvensi proyek): perubahan skema teman tidak boleh dilakukan dari `api/`.
 - Bimo sebagai pemilik domain CRUD pasien sudah melakukan validasi QA
   paling banyak terhadap skema dan ID `P001`.
 - Frontend dan backend perlu skema yang sama, persis, agar
@@ -33,7 +32,7 @@ frontend.
 ## Decision Outcome
 
 Chosen option: "Adopsi format anggota2 sebagai canonical", karena
-sejalan dengan .md Rule 3 (table source-of-truth) yang menyatakan
+sejalan dengan konvensi proyek (table source-of-truth) yang menyatakan
 `anggota2/pasien_helper.py` adalah otoritas skema Pasien, dan karena
 QA artefak (test cases, test data) sudah ditulis terhadap skema ini.
 
@@ -54,7 +53,7 @@ QA artefak (test cases, test data) sudah ditulis terhadap skema ini.
 
 ### Confirmation
 
-- .md (root project) Rule 3 mendaftarkan
+- konvensi proyek (root project) Rule 3 mendaftarkan
   `anggota2/pasien_helper.py` sebagai "Source of truth" untuk entitas
   Pasien dengan ID format `P001`.
 - ID generator wrapper: `api/routes/patient_routes.py:102-112`
@@ -71,7 +70,7 @@ QA artefak (test cases, test data) sudah ditulis terhadap skema ini.
 ## More Information
 
 - Bidan workflow reality dan mapping field optional dijelaskan dalam
-  .md section "Bidan workflow reality (Pasien input/display)".
+  panduan proyek bagian "Bidan workflow reality (Pasien input/display)".
 - ADR-0007 menjelaskan keputusan pengurutan terkait yang dibangun di
   atas skema kanonik ini.
 - ADR-0009 menjelaskan range validation untuk field O.* numerik.

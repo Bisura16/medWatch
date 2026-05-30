@@ -13,7 +13,7 @@ Dokumen ini mendokumentasikan setiap entitas JSON yang dipakai oleh sistem MedWa
 
 Untuk konteks arsitektur penyimpanan (siapa baca-tulis di mana, kapan pakai GCS, kapan pakai file lokal), lihat bagian akhir "Storage Architecture".
 
-Acuan kontrak schema lintas modul lihat `.md` Rule 3 (Schema source of truth) di `/Users/ghaisan/Documents/MedWatchIntegration/medWatch/.md:88`.
+Acuan kontrak schema lintas modul mengikuti konvensi proyek (schema source of truth).
 
 ---
 
@@ -22,7 +22,7 @@ Acuan kontrak schema lintas modul lihat `.md` Rule 3 (Schema source of truth) di
 Entitas yang menyimpan kredensial dan profil pengguna yang dapat login ke layer web Flask.
 
 - Source of truth: `api/data/users.json` (lihat `api/data/users.json:1`).
-- Modul desktop lama `anggota5/data/users.json` sudah digantikan setelah migrasi Phase 1 sesuai `.md:73` dan `.md:98`.
+- Modul desktop lama `anggota5/data/users.json` sudah digantikan setelah migrasi Phase 1 sesuai konvensi proyek dan konvensi proyek.
 - Loader dan persistor: `api/storage.py:101` (`load_users`) dan `api/storage.py:112` (`save_users`).
 - Hashing password: bcrypt cost 12 di `api/auth.py:11` (`hash_password`).
 
@@ -32,7 +32,7 @@ Entitas yang menyimpan kredensial dan profil pengguna yang dapat login ke layer 
 |---|---|---|---|---|
 | `username` | string | ya | unik di seluruh file | Identitas login pengguna. Cek duplikasi di `api/routes/admin_routes.py:73`. |
 | `password_hash` | string | ya | hash bcrypt dengan prefix `$2b$12$` | Disimpan setelah `hash_password` (`api/auth.py:11`). Tidak pernah dikembalikan oleh response (di-strip oleh `api/helpers.py:16`). |
-| `role` | string (enum) | ya | `tenaga_kesehatan`, `masyarakat`, `admin` | Divalidasi di `api/routes/admin_routes.py:68`. Konvensi nama mengikuti `.md:126`. |
+| `role` | string (enum) | ya | `tenaga_kesehatan`, `masyarakat`, `admin` | Divalidasi di `api/routes/admin_routes.py:68`. Konvensi nama mengikuti konvensi proyek. |
 | `name` | string | ya (di praktik) | bebas | Nama lengkap untuk ditampilkan di UI. |
 | `phone` | string | opsional | bebas, biasanya format nomor HP Indonesia 11-13 digit | Nomor kontak. Dipakai untuk generate username fallback di `api/routes/admin_routes.py:60`. |
 
@@ -67,7 +67,7 @@ Entitas yang menyimpan kredensial dan profil pengguna yang dapat login ke layer 
 Entitas catatan pasien dengan struktur SOAP (Subjective, Objective, Assessment, Plan). Skema kanonik mengikuti format Bimo (anggota2).
 
 - Source of truth: `api/data/patients.json` (lihat `api/data/patients.json:1`).
-- Skema referensi historis di `anggota2/Pasien.json` (file desktop) bersifat read-only sesuai `.md:73`.
+- Skema referensi historis di `anggota2/Pasien.json` (file desktop) bersifat read-only sesuai konvensi proyek.
 - Loader/persistor: `api/storage.py:116` (`load_patients`), `api/storage.py:121` (`save_patients`).
 - Generator ID: `api/routes/patient_routes.py:102` dengan fallback ke `anggota2/pasien_helper.py:27` (`generate_id`).
 - Validator numerik server-side: `api/routes/patient_routes.py:56` (`_validate_medical_ranges`).
@@ -87,7 +87,7 @@ Entitas catatan pasien dengan struktur SOAP (Subjective, Objective, Assessment, 
 | `S` | object | ya | nested | Subjective. |
 | `S.keluhan` | string | ya | bebas | Wajib (`api/routes/patient_routes.py:168`). |
 | `S.riwayat` | string | opsional | bebas | Riwayat penyakit / alergi / kehamilan. |
-| `O` | object | opsional | nested | Objective. Diisi sebagian sesuai realitas pemeriksaan bidan (`.md:118`). |
+| `O` | object | opsional | nested | Objective. Diisi sebagian sesuai realitas pemeriksaan bidan (konvensi proyek). |
 | `O.tekanan_darah` | string | opsional | format `<sistolik>/<diastolik>`. Sistolik 60-250, diastolik 30-160 | Pola regex di `api/routes/patient_routes.py:27`; range di `api/routes/patient_routes.py:25` dan `26`. |
 | `O.nadi` | string (numerik) | opsional | 30-220 | `NUMERIC_RANGES["nadi"]` di `api/routes/patient_routes.py:21`. |
 | `O.suhu_c` | string (numerik) | opsional | 30-44 (Celsius) | `NUMERIC_RANGES["suhu_c"]` di `api/routes/patient_routes.py:22`. |
@@ -156,11 +156,11 @@ Catatan: nilai numerik kosong (`""`) dianggap "tidak diisi" dan tidak gagal vali
 
 ## 3. Drug (Database Obat)
 
-Entitas obat kanonik dengan informasi farmakologi. Format Iqbal (anggota4) sesuai `.md:95`.
+Entitas obat kanonik dengan informasi farmakologi. Format Iqbal (anggota4) sesuai konvensi proyek.
 
 - Source of truth: `anggota4/data/drug_database.json` (lihat `anggota4/data/drug_database.json:1`).
 - Loader: `anggota4/data_loader.py` (dipanggil via `bootstrap.get_module("anggota4", "data_loader")` di `api/routes/admin_routes.py:28`).
-- File ini bersifat read-only bagi layer web (`.md:73`).
+- File ini bersifat read-only bagi layer web (konvensi proyek).
 
 ### Field
 
@@ -251,7 +251,7 @@ Master database efek samping dengan tingkat keparahan dan rekomendasi penanganan
 ### Read / write
 
 - Dibaca oleh: `anggota4/safety_checker.py:48` (`buat_index_efek_samping`) dan implisit oleh API `POST /api/safety/check`.
-- Ditulis: read-only di alur web (`.md:73`).
+- Ditulis: read-only di alur web (konvensi proyek).
 
 ### Endpoint terkait
 
@@ -261,7 +261,7 @@ Master database efek samping dengan tingkat keparahan dan rekomendasi penanganan
 
 ## 5. AdverseEvent (openFDA Reaction)
 
-Hasil agregasi adverse event per obat dari sumber FAERS / openFDA. Baru ditambahkan di Wave 1 tiket T1-DATA.
+Hasil agregasi adverse event per obat dari sumber FAERS / openFDA. Baru ditambahkan di Iterasi 1 tiket T1-DATA.
 
 - Source of truth: `anggota1/data/drug_safety_data.json` (lihat `anggota1/data/drug_safety_data.json:1`).
 - Producer: `anggota1/openfda/fetch.py:257` (`fetch_adverse_events_for_drug`) dan loop utama `anggota1/openfda/fetch.py:494`.
@@ -354,7 +354,7 @@ Catatan penarikan obat dari FDA Drug Enforcement Reports.
 
 ## 7. AdminStats (Response GET /api/admin/system-stats)
 
-Bentuk respons endpoint dashboard admin. Diperbarui di tiket Wave 1 T1-ADMIN untuk mengganti nilai hardcoded.
+Bentuk respons endpoint dashboard admin. Diperbarui di tiket Iterasi 1 T1-ADMIN untuk mengganti nilai hardcoded.
 
 - Source of truth: handler `api/routes/admin_routes.py:106` (`system_stats`).
 - Bukan file persistent; nilai dihitung saat request.
@@ -463,7 +463,7 @@ Setiap entitas di atas dipakai oleh dua jalur klien:
 - **Jalur desktop CustomTkinter (anggota1..5)**. Setiap anggota memiliki direktori `anggota{N}/data/` sendiri. File JSON dibaca-tulis langsung dengan `json.load`/`json.dump` (contoh: `anggota2/pasien_helper.py:13` dan `:21`).
 - **Jalur web Flask (`api/`)**. Layer web menyimpan salinan terpisah di `api/data/` (`api/config.py:7`). Loader/persistor terpusat di `api/storage.py`. Skema field identik dengan jalur desktop.
 
-Pemisahan ini mengikuti `.md:73`: file JSON eksisting di `anggota{N}/data/` adalah read-only bagi layer web; layer web memelihara salinannya sendiri di `api/data/`.
+Pemisahan ini mengikuti konvensi proyek: file JSON eksisting di `anggota{N}/data/` adalah read-only bagi layer web; layer web memelihara salinannya sendiri di `api/data/`.
 
 ### 2. Read-only versus read-write per file
 
@@ -476,7 +476,7 @@ Pemisahan ini mengikuti `.md:73`: file JSON eksisting di `anggota{N}/data/` adal
 | `anggota4/data/effect_database.json` | Iqbal (desktop) | Baca (read-only) via `anggota4/safety_checker.py:48` saat `POST /api/safety/check` (`api/routes/safety_routes.py:30`) |
 | `anggota1/data/drug_safety_data.json` | Ghaisan (scraping) | Baca (read-only) |
 | `anggota1/data/drug_recalls.json` | Ghaisan (scraping) | Baca (read-only) |
-| `anggota5/data/users.json` | Sudah digantikan oleh `api/data/users.json` setelah Phase 1 (`.md:73`, `.md:98`) | Tidak dipakai layer web |
+| `anggota5/data/users.json` | Sudah digantikan oleh `api/data/users.json` setelah Phase 1 (konvensi proyek, konvensi proyek) | Tidak dipakai layer web |
 
 ### 3. Local file vs Google Cloud Storage
 
@@ -495,25 +495,25 @@ Jika seed `users.json` mengandung field `password_plain` (bukan `password_hash`)
 
 ### 5. Adapter desktop -> integrasi (opsional)
 
-`integrasi/adapter.py:19` (`jalankan_scraper`), `:35` (`jalankan_pasien_crud`), `:46` (`jalankan_visualisasi`), `:51` (`jalankan_tkesehatan_crud`), dan `:67` (`jalankan_export_pdf`) menyediakan jembatan jika menu terpadu desktop (`integrasi/app_terpadu.py`) ingin memanggil flow desktop di anggota1..5. Adapter ini tidak mengganggu skema data: tetap menulis ke file `anggota{N}/data/...` yang sama, dengan skema yang sama dengan jalur web. Kerangka kontrak schema diatur oleh `.md:88-98` (Schema source of truth).
+`integrasi/adapter.py:19` (`jalankan_scraper`), `:35` (`jalankan_pasien_crud`), `:46` (`jalankan_visualisasi`), `:51` (`jalankan_tkesehatan_crud`), dan `:67` (`jalankan_export_pdf`) menyediakan jembatan jika menu terpadu desktop (`integrasi/app_terpadu.py`) ingin memanggil flow desktop di anggota1..5. Adapter ini tidak mengganggu skema data: tetap menulis ke file `anggota{N}/data/...` yang sama, dengan skema yang sama dengan jalur web. Kerangka kontrak schema diatur oleh konvensi proyek (Schema source of truth).
 
 ### 6. Aturan kerahasiaan kredensial di storage
 
 - `password_hash` tidak pernah dikembalikan ke klien: di-strip oleh `strip_password_fields` (`api/helpers.py:16`) di setiap response yang menyentuh user.
 - `JWT_SECRET` hanya dibaca dari env (`api/config.py:17`) dan tidak pernah ditulis ke file.
 - `OPENFDA_API_KEY` dibaca dari env (`api/config.py:34`) dan diredaksi sebelum di-log atau ditulis ke `source_url` (`anggota1/openfda/fetch.py:156` `_redact_params`, `:442` `_build_source_url`).
-- Aturan ini selaras dengan `.mission/plan.md` constraint 12 dan `.md` Mission Protocol.
+- Aturan ini selaras dengan ketentuan keamanan proyek dan konvensi proyek.
 
 ### 7. Konsistensi skema desktop vs web
 
-Konsep: skema field di JSON desktop dan JSON web identik. Yang berbeda hanya jalur baca-tulis. Contoh: `Patient (Pasien)` baik di `api/data/patients.json` maupun di `anggota2/Pasien.json` memakai field `S`/`O`/`A`/`P` yang sama. Bila terjadi konflik formal (mis. ID `PSN-001` lama dari anggota5 vs `P001` Bimo), kanonikal mengacu ke Bimo's `P###` sesuai `.md:94`. Validasi numerik server-side (`api/routes/patient_routes.py:17-99`) menjadi guard untuk menjaga data web tetap pada ranges yang sama dengan validator client-side (`src/lib/patient-validation.ts:22-32`).
+Konsep: skema field di JSON desktop dan JSON web identik. Yang berbeda hanya jalur baca-tulis. Contoh: `Patient (Pasien)` baik di `api/data/patients.json` maupun di `anggota2/Pasien.json` memakai field `S`/`O`/`A`/`P` yang sama. Bila terjadi konflik formal (mis. ID `PSN-001` lama dari anggota5 vs `P001` Bimo), kanonikal mengacu ke Bimo's `P###` sesuai konvensi proyek. Validasi numerik server-side (`api/routes/patient_routes.py:17-99`) menjadi guard untuk menjaga data web tetap pada ranges yang sama dengan validator client-side (`src/lib/patient-validation.ts:22-32`).
 
 ---
 
 ## Referensi silang
 
-- Skema kanonik per entitas: `.md:88-98` (Schema source of truth).
-- Workflow bidan dan field opsional di Pasien: `.md:100-122`.
+- Skema kanonik per entitas: konvensi proyek (Schema source of truth).
+- Workflow bidan dan field opsional di Pasien: konvensi proyek.
 - Konstanta validasi numerik server: `api/routes/patient_routes.py:17-99`.
 - Konstanta validasi numerik client: `src/lib/patient-validation.ts:22-32` (repo frontend).
 - Auth + JWT: `api/auth.py`, `api/middleware.py`, `api/config.py:17-19`.

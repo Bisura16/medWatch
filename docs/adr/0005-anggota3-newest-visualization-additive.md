@@ -6,7 +6,7 @@
 
 ## Context and Problem Statement
 
-Mission Wave 1 mensyaratkan visualisasi tambahan berbasis data
+Project Iterasi 1 mensyaratkan visualisasi tambahan berbasis data
 scraping openFDA (1850 entri efek samping + 6000 recall). Modul
 existing milik Alia (`anggota3/BacaData.py`, `anggota3/TampilGrafik.py`,
 `anggota3/PerbandinganObat.py`, plus skrip grafik per topik) sudah
@@ -16,8 +16,8 @@ yang sudah dilakukan Alia.
 
 ## Decision Drivers
 
-- .md Rule 2 menyatakan modul `anggota1/`..`anggota5/` read-only,
-  dengan pengecualian satu kali Wave 1 anggota5 yang tidak relevan di
+- konvensi proyek menyatakan modul `anggota1/`..`anggota5/` read-only,
+  dengan pengecualian satu kali Iterasi 1 anggota5 yang tidak relevan di
   sini.
 - Visualisasi baru harus terlihat sebagai pekerjaan Alia (peran
   System Analyst) untuk menjaga peran kontribusi tim tetap akurat.
@@ -56,14 +56,14 @@ dosen tanpa bergantung pada layer frontend.
   manual jika Alia mengubah palet utama.
 - Bad: Pengguna yang mencari visualisasi MedWatch harus tahu ada dua
   folder; sebagian risiko ini dikurangi via README utama dan As-Built
-  (Wave 2 D11).
+  (Iterasi 2 D11).
 
 ### Confirmation
 
 - Atribusi: `anggota3/NewestVisualization/README.md:9-16` mendaftarkan
   Alia Ardani (251524035) sebagai penulis dokumenter dan menyatakan
   "Git commit dilakukan oleh identitas Ghaisan (Project Leader)
-  sesuai aturan mission. Atribusi dokumenter tetap pada Alia Ardani."
+  sesuai aturan project. Atribusi dokumenter tetap pada Alia Ardani."
 - Daftar visualisasi: `anggota3/NewestVisualization/README.md:48-56`
   mendaftarkan lima skrip (`viz_top_obat_efek_samping.py`,
   `viz_distribusi_keparahan.py`, `viz_recall_class_per_tahun.py`,

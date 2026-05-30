@@ -60,6 +60,6 @@ mereferensikan palet keparahan yang dipakai oleh ADR-0005.
 ## Tracking link
 
 - Standar dokumentasi keseluruhan dikutip di
-  `~/Documents/FrontendMedWatch/.mission/waves/wave-02-plan.md`
+  `~/Documents/FrontendMedWatch/catatan internal proyek`
   section "Standards to cite (by number)".
-- Wave plan terkait: W2-D04 (ADRs) dalam wave-02-plan.md.
+- Iterasi plan terkait: W2-D04 (ADRs) dalam iterasi 02-plan.md.

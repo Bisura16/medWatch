@@ -54,4 +54,4 @@ for f in docs/diagrams/src/*.mmd; do
 done
 ```
 
-Tiket terkait: **W2-D05** Diagrams (Wave 2 Batch 2).
+Tiket terkait: **W2-D05** Diagrams (Iterasi 2 Batch 2).

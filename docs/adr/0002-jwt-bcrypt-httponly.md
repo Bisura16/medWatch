@@ -15,7 +15,7 @@ basis untuk presentasi yang dilihat dosen.
 
 ## Decision Drivers
 
-- Tidak ada paid identity provider (kontrak free-tier mission).
+- Tidak ada paid identity provider (kontrak free-tier project).
 - Password tidak boleh disimpan dalam bentuk plaintext atau hash cepat.
 - JWT tidak boleh dapat dibaca JavaScript klien.
 - Sesi cukup pendek untuk membatasi dampak token hijack dan cukup

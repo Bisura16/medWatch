@@ -16,8 +16,8 @@ membangun generator baru langsung di layer integrasi `api/`.
 
 ## Decision Drivers
 
-- Mandat read-only untuk file anggota selain pengecualian Wave 1
-  anggota5 yang sudah ditutup (.md Rule 2).
+- Mandat read-only untuk file anggota selain pengecualian Iterasi 1
+  anggota5 yang sudah ditutup (konvensi proyek).
 - Scope discipline: hanya tambah file di layer integrasi `api/`,
   jangan menyentuh file teman.
 - Library yang sama (`fpdf2`) sudah dipakai modul anggota5 sehingga

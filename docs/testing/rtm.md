@@ -18,18 +18,18 @@ Standar: ISO/IEC/IEEE 29119-3:2013 clause 6.3.5 (Test Design Specification).
 |---|---|---|---|
 | FR-001 | Login manual JWT HS256 issuer `medwatch-api` | TC-AUTH-001, TC-AUTH-002, TC-AUTH-003, TC-AUTH-004, TC-AUTH-005, TC-AUTH-006 | Pass |
 | FR-002 | Validasi token JWT pada endpoint terlindung | TC-AUTH-008, TC-AUTH-009, TC-AUTH-013, TC-PASIEN-002, TC-SAFETY-004, TC-VIZ-004 | Pass |
-| FR-003 | Tampilkan 3 preset demo login pada `/login` | TC-SCREEN-001 | Blocked (B-WAVE1-BUILD-1) |
-| FR-004 | Pembacaan submit via `FormData` | (lihat FR-003) | Blocked (B-WAVE1-BUILD-1) |
+| FR-003 | Tampilkan 3 preset demo login pada `/login` | TC-SCREEN-001 | Blocked (B-BUILD-1) |
+| FR-004 | Pembacaan submit via `FormData` | (lihat FR-003) | Blocked (B-BUILD-1) |
 | FR-005 | RBAC `require_role` dekorator | TC-AUTH-011, TC-AUTH-012, TC-AUTH-014, TC-PASIEN-003, TC-PASIEN-020, TC-PDF-004, TC-ADMIN-005, TC-ADMIN-007, TC-VIZ-005 | Pass |
 | FR-006 | Logout endpoint | TC-AUTH-010 | Pass |
 | FR-007 | Introspeksi sesi `/api/auth/me` | TC-AUTH-007 | Pass |
-| FR-008 | Middleware Next.js redirect | (Blocked karena SSR) | Blocked (B-WAVE1-BUILD-1) |
+| FR-008 | Middleware Next.js redirect | (Blocked karena SSR) | Blocked (B-BUILD-1) |
 | FR-009 | List ringkas pasien | TC-PASIEN-001 | Pass |
 | FR-010 | Sort newest-first pasien + tie-break id | TC-PASIEN-001, TC-PASIEN-022 | Pass |
 | FR-011 | Create pasien dengan ID `P###` | TC-PASIEN-018 | Pass |
 | FR-012 | Validasi field wajib nama, S.keluhan, A.diagnosa, P.tindakan | TC-PASIEN-006, TC-PASIEN-007 | Pass |
 | FR-013 | Validasi range medis (BB, TB, LILA, Nadi, Suhu, Respirasi, TD, Umur) | TC-PASIEN-008, TC-PASIEN-009, TC-PASIEN-010, TC-PASIEN-011, TC-PASIEN-012, TC-PASIEN-013, TC-PASIEN-014, TC-PASIEN-015, TC-PASIEN-016, TC-PASIEN-017 | Pass |
-| FR-014 | Frontend mirror validation | TC-SCREEN-001 (sebagian) | Blocked (B-WAVE1-BUILD-1) |
+| FR-014 | Frontend mirror validation | TC-SCREEN-001 (sebagian) | Blocked (B-BUILD-1) |
 | FR-015 | Detail pasien per ID, RBAC ownership masyarakat | TC-PASIEN-004, TC-PASIEN-005 | Pass |
 | FR-016 | Deep-merge PUT pasien | TC-PASIEN-019 | Pass |
 | FR-017 | DELETE pasien dibatasi admin | TC-PASIEN-020 | Pass |
@@ -39,28 +39,28 @@ Standar: ISO/IEC/IEEE 29119-3:2013 clause 6.3.5 (Test Design Specification).
 | FR-030 | Cek interaksi obat | TC-SAFETY-001, TC-SAFETY-002, TC-SAFETY-003, TC-SAFETY-007, TC-SAFETY-008, TC-SAFETY-009 | Pass |
 | FR-031 | Skor severitas 0..100 dan label mapping | TC-SAFETY-001, TC-SAFETY-007 | Pass |
 | FR-032 | Pasien active meds via pasien_id | TC-SAFETY-005, TC-SAFETY-006 | Pass |
-| FR-033 | Frontend gabungkan active meds ke input | TC-SCREEN-005 (UI) | Blocked (B-WAVE1-BUILD-1) |
-| FR-034 | Panel collapsible penjelas verdict | TC-SCREEN-005 | Blocked (B-WAVE1-BUILD-1) |
+| FR-033 | Frontend gabungkan active meds ke input | TC-SCREEN-005 (UI) | Blocked (B-BUILD-1) |
+| FR-034 | Panel collapsible penjelas verdict | TC-SCREEN-005 | Blocked (B-BUILD-1) |
 | FR-040 | Kunjungan trend 12 bulan | TC-VIZ-001, TC-VIZ-005 | Pass |
 | FR-041 | Distribusi kategori keluhan | TC-VIZ-002 | Pass |
 | FR-042 | Top-10 efek samping | TC-VIZ-003 | Pass |
 | FR-043 | Matrix heatmap obat x efek samping | TC-HEATMAP-001, TC-HEATMAP-002 | Pass |
-| FR-044 | Render kontinu 5-stop ramp heatmap | TC-HEATMAP-003 | Blocked (B-WAVE1-BUILD-1) |
-| FR-045 | Legend heatmap dengan tick min/mid/max | TC-HEATMAP-004 | Blocked (B-WAVE1-BUILD-1) |
-| FR-046 | Sort baris dan kolom desc by total bobot | TC-HEATMAP-005 | Blocked (B-WAVE1-BUILD-1) |
+| FR-044 | Render kontinu 5-stop ramp heatmap | TC-HEATMAP-003 | Blocked (B-BUILD-1) |
+| FR-045 | Legend heatmap dengan tick min/mid/max | TC-HEATMAP-004 | Blocked (B-BUILD-1) |
+| FR-046 | Sort baris dan kolom desc by total bobot | TC-HEATMAP-005 | Blocked (B-BUILD-1) |
 | FR-050 | PDF rekam medis SOAP | TC-PDF-001, TC-PDF-002, TC-PDF-007 | Pass |
 | FR-051 | PDF laporan bulanan | TC-PDF-003, TC-PDF-004 | Pass |
 | FR-052 | PDF efek samping aggregate | TC-PDF-005 | Pass |
 | FR-053 | PDF inventaris obat | TC-PDF-006 | Pass |
-| FR-054 | Frontend `/export-pdf` 4 pilihan | (Backend-only verifikasi) | Blocked (B-WAVE1-BUILD-1) UI; backend Pass |
+| FR-054 | Frontend `/export-pdf` 4 pilihan | (Backend-only verifikasi) | Blocked (B-BUILD-1) UI; backend Pass |
 | FR-060 | Trigger scraper (admin only) | TC-ADMIN-006, TC-ADMIN-007 | Pass |
 | FR-061 | List users dengan password stripped | TC-ADMIN-002 | Pass |
 | FR-062 | Create user dengan role valid + bcrypt | TC-ADMIN-003, TC-ADMIN-004, TC-ADMIN-008 | Pass |
 | FR-063 | Cegah penghapusan admin terakhir + delete | TC-ADMIN-009 | Pass |
 | FR-064 | System stats real-time (non hardcoded) | TC-ADMIN-001 | Pass |
-| FR-065 | Frontend dashboard admin render KPI | TC-SCREEN-002 | Blocked (B-WAVE1-BUILD-1) (backend TC-ADMIN-001 Pass) |
-| FR-066 | CTA scraper di admin dashboard | TC-SCREEN-003 | Blocked (B-WAVE1-BUILD-1) |
-| FR-067 | Lihat semua aktivitas | TC-SCREEN-004 | Blocked (B-WAVE1-BUILD-1) |
+| FR-065 | Frontend dashboard admin render KPI | TC-SCREEN-002 | Blocked (B-BUILD-1) (backend TC-ADMIN-001 Pass) |
+| FR-066 | CTA scraper di admin dashboard | TC-SCREEN-003 | Blocked (B-BUILD-1) |
+| FR-067 | Lihat semua aktivitas | TC-SCREEN-004 | Blocked (B-BUILD-1) |
 | FR-070 | Health endpoint public | TC-SCRAPE-002, TC-SCRAPE-003 | Pass |
 | FR-071 | Info endpoint modules_loaded | TC-SCRAPE-001 | Pass |
 | FR-DB-001 | UTF-8 ensure_ascii=false | (implisit di TC-PASIEN-001, TC-DRUG-001 - karakter Indonesia tampil) | Pass |
@@ -178,7 +178,7 @@ Standar: ISO/IEC/IEEE 29119-3:2013 clause 6.3.5 (Test Design Specification).
 ## 4. Cakupan
 
 - Jumlah FR yang diuji: 33 dari 49 FR fungsional (yang sisanya FR-004, FR-008,
-  FR-014, FR-033, FR-054 mengenai sisi frontend UI tertunda B-WAVE1-BUILD-1;
+  FR-014, FR-033, FR-054 mengenai sisi frontend UI tertunda B-BUILD-1;
   FR-DB-003 di luar scope mode lokal).
 - Jumlah test case: 88.
 - Setiap test case Pass/Fail/Blocked terhubung ke minimal satu FR atau NFR.

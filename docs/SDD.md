@@ -3,14 +3,14 @@ title: Software Design Description (SDD) MedWatch
 version: 1.0
 owner: Ghaisan Khoirul Badruzaman (251524048)
 date: 2026-05-18
-status: As-Built post Wave 1
+status: As-Built post Iterasi 1
 standar: IEEE 1016-2009
 referensi_arsitektur: C4 model (Simon Brown)
 ---
 
 # Deskripsi Desain Perangkat Lunak (Software Design Description, SDD) MedWatch
 
-Dokumen ini ditulis mengikuti standar **IEEE 1016-2009 (IEEE Standard for Information Technology - Systems Design - Software Design Descriptions)**. Setiap *design viewpoint* yang disebut standar diisi dengan informasi yang mencerminkan keadaan kode setelah Wave 1 selesai (per 18 Mei 2026), bukan asumsi rancangan awal. Untuk *architecture viewpoints* (Context, Container, Component, Deployment) dokumen ini juga merujuk pada **C4 model** karya **Simon Brown** sebagai notasi visual pendamping.
+Dokumen ini ditulis mengikuti standar **IEEE 1016-2009 (IEEE Standard for Information Technology - Systems Design - Software Design Descriptions)**. Setiap *design viewpoint* yang disebut standar diisi dengan informasi yang mencerminkan keadaan kode setelah Iterasi 1 selesai (per 18 Mei 2026), bukan asumsi rancangan awal. Untuk *architecture viewpoints* (Context, Container, Component, Deployment) dokumen ini juga merujuk pada **C4 model** karya **Simon Brown** sebagai notasi visual pendamping.
 
 Semua klaim teknis dilengkapi sitiran `file:line`. Tidak ada penemuan kembali dari ingatan: setiap nama route, schema, dan fungsi diverifikasi langsung terhadap kode yang ada di repositori `medWatch/` (backend) dan `FrontendMedWatch/` (frontend).
 
@@ -60,8 +60,8 @@ Pemangku kepentingan utama:
 5. ADR (`docs/adr/0001-*.md` .. `docs/adr/000N-*.md`) - keputusan arsitektural per ADR.
 6. As-Built (`docs/AS-BUILT.md`) - mengikuti ISO/IEC/IEEE 15289:2019.
 7. Diagram sumber + render (`docs/diagrams/src/*.{mmd,puml}`, `docs/diagrams/png/*.png`).
-8. Wave 1 findings: `.mission/findings/bugs/T1-ADMIN.md`, `T1-HEATMAP.md`, `T1-LOGIN.md`, `T1-PASIEN.md`, `T1-PDF.md`, `T1-SAFETY.md`, `T1-VERIFY.md` di repositori frontend.
-9. Constitution misi: `~/Documents/FrontendMedWatch/.mission/plan.md`.
+8. Iterasi 1 findings: catatan internal proyek, `T1-HEATMAP.md`, `T1-LOGIN.md`, `T1-PASIEN.md`, `T1-PDF.md`, `T1-SAFETY.md`, `T1-VERIFY.md` di repositori frontend.
+9. Constitution proyek: `~/Documents/FrontendMedWatch/catatan internal proyek`.
 
 ### 1.4 Definisi
 
@@ -69,13 +69,13 @@ Pemangku kepentingan utama:
 |---|---|
 | Faskes 1 | Fasilitas Kesehatan Tingkat Pertama (puskesmas, posyandu, klinik bidan). |
 | SOAP | Kerangka pencatatan medis: Subjective, Objective, Assessment, Plan. Skema teks dijabarkan di Bagian 3.5. |
-| Tenaga kesehatan | Role pengguna untuk bidan / perawat / tenaga medis lainnya. Nilai literal `tenaga_kesehatan` (.md aturan 4). |
+| Tenaga kesehatan | Role pengguna untuk bidan / perawat / tenaga medis lainnya. Nilai literal `tenaga_kesehatan` (konvensi proyek). |
 | Masyarakat | Role pengguna umum (pasien). Nilai literal `masyarakat`. |
 | Admin | Role pengelola sistem (Ghaisan). Nilai literal `admin`. |
 | JWT | JSON Web Token. Diterbitkan oleh `api/auth.py:22-32`, diverifikasi oleh `api/auth.py:35-39`. |
 | openFDA | REST API publik FDA (`https://api.fda.gov`) sebagai sumber data adverse event dan recall pasca pivot. |
 | Vercel proxy pattern | Pola di mana browser hanya melihat domain Vercel, JWT disimpan di httpOnly cookie, dan Cloud Run URL tidak terekspos ke klien. Implementasi: `src/app/api/[...slug]/route.ts:1-108`. |
-| B01..B11 | Bug register yang diperbaiki di Wave 1, lihat `.mission/bugs.md`. |
+| B01..B11 | Bug register yang diperbaiki di Iterasi 1, lihat catatan internal proyek. |
 | C4 L1/L2/L3 | Level 1 (Context), Level 2 (Container), Level 3 (Component) pada model C4 oleh Brown. |
 
 ---
@@ -86,7 +86,7 @@ Pemangku kepentingan utama:
 
 Asumsi:
 
-1. Pengguna primer adalah bidan Faskes 1 yang familiar dengan alur pencatatan SOAP tetapi tidak selalu mengisi seluruh kolom (PRD; lihat juga .md "Bidan workflow reality"). Skema desain harus toleran terhadap *field* kosong (lihat `api/routes/patient_routes.py:82-88`).
+1. Pengguna primer adalah bidan Faskes 1 yang familiar dengan alur pencatatan SOAP tetapi tidak selalu mengisi seluruh kolom (PRD; lihat juga konvensi proyek "Bidan workflow reality"). Skema desain harus toleran terhadap *field* kosong (lihat `api/routes/patient_routes.py:82-88`).
 2. Konteks bahasa user-facing adalah Bahasa Indonesia formal, dengan istilah teknis tetap dalam Inggris di kode dan dokumen rujukan. Locale `dd-MM-yyyy` dan Rupiah dipakai bila relevan.
 3. Sumber data obat adalah `anggota4/data/drug_database.json` (Iqbal) dan `anggota4/data/effect_database.json` (Iqbal). Sumber data pasien default adalah `api/data/patients.json` (dibuat fresh oleh `api/`) atau `anggota2/Pasien.json` (Bimo) bila diakses lewat CLI desktop.
 4. Klien browser terkini (Chrome/Firefox/Safari versi lalu lintas mayoritas) mendukung `fetch`, `httpOnly` cookies, dan ES2020+. Tidak ada *polyfill* khusus.
@@ -94,19 +94,19 @@ Asumsi:
 Ketergantungan eksternal:
 
 - Python 3.11+ runtime (Cloud Run; lokal venv menggunakan 3.13). `api/requirements.txt` mengunci Flask 3.0+, flask-cors, PyJWT, bcrypt, google-cloud-storage, fpdf2.
-- Node.js 22 LTS untuk Next.js 16 (catatan B-WAVE1-BUILD-1 di As-Built mengenai *blocker* dev-server Turbopack).
+- Node.js 22 LTS untuk Next.js 16 (catatan B-BUILD-1 di As-Built mengenai *blocker* dev-server Turbopack).
 - openFDA REST API publik (`https://api.fda.gov/drug/event.json`, `https://api.fda.gov/drug/enforcement.json`), kunci API di env `OPENFDA_API_KEY` (dipakai `anggota1/openfda/fetch.py:21,69`).
 - GCP project `medwatch-polban-2026` dengan layanan Cloud Run + Cloud Storage + Secret Manager.
 - Vercel project untuk hosting frontend (default `.vercel.app` URL).
 
 ### 2.2 Batasan Desain
 
-1. **Free tier wajib**. .md aturan 8 menetapkan tidak boleh ada layanan berbayar di luar GCP free trial Ghaisan. Konsekuensi: tidak boleh ada Auth0, SendGrid, Sentry berbayar, Cloudflare berbayar, atau Vercel Pro. Pilihan biner: pakai komponen gratis atau abstain.
-2. **Modul anggota1..anggota5 *read-only*** (.md aturan 2). Setiap perbaikan integrasi diimplementasi sebagai *wrapper* di `api/` (contoh: `api/routes/safety_routes.py:30-41` membungkus `anggota4.safety_checker.cek_keamanan_obat`). Pengecualian Phase 1 untuk `anggota5/auth.py` dan `anggota5/main_anggota5.py` sudah ditutup dan tidak dibuka kembali oleh misi ini.
-3. **Tanpa em dash dan tanpa emoji** di seluruh kode, komentar, dokumen, dan UI (mission constraint 4).
-4. **Tidak ada nilai kredensial dalam dokumen**. Nama resource (project, bucket, service, secret name) diperbolehkan; *value* (kunci, password, JWT secret) tidak (mission constraint 12).
+1. **Free tier wajib**. Konvensi proyek menetapkan tidak boleh ada layanan berbayar di luar GCP free trial Ghaisan. Konsekuensi: tidak boleh ada Auth0, SendGrid, Sentry berbayar, Cloudflare berbayar, atau Vercel Pro. Pilihan biner: pakai komponen gratis atau abstain.
+2. **Modul anggota1..anggota5 *read-only*** (konvensi proyek). Setiap perbaikan integrasi diimplementasi sebagai *wrapper* di `api/` (contoh: `api/routes/safety_routes.py:30-41` membungkus `anggota4.safety_checker.cek_keamanan_obat`). Pengecualian Phase 1 untuk `anggota5/auth.py` dan `anggota5/main_anggota5.py` sudah ditutup dan tidak dibuka kembali oleh proyek ini.
+3. **Tanpa em dash dan tanpa emoji** di seluruh kode, komentar, dokumen, dan UI (ketentuan proyek 4).
+4. **Tidak ada nilai kredensial dalam dokumen**. Nama resource (project, bucket, service, secret name) diperbolehkan; *value* (kunci, password, JWT secret) tidak (ketentuan proyek 12).
 5. **Lokal vs cloud sebagai konfigurasi runtime**: implementasi tidak boleh memaksa salah satu jalur saja. `api/config.py:29` mendefinisikan `USE_CLOUD_STORAGE`; `api/storage.py:63-87` memilih *fallback* berdasarkan flag tersebut.
-6. **Scope discipline**: hanya perubahan yang dibutuhkan oleh misi yang diizinkan (constraint 8). Tidak ada refactor spekulatif.
+6. **Scope discipline**: hanya perubahan yang dibutuhkan oleh proyek yang diizinkan (constraint 8). Tidak ada refactor spekulatif.
 7. **Lokal CRUD tetap berjalan**: implementasi `integrasi/adapter.py:35-44` memanggil `anggota2/PasienCRUD.py` sebagai *subprocess* sehingga modus desktop CLI tidak terganggu pekerjaan integrasi web.
 
 ### 2.3 Tujuan dan Petunjuk Desain (*Design Goals & Guidelines*)
@@ -114,7 +114,7 @@ Ketergantungan eksternal:
 1. **Separation of concerns**: tiap modul anggota1..5 tetap menjadi unit *single-responsibility*; integrasi terjadi di lapisan tipis `api/` dan `integrasi/`. Frontend tidak memanggil modul anggota langsung, hanya lewat REST.
 2. **Defense in depth untuk auth**: cookie httpOnly + middleware proxy Next.js (`src/proxy.ts:41-83`) + middleware Flask (`api/middleware.py:17-34`) + CORS allowlist (`api/config.py:21-25`). Tiga lapisan independen.
 3. **Backend URL tidak pernah bocor ke klien**. Konsekuensi: variabel env `BACKEND_API_URL` di Vercel tidak diawali `NEXT_PUBLIC_`. Akses backend lewat `src/app/api/[...slug]/route.ts:11`.
-4. **Skema kanonik tunggal**: ketika dua anggota memakai skema berbeda, dipilih satu sumber kebenaran. Tabel di Bagian 3.5 dan .md aturan 3.
+4. **Skema kanonik tunggal**: ketika dua anggota memakai skema berbeda, dipilih satu sumber kebenaran. Tabel di Bagian 3.5 dan konvensi proyek.
 5. **Toleransi *graceful*** terhadap modul yang gagal di-*load*. `api/bootstrap.py:26-39` mengembalikan `None` bila import gagal; pemanggil mengeksekusi *inline fallback* (contoh `api/routes/visualization_routes.py:38-51`).
 6. **Resep input bidan adalah free-text** dan harus diparsing oleh logika di backend (`api/helpers.py:47-96`) dan cermin TS di frontend (`src/lib/patient-format.ts` `parseResepToMeds`). Bidan tidak dipaksa memilih dari dropdown.
 7. **Tidak ada credential value yang ditulis** di kode, komentar, docs, atau commit. `OPENFDA_API_KEY` dibaca dari env, tidak pernah dicetak (`anggota1/openfda/fetch.py:21`).
@@ -222,7 +222,7 @@ Tidak ada *cyclic import*: `api/config.py` dan `api/auth.py` hanya bergantung pa
 
 *Concern*: struktur entitas data utama dan sumber kebenaran skema.
 
-Sumber kebenaran skema diatur eksplisit di **.md aturan 3**. Ringkasan dengan sitiran:
+Sumber kebenaran skema diatur eksplisit di **konvensi proyek**. Ringkasan dengan sitiran:
 
 **Entitas Pasien (kanonik dari Bimo, `anggota2/pasien_helper.py`)**. ID berformat `P001`, `P002`, ... (huruf P + 3 digit). Generator: `api/routes/patient_routes.py:102-112` memanggil `anggota2.pasien_helper.generate_id` bila tersedia; fallback inline. Skema:
 
@@ -345,7 +345,7 @@ Bentuk *envelope*: success body adalah JSON apa adanya (atau `{"status":"ok"}`) 
 
 **Next.js API proxy** (`src/app/api/[...slug]/route.ts:1-108`): pola *catch-all* yang mem-forward semua `/api/...` ke `${BACKEND}/api/...`, menyuntik header `Authorization: Bearer <token>` dari cookie `medwatch_token` (`route.ts:38-42`), dan menulis kembali cookie pada login sukses (`route.ts:68-93`) atau menghapus pada logout (`route.ts:95-103`).
 
-**Next.js edge middleware** (`src/proxy.ts:41-83`): mengatur redirect ke `/login` bila tidak ada cookie, redirect role-aware ke landing (`/admin/dashboard` untuk admin, `/drug-search` untuk masyarakat, `/dashboard` default), dan *role gate* untuk path `/admin` (`src/proxy.ts:65-67`) serta whitelist path untuk masyarakat (`src/proxy.ts:69-80`). Catatan rename `middleware.ts` -> `proxy.ts` adalah keputusan Wave 1 untuk menghindari *deprecation warning* Next 16 (lihat T1-SAFETY follow-ups).
+**Next.js edge middleware** (`src/proxy.ts:41-83`): mengatur redirect ke `/login` bila tidak ada cookie, redirect role-aware ke landing (`/admin/dashboard` untuk admin, `/drug-search` untuk masyarakat, `/dashboard` default), dan *role gate* untuk path `/admin` (`src/proxy.ts:65-67`) serta whitelist path untuk masyarakat (`src/proxy.ts:69-80`). Catatan rename `middleware.ts` -> `proxy.ts` adalah keputusan Iterasi 1 untuk menghindari *deprecation warning* Next 16 (lihat T1-SAFETY follow-ups).
 
 ### 3.7 Sudut Pandang Struktural (*Structural Viewpoint*)
 
@@ -366,7 +366,7 @@ medWatch/
     PasienCRUD.py
     pasien_helper.py
   anggota3/                # Visualisasi matplotlib (Alia). READ-ONLY.
-    NewestVisualization/   # Additive module (Wave 1)
+    NewestVisualization/   # Additive module (Iterasi 1)
     grafik_*.py
     TampilGrafik.py
   anggota4/                # Drug safety check (Iqbal). READ-ONLY.
@@ -410,7 +410,7 @@ medWatch/
   integrasi/               # Desktop CLI orchestrator, owned by Ghaisan
     adapter.py
     app_terpadu.py
-  docs/                    # Documentation set (Wave 2 output)
+  docs/                    # Documentation set (Iterasi 2 output)
     PRD.md, SRS.md, SDD.md (this file), AS-BUILT.md
     DATA-DICTIONARY.md, API.md, INSTALL.md, SECURITY.md, USER-MANUAL.md
     adr/0001-*.md ...
@@ -420,7 +420,6 @@ medWatch/
   Dockerfile, Procfile
   main.py
   README.md
-  .md
 ```
 
 Repositori frontend (`/Users/ghaisan/Documents/FrontendMedWatch/`):
@@ -458,7 +457,7 @@ FrontendMedWatch/
     proxy.ts                   # Edge middleware (was middleware.ts)
     data/
   package.json, next.config.ts, tsconfig.json
-  docs/                        # Frontend-specific docs (Wave 2 output)
+  docs/                        # Frontend-specific docs (Iterasi 2 output)
 ```
 
 Dasar pemilihan tata letak ini:
@@ -796,7 +795,7 @@ Output ini diterima oleh `anggota5.export_pdf.buat_laporan_pdf` (read-only) tanp
 
 ## 5. Kerangka Pengujian (*Test Framework*)
 
-Strategi pengujian SDD ini mereferensikan rencana pengujian black-box lengkap di Wave 5. Untuk *backend smoke* yang sudah berjalan saat ini:
+Strategi pengujian SDD ini mereferensikan rencana pengujian black-box lengkap di Iterasi 5. Untuk *backend smoke* yang sudah berjalan saat ini:
 
 - File: `api/tests/smoke_test.py` (165 baris).
 - Lingkup: `test_health`, `test_login_three_roles`, `test_login_invalid`, `test_patients_crud`, `test_drug_search`, `test_safety_check`, `test_visualizations`, `test_role_enforcement` (`smoke_test.py:19-141`).
@@ -822,7 +821,7 @@ OK role-based access enforced and passwords not leaked
 done all smoke tests passed
 ```
 
-Test plan lengkap (TC-MOD-NNN) ditulis di Wave 5. Untuk *frontend* tidak ada *unit test* Wave 1; *e2e* Playwright ditunda sampai Next 16 Turbopack dev-server stabil (lihat T1-SAFETY §followups dan As-Built Known Issues).
+Test plan lengkap (TC-MOD-NNN) ditulis di Iterasi 5. Untuk *frontend* tidak ada *unit test* Iterasi 1; *e2e* Playwright ditunda sampai Next 16 Turbopack dev-server stabil (lihat T1-SAFETY §followups dan As-Built Known Issues).
 
 ---
 
@@ -863,9 +862,9 @@ Test plan lengkap (TC-MOD-NNN) ditulis di Wave 5. Untuk *frontend* tidak ada *un
 - `docs/AS-BUILT.md` - laporan As-Built per ISO/IEC/IEEE 15289:2019.
 - `docs/diagrams/src/*.{mmd,puml}` dan `docs/diagrams/png/*.png` - diagram sumber + render.
 
-### 6.3 Catatan as-built post Wave 1
+### 6.3 Catatan as-built post Iterasi 1
 
-Perubahan Wave 1 yang tercermin di SDD ini:
+Perubahan Iterasi 1 yang tercermin di SDD ini:
 
 1. **B01 (admin scraper navigation)** - `src/app/admin/dashboard/page.tsx` mendapatkan link ke `/admin/scraper` (lihat T1-ADMIN).
 2. **B02 ("Lihat semua" inert)** - tautan diperbaiki ke halaman patient list (lihat T1-ADMIN).
@@ -880,13 +879,13 @@ Perubahan Wave 1 yang tercermin di SDD ini:
 
 Catatan: rename `middleware.ts` -> `proxy.ts` adalah respons terhadap *deprecation warning* Next 16 dan dibahas di T1-SAFETY follow-ups; file referensi terkini adalah `src/proxy.ts`.
 
-### 6.4 Kepatuhan terhadap .md dan misi
+### 6.4 Kepatuhan terhadap konvensi proyek
 
-- Tidak ada modifikasi *in-place* pada folder `anggota1..5` (aturan 2). Lapisan wrapper di `api/` (aturan 5 misi).
-- Tidak ada nilai kredensial dalam dokumen ini. Nama resource (`medwatch-polban-2026`, `medwatch-polban-2026-state`, `medwatch-jwt-secret`, `medwatch-api`) disebut sesuai mission constraint 12.
+- Tidak ada modifikasi *in-place* pada folder `anggota1..5` (aturan 2). Lapisan wrapper di `api/` (aturan 5 proyek).
+- Tidak ada nilai kredensial dalam dokumen ini. Nama resource (`medwatch-polban-2026`, `medwatch-polban-2026-state`, `medwatch-jwt-secret`, `medwatch-api`) disebut sesuai ketentuan proyek 12.
 - Bahasa Indonesia untuk prose, Inggris untuk identifier kode dan standar.
 - Tidak ada em dash, tidak ada emoji.
-- Skema kanonik yang dirujuk konsisten dengan .md aturan 3.
+- Skema kanonik yang dirujuk konsisten dengan konvensi proyek.
 - Endpoint dan baris kode yang dikutip sudah diverifikasi terhadap file sumber per 18 Mei 2026.
 
 ---

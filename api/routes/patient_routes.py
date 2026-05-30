@@ -21,14 +21,14 @@ from ..helpers import ok, err
 logger = logging.getLogger(__name__)
 bp = Blueprint("patient_routes", __name__)
 
-# H10-1 (Wave 5): process-level lock for the read-modify-write sequence in
+# H10-1: process-level lock for the read-modify-write sequence in
 # POST/PUT/DELETE. Without this lock, two concurrent POSTs can both read
 # the same patient list, compute the same next id, and the last writer
 # wins the file rewrite. The lock is intentionally module-scoped so every
 # request handled by this process serialises through it.
 _patients_lock = threading.Lock()
 
-# H01-1 (Wave 5): allowed umur range when value parses to an integer.
+# H01-1: allowed umur range when value parses to an integer.
 # Bidan input convention is either a bare integer like ``25`` or the
 # bidan abbreviation ``25 THN``. Both forms must pass when the parsed
 # integer falls inside (UMUR_MIN, UMUR_MAX).
@@ -127,7 +127,7 @@ def _validate_medical_ranges(body: dict) -> list[str]:
 def _validate_umur(body: dict) -> list[str]:
     """Validate ``umur`` accepts only sane integers in [UMUR_MIN, UMUR_MAX].
 
-    H01-1 (Wave 5). The bidan input convention is either ``25`` or the
+    H01-1. The bidan input convention is either ``25`` or the
     abbreviated ``25 THN`` form. Empty/missing values are allowed because
     the SOAP schema marks umur as optional. Any non-empty value that is
     not parseable as an integer in range produces a Bahasa Indonesia

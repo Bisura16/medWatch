@@ -74,7 +74,7 @@ sejalan dengan kemampuan native Next.js Route Handlers di App Router.
 
 ## More Information
 
-- .md Section "Frontend <-> Backend correlation pattern" memuat
+- panduan proyek bagian "Frontend <-> Backend correlation pattern" memuat
   pola arsitektur yang sama dan menjadi rujukan tim.
 - ADR-0002 melengkapi keputusan ini dengan pemilihan algoritma JWT,
   bcrypt cost, dan atribut cookie.

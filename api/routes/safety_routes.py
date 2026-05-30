@@ -86,7 +86,7 @@ def safety_check():
 
     pasien_context = None
     pasien_active_meds: list[str] = []
-    # H07-1 (Wave 5): role-aware patient-context attachment. The masyarakat
+    # H07-1: role-aware patient-context attachment. The masyarakat
     # role must never receive another patient's PII through this endpoint.
     # Bidan (tenaga_kesehatan) and admin retain their existing behaviour
     # because the patient roster is single-faskes (H07-2 documented). For

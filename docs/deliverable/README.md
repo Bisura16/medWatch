@@ -22,11 +22,11 @@ pandoc <sumber>.md \
 
 Catatan teknis:
 
-- Setiap berkas .docx dibuat ulang dari Markdown terbaru pada 18 Mei 2026 (Wave 2 - tiket W2-DOCX).
+- Setiap berkas .docx dibuat ulang dari Markdown terbaru pada 18 Mei 2026 (Iterasi 2 - tiket W2-DOCX).
 - Bahasa Indonesia dipertahankan dalam UTF-8.
 - Daftar isi (`--toc`) otomatis disisipkan di awal setiap dokumen panjang.
 - USER-MANUAL menyertakan placeholder gambar; ketika tangkapan layar tersedia, jalankan ulang konversi.
-- Versi .docx untuk dokumen pengujian (test plan, test cases, RTM, defect log, test summary) diproduksi pada Wave 5; tidak termasuk dalam tiket ini.
+- Versi .docx untuk dokumen pengujian (test plan, test cases, RTM, defect log, test summary) diproduksi pada Iterasi 5; tidak termasuk dalam tiket ini.
 
 ## Manifest dokumen
 
@@ -76,4 +76,4 @@ mkdir -p docs/deliverable
 # Lakukan untuk setiap berkas seperti contoh perintah di atas.
 ```
 
-Dokumen induk: lihat `docs/AS-BUILT.md` untuk gambaran sistem hasil-akhir Wave 1.
+Dokumen induk: lihat `docs/AS-BUILT.md` untuk gambaran sistem hasil-akhir Iterasi 1.

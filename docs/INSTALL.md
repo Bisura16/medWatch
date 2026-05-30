@@ -31,7 +31,7 @@ Standar acuan: ISO/IEC/IEEE 26514 untuk dokumentasi user dan developer.
 | Komponen | Versi yang diuji | Catatan |
 |---|---|---|
 | Python | 3.13 (development) dan 3.11 (production Cloud Run) | `api/Dockerfile:1` memakai `python:3.11-slim`. Lokal boleh 3.13. |
-| Node.js | 22 LTS direkomendasikan | Next.js 16.2.1 mendukung Node 18 sampai 22. Node 25 memicu chunk-emit race yang dicatat sebagai open blocker B-WAVE1-BUILD-1 (lihat bagian Troubleshooting). |
+| Node.js | 22 LTS direkomendasikan | Next.js 16.2.1 mendukung Node 18 sampai 22. Node 25 memicu chunk-emit race yang dicatat sebagai open blocker B-BUILD-1 (lihat bagian Troubleshooting). |
 | npm | 10.x atau 11.x (bundle bawaan Node 22) | |
 | Git | 2.40+ | |
 | Sistem operasi | macOS atau Linux | Homebrew dipakai untuk install tooling tambahan di macOS. |
@@ -206,7 +206,7 @@ npm run dev
 
 `next dev` akan listen di `http://localhost:3000`. Di environment Node 22
 LTS, command ini memakai bundler default (Turbopack). Jika Anda berada di
-Node 25 dan terkena blocker B-WAVE1-BUILD-1, paksa webpack:
+Node 25 dan terkena blocker B-BUILD-1, paksa webpack:
 
 ```bash
 npx next dev --webpack
@@ -225,7 +225,7 @@ Vercel.
 ## 5. Modul Desktop CustomTkinter
 
 Setiap modul anggota dapat dijalankan independen. Modul ini dimaksudkan
-sebagai deliverable desktop utama (lihat `.md` Rule 5: web stack
+sebagai deliverable desktop utama (sesuai konvensi proyek: web stack
 adalah supplementary showcase, bukan pengganti).
 
 ### 5.1 Menjalankan modul tunggal
@@ -259,7 +259,7 @@ python integrasi/app_terpadu.py
 
 `integrasi/adapter.py` melakukan panggilan ke setiap modul via import
 langsung atau subprocess. File anggota1-5 tetap read-only sesuai kontrak
-tim (lihat `.md` Rule 2).
+tim (lihat konvensi proyek).
 
 Demo credentials untuk uji manual (terdokumentasi di
 `integrasi/README.md:13-18`):
@@ -329,7 +329,7 @@ python -c "import json; d=json.load(open('anggota1/data/drug_safety_data.json'))
 python -c "import json; d=json.load(open('anggota1/data/drug_recalls.json')); print('recalls:', len(d))"
 ```
 
-Hasil acquisition terakhir (Wave 1, lihat `.mission/state.json`): 74 drug
+Hasil acquisition terakhir (Iterasi 1, lihat catatan internal proyek): 74 drug
 records dan 1.850 reaction term, 6.000 recall records.
 
 ## 7. Deployment Backend ke Cloud Run
@@ -347,14 +347,14 @@ records dan 1.850 reaction term, 6.000 recall records.
    - `roles/storage.objectAdmin` pada bucket `medwatch-polban-2026-state`.
    - `roles/secretmanager.secretAccessor` pada secret
      `medwatch-jwt-secret`.
-4. Bucket `medwatch-polban-2026-state` sudah ada (provisioned di Wave 0).
+4. Bucket `medwatch-polban-2026-state` sudah ada (provisioned di tahap persiapan).
 5. Secret `medwatch-jwt-secret` sudah berisi nilai versi `latest`
-   (provisioned di Wave 0; nilai aktualnya hanya hidup di Secret Manager).
+   (provisioned di tahap persiapan; nilai aktualnya hanya hidup di Secret Manager).
 
 ### 7.2 Deploy
 
 Sebelum deploy, catat state pre-change (rev ID, env, traffic split) untuk
-guardrail rollback per `.md` Mission Protocol section:
+guardrail rollback sesuai konvensi proyek:
 
 ```bash
 gcloud run services describe medwatch-api --region asia-southeast1 \
@@ -463,7 +463,7 @@ dan `.next/static/chunks/` kosong. SSR pages mengembalikan HTTP 500 dengan
 Dev mode kadang juga gagal serve API proxy dengan `ENOENT pages-manifest.json`.
 
 Akar masalah: Node 25.x di luar supported range Next.js 16.2.1 (18 sampai
-22 LTS). Detail di `.mission/state.json` open blocker `B-WAVE1-BUILD-1`.
+22 LTS). Detail di catatan internal proyek open blocker `B-BUILD-1`.
 
 Solusi:
 
@@ -612,21 +612,20 @@ python integrasi/app_terpadu.py
 - `next.config.ts`: konfigurasi Next.js.
 - `src/app/api/[...slug]/route.ts`: Vercel API proxy ke Cloud Run.
 - `integrasi/README.md`: deskripsi orchestrator desktop.
-- `.mission/state.json`: state mission, termasuk blocker B-WAVE1-BUILD-1.
+- Catatan status internal proyek, termasuk blocker B-BUILD-1.
 - `docs/adr/0004-drugs-com-akamai-to-openfda-pivot.md`: ADR pivot scraping ke openFDA.
 - `docs/SECURITY.md`: threat model lengkap (W2-D10).
 - `docs/API.md`: kontrak endpoint backend (W2-D06).
-- `docs/AS-BUILT.md`: dokumen As-Built post-Wave-1 (W2-D11).
+- `docs/AS-BUILT.md`: dokumen As-Built post-Iterasi 1 (W2-D11).
 
 ## 12. Catatan Hak Akses dan Keamanan
 
 - Tidak ada nilai kredensial (API key, password, JWT secret, service-account
   JSON) yang ditulis di dokumen ini. Resource NAMES (project, bucket,
   secret name, service name) dicantumkan karena bukan secret.
-- Akun `dudungdotnet@gmail.com` adalah email pelanggan akhir yang dilarang
-  disentuh dalam operasi otomatis apa pun (lihat `.md` Mission
-  Protocol).
+- Akun `dudungdotnet@gmail.com` adalah email pemilik proyek dan tidak boleh
+  diubah tanpa konfirmasi pemilik (lihat konvensi proyek).
 - Operasi `git push`, `git push --force`, dan `git reset --hard` tidak
   diizinkan tanpa instruksi eksplisit dari Ghaisan. Cloud Run dan Vercel
-  redeploy diizinkan saat misi memerlukan, dengan guardrail rollback yang
+  redeploy diizinkan saat proyek memerlukan, dengan guardrail rollback yang
   ada di section 7.3.
