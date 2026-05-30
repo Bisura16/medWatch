@@ -44,7 +44,7 @@ def list_drugs():
     """
     category = request.args.get("category")
     if drug_db.available():
-        limit = request.args.get("limit", 100)
+        limit = request.args.get("limit", 0)
         offset = request.args.get("offset", 0)
         return ok(drug_db.list_drugs(category=category, limit=limit, offset=offset))
     dl = _data_loader()
