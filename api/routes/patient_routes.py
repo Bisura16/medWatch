@@ -226,14 +226,14 @@ def get_patient(pid: str):
     Returns:
         HTTP 200 with the full SOAP record. HTTP 404 when no record
         carries ``pid``. HTTP 403 when a ``masyarakat`` requests a
-        record they do not own (``owner_username`` mismatch).
+        record they did not create (``created_by`` mismatch).
     """
     role = g.user["role"]
     patients = load_patients()
     target = next((p for p in patients if p.get("id") == pid), None)
     if not target:
         return err("not found", 404)
-    if role == "masyarakat" and target.get("owner_username") != g.user["username"]:
+    if role == "masyarakat" and target.get("created_by") != g.user["username"]:
         return err("forbidden", 403)
     return ok(target)
 
