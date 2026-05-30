@@ -1,9 +1,0 @@
-==== TC-PASIEN-020 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: DELETE pasien sebagai bidan (RBAC 403)
-Perintah: curl -X DELETE http://127.0.0.1:8080/api/patients/P021 -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-{"error":"forbidden"}
-
--- HTTP_STATUS:403 TIME:0.000886s --
--- END RESPONSE --

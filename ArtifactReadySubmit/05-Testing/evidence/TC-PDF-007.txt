@@ -1,9 +1,0 @@
-==== TC-PDF-007 ====
-Tanggal eksekusi: 2026-05-18T17:48:32+07:00
-Deskripsi: PDF rekam-medis missing pasien_id
-Perintah: curl -X POST http://127.0.0.1:8080/api/pdf/generate-rekam-medis -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {}
--- BEGIN RESPONSE --
-{"error":"pasien_id required"}
-
--- HTTP_STATUS:400 TIME:0.000668s --
--- END RESPONSE --

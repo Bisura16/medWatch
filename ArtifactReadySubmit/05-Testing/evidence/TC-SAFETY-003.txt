@@ -1,9 +1,0 @@
-==== TC-SAFETY-003 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: Cek obat kosong (EP empty array)
-Perintah: curl -X POST http://127.0.0.1:8080/api/safety/check -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"drugs":[]}
--- BEGIN RESPONSE --
-{"error":"drugs (non-empty list) required"}
-
--- HTTP_STATUS:400 TIME:0.000837s --
--- END RESPONSE --

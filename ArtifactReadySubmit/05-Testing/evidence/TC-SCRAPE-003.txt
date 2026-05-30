@@ -1,9 +1,0 @@
-==== TC-SCRAPE-003 ====
-Tanggal eksekusi: 2026-05-18T17:48:32+07:00
-Deskripsi: Health pubic without auth must succeed
-Perintah: curl http://127.0.0.1:8080/api/health
--- BEGIN RESPONSE --
-{"status":"ok","time":"2026-05-18T10:48:32.254387+00:00","version":"1.0.0"}
-
--- HTTP_STATUS:200 TIME:0.000693s --
--- END RESPONSE --

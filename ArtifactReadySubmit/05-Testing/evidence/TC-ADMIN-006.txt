@@ -1,9 +1,0 @@
-==== TC-ADMIN-006 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: Trigger scrape (admin only)
-Perintah: curl -X POST http://127.0.0.1:8080/api/admin/scrape -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-{"drugs_updated":6,"recalls_added":0,"source":"cached","status":"completed","timestamp":"2026-05-18T10:46:57.741838+00:00"}
-
--- HTTP_STATUS:200 TIME:3.002545s --
--- END RESPONSE --

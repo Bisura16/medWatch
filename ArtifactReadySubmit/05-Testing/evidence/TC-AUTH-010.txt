@@ -1,9 +1,0 @@
-==== TC-AUTH-010 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: POST /api/auth/logout
-Perintah: curl -X POST http://127.0.0.1:8080/api/auth/logout -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-{"status":"logged_out"}
-
--- HTTP_STATUS:200 TIME:0.000857s --
--- END RESPONSE --

@@ -1,9 +1,0 @@
-==== TC-AUTH-001 ====
-Tanggal eksekusi: 2026-05-18T17:46:53+07:00
-Deskripsi: Login valid bidan
-Perintah: curl -X POST http://127.0.0.1:8080/api/auth/login -H Content-Type: application/json -d {"username":"bidan_siti","password":"siti2026"}
--- BEGIN RESPONSE --
-{"token":"<expired-issued-JWT>","user":{"name":"Bidan Siti Aminah","role":"tenaga_kesehatan","username":"bidan_siti"}}
-
--- HTTP_STATUS:200 TIME:0.224081s --
--- END RESPONSE --

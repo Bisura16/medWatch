@@ -1,9 +1,0 @@
-==== TC-ADMIN-002 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: list users sebagai admin (password ter-strip)
-Perintah: curl http://127.0.0.1:8080/api/admin/users -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-[{"name":"Bidan Siti Aminah","phone":"081234567890","role":"tenaga_kesehatan","username":"bidan_siti"},{"name":"Bidan Putri Andini","phone":"081234567891","role":"tenaga_kesehatan","username":"bidan_putri"},{"name":"Budi Santoso","phone":"081234567892","role":"masyarakat","username":"umum_budi"},{"name":"Dewi Lestari","phone":"081234567893","role":"masyarakat","username":"umum_dewi"},{"name":"Ghaisan Khoirul B.","phone":"081234567894","role":"admin","username":"admin_ghaisan"},{"name":"Admin Sistem","phone":"081234567895","role":"admin","username":"admin_sistem"}]
-
--- HTTP_STATUS:200 TIME:0.000869s --
--- END RESPONSE --

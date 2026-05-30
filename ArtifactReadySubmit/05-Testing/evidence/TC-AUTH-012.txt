@@ -1,9 +1,0 @@
-==== TC-AUTH-012 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: RBAC: masyarakat tidak boleh akses admin-only
-Perintah: curl http://127.0.0.1:8080/api/admin/system-stats -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-{"error":"forbidden"}
-
--- HTTP_STATUS:403 TIME:0.000805s --
--- END RESPONSE --

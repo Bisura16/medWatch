@@ -1,9 +1,0 @@
-==== TC-PASIEN-009 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: POST pasien BVA BB tepat min (1)
-Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"nama":"Ny BVA Min","S":{"keluhan":"x"},"A":{"diagnosa":"x"},"P":{"tindakan":"x"},"O":{"bb_kg":"1"}}
--- BEGIN RESPONSE --
-{"A":{"diagnosa":"x"},"O":{"bb_kg":"1"},"P":{"tindakan":"x"},"S":{"keluhan":"x"},"created_by":"bidan_siti","id":"P022","nama":"Ny BVA Min"}
-
--- HTTP_STATUS:201 TIME:0.002320s --
--- END RESPONSE --

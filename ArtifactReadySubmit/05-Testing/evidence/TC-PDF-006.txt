@@ -1,8 +1,0 @@
-==== TC-PDF-006 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: PDF inventaris obat
-Perintah: curl -X POST http://127.0.0.1:8080/api/pdf/generate-inventaris -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {} -o /tmp/medwatch-test/pdf-inventaris.pdf -D /tmp/medwatch-test/pdf-inventaris.headers.txt
--- BEGIN RESPONSE --
-
--- HTTP_STATUS:200 TIME:0.008355s --
--- END RESPONSE --

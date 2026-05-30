@@ -1,9 +1,0 @@
-==== TC-AUTH-007 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: GET /api/auth/me dengan token valid bidan
-Perintah: curl http://127.0.0.1:8080/api/auth/me -H Authorization: Bearer <expired-issued-JWT>
--- BEGIN RESPONSE --
-{"name":"Bidan Siti Aminah","role":"tenaga_kesehatan","username":"bidan_siti"}
-
--- HTTP_STATUS:200 TIME:0.000698s --
--- END RESPONSE --

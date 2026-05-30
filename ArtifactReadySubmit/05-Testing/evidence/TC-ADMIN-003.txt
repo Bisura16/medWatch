@@ -1,9 +1,0 @@
-==== TC-ADMIN-003 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: Buat user duplikat (HTTP 409)
-Perintah: curl -X POST http://127.0.0.1:8080/api/admin/users -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"username":"bidan_siti","password":"x","role":"tenaga_kesehatan","name":"Dup","phone":"08111"}
--- BEGIN RESPONSE --
-{"error":"username exists"}
-
--- HTTP_STATUS:409 TIME:0.000823s --
--- END RESPONSE --

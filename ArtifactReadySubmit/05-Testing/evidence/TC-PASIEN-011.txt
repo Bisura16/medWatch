@@ -1,9 +1,0 @@
-==== TC-PASIEN-011 ====
-Tanggal eksekusi: 2026-05-18T17:46:54+07:00
-Deskripsi: POST pasien BVA BB di atas max (301)
-Perintah: curl -X POST http://127.0.0.1:8080/api/patients -H Authorization: Bearer <expired-issued-JWT> -H Content-Type: application/json -d {"nama":"Ny BVA Over","S":{"keluhan":"x"},"A":{"diagnosa":"x"},"P":{"tindakan":"x"},"O":{"bb_kg":"301"}}
--- BEGIN RESPONSE --
-{"error":"Validasi gagal","fields":["BB (kg) harus antara 1 dan 300."]}
-
--- HTTP_STATUS:400 TIME:0.000863s --
--- END RESPONSE --
