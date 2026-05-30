@@ -11,6 +11,7 @@ import logging
 from flask import Blueprint, request, g
 from ..middleware import require_auth
 from ..bootstrap import get_module
+from .. import drug_db
 from ..storage import load_patients
 from ..helpers import ok, err, parse_resep_to_meds
 
@@ -44,12 +45,35 @@ def safety_check():
         return err("drugs (non-empty list) required", 400)
 
     sc = get_module("anggota4", "safety_checker")
-    if not sc:
+    if sc:
+        try:
+            payload = sc.cek_keamanan_obat(drugs)
+        except Exception as e:
+            logger.warning("anggota4 safety_checker failed: %s", e)
+            payload = {}
+    elif not drug_db.available():
         return err("safety checker unavailable", 503)
+    else:
+        payload = {}
 
-    payload = sc.cek_keamanan_obat(drugs)
+    hasil_obat = list(payload.get("hasil_obat", []))
+    obat_tidak_ditemukan = list(payload.get("obat_tidak_ditemukan", []))
 
-    hasil_obat = payload.get("hasil_obat", [])
+    # SQLite fallback: cover the full openFDA catalog for any drug the
+    # curated anggota4 database could not match, so the safety verdict
+    # is not limited to the six seed drugs.
+    if drug_db.available() and obat_tidak_ditemukan:
+        still_missing: list[str] = []
+        for name in obat_tidak_ditemukan:
+            prof = drug_db.safety_profile(name)
+            if prof:
+                hasil_obat.append(prof)
+            else:
+                still_missing.append(name)
+        obat_tidak_ditemukan = still_missing
+
+    payload["obat_tidak_ditemukan"] = obat_tidak_ditemukan
+
     if hasil_obat:
         max_skor = max(h.get("skor_risiko", 0) for h in hasil_obat)
         agg_label_id = max(

@@ -9,6 +9,7 @@ from collections import Counter, defaultdict
 from flask import Blueprint
 from ..middleware import require_auth, require_role
 from ..bootstrap import get_module
+from .. import drug_db
 from ..storage import load_patients
 from ..helpers import ok
 
@@ -122,6 +123,22 @@ def top_efek_samping():
             "tingkat_keparahan": info.get("tingkat_keparahan", "ringan"),
         })
     return ok(out)
+
+
+@bp.route("/api/visualizations/drugs-catalog", methods=["GET"])
+@require_auth
+def drugs_catalog():
+    """Aggregate the SQLite drug catalog for the drugs-visualization page.
+
+    Returns precomputed bands and distributions (per route, per dosage
+    form, recalls per class, top FAERS reactions, source coverage) so
+    the frontend renders charts without pulling thousands of rows.
+
+    Returns:
+        HTTP 200 with the aggregate object, or an empty object when no
+        SQLite catalog is bundled (the page shows an honest fallback).
+    """
+    return ok(drug_db.aggregates())
 
 
 @bp.route("/api/visualizations/heatmap-efek", methods=["GET"])
