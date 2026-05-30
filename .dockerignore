@@ -1,0 +1,25 @@
+# Cloud Run build-context hygiene. The backend container needs api/, the
+# anggota modules it imports, main.py, and exactly one drugs.db. Everything
+# else (electron apps, node_modules, venvs, build artifacts, duplicate db
+# copies, docs, git) is excluded so the build context stays small.
+.git
+.gitignore
+.venv
+.venv-desktop
+anggota1/.venv
+**/node_modules
+build
+dist
+dist-windows
+installer-based app
+portable-app
+*.pdf
+docs
+**/__pycache__
+**/*.pyc
+**/.DS_Store
+
+# Drop every bundled/duplicate drugs.db except the single copy the backend
+# reads (api/drug_db.py dev-fallback path), which carries the enriched data.
+**/drugs.db
+!anggota1/Hasil-Scrap/drugs.db

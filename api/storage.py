@@ -125,12 +125,18 @@ def _load(key: str, fallback_default: Any) -> Any:
         if USE_CLOUD_STORAGE:
             data = _load_gcs(key)
             if data is None:
-                logger.info(f"GCS {key} missing, seeding from local fallback")
-                local = _load_local(key)
-                if local is not None:
-                    _save_gcs(key, local)
-                    return local
-                return fallback_default
+                # Serialise + double-check the seed so two concurrent cold
+                # requests cannot both write the seed back to GCS.
+                with _store_lock:
+                    data = _load_gcs(key)
+                    if data is not None:
+                        return data
+                    logger.info(f"GCS {key} missing, seeding from local fallback")
+                    local = _load_local(key)
+                    if local is not None:
+                        _save_gcs(key, local)
+                        return local
+                    return fallback_default
             return data
         else:
             data = _load_local(key)
@@ -162,23 +168,50 @@ def _ensure_users_hashed(users: list[dict]) -> tuple[list[dict], bool]:
 def load_users() -> list[dict]:
     """Load the full user list, hashing any plaintext passwords found.
 
+    The read-hash-write upgrade runs under the store lock so two
+    concurrent callers cannot race on persisting the hashed seed.
+
     Returns:
         List of user dicts. Empty list when the store is missing or
         carries a non-list root (defensive against manual edits).
     """
-    users = _load(USERS_KEY, [])
-    if not isinstance(users, list):
-        return []
-    users, mutated = _ensure_users_hashed(users)
-    if mutated:
-        logger.info("plaintext passwords found; hashing and persisting")
-        _save(USERS_KEY, users)
-    return users
+    with _store_lock:
+        users = _load(USERS_KEY, [])
+        if not isinstance(users, list):
+            return []
+        users, mutated = _ensure_users_hashed(users)
+        if mutated:
+            logger.info("plaintext passwords found; hashing and persisting")
+            _save(USERS_KEY, users)
+        return users
 
 
 def save_users(users: list[dict]) -> None:
     """Persist the user list through the active storage backend."""
-    _save(USERS_KEY, users)
+    with _store_lock:
+        _save(USERS_KEY, users)
+
+
+def create_user(record: dict) -> bool:
+    """Atomically register a user when the username is free.
+
+    The duplicate check, append, and save run as one critical section
+    under the store lock so two concurrent registrations with the same
+    username cannot both pass the check and double-write (TOCTOU).
+
+    Returns:
+        True when the user was created, False when the username is taken.
+    """
+    uname = (record.get("username") or "").strip().lower()
+    with _store_lock:
+        users = _load(USERS_KEY, [])
+        if not isinstance(users, list):
+            users = []
+        if any((u.get("username") or "").strip().lower() == uname for u in users):
+            return False
+        users.append(record)
+        _save(USERS_KEY, users)
+    return True
 
 
 def load_patients() -> list[dict]:
@@ -188,10 +221,26 @@ def load_patients() -> list[dict]:
         List of patient dicts in the Bimo SOAP schema. Empty list
         when the store is missing or carries a non-list root.
     """
-    patients = _load(PATIENTS_KEY, [])
-    return patients if isinstance(patients, list) else []
+    with _store_lock:
+        patients = _load(PATIENTS_KEY, [])
+        return patients if isinstance(patients, list) else []
 
 
 def save_patients(patients: list[dict]) -> None:
     """Persist the patient list through the active storage backend."""
-    _save(PATIENTS_KEY, patients)
+    with _store_lock:
+        _save(PATIENTS_KEY, patients)
+
+
+def add_patient(record: dict) -> dict:
+    """Atomically append a patient record under the store lock.
+
+    Returns the saved record so the route can echo it back.
+    """
+    with _store_lock:
+        patients = _load(PATIENTS_KEY, [])
+        if not isinstance(patients, list):
+            patients = []
+        patients.append(record)
+        _save(PATIENTS_KEY, patients)
+    return record

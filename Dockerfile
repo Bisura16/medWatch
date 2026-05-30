@@ -16,6 +16,10 @@ COPY . /app
 ENV PYTHONUNBUFFERED=1
 ENV USE_CLOUD_STORAGE=true
 ENV PORT=8080
+# Bake the multi-source SQLite catalog into the image so the web backend
+# serves the full enriched drug database (openFDA + RxNorm + DailyMed)
+# instead of falling back to the small JSON catalog.
+ENV MEDWATCH_DB_PATH=/app/anggota1/Hasil-Scrap/drugs.db
 
 EXPOSE 8080
 

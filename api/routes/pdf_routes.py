@@ -14,9 +14,11 @@ Two categories of generator live here:
 """
 import json
 import logging
+import os
 import tempfile
 from collections import Counter
 from datetime import datetime, timezone, timedelta
+from io import BytesIO
 from pathlib import Path
 
 from fpdf import FPDF
@@ -205,8 +207,9 @@ def generate_rekam_medis():
 
     try:
         export_pdf.buat_laporan_pdf([nested], tmp_path, id_pasien_terpilih=pasien_id)
+        data = Path(tmp_path).read_bytes()
         return send_file(
-            tmp_path,
+            BytesIO(data),
             mimetype="application/pdf",
             as_attachment=True,
             download_name=f"rekam-medis-{pasien_id}.pdf",
@@ -214,6 +217,11 @@ def generate_rekam_medis():
     except Exception as e:
         logger.exception("PDF generation failed")
         return err(f"PDF generation failed: {e}", 500)
+    finally:
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
 
 
 @bp.route("/api/pdf/generate-laporan-bulanan", methods=["POST"])
@@ -250,8 +258,9 @@ def generate_laporan_bulanan():
 
     try:
         export_pdf.buat_laporan_pdf(nested_list, tmp_path)
+        data = Path(tmp_path).read_bytes()
         return send_file(
-            tmp_path,
+            BytesIO(data),
             mimetype="application/pdf",
             as_attachment=True,
             download_name=f"laporan-bulanan-{month or 'semua'}.pdf",
@@ -259,6 +268,11 @@ def generate_laporan_bulanan():
     except Exception as e:
         logger.exception("PDF generation failed")
         return err(f"PDF generation failed: {e}", 500)
+    finally:
+        try:
+            os.remove(tmp_path)
+        except OSError:
+            pass
 
 
 @bp.route("/api/pdf/generate-efek-samping", methods=["POST"])
@@ -307,10 +321,6 @@ def generate_efek_samping():
     top_effects = effect_freq.most_common(25)
     total_patients = len(patients)
     total_prescribed = sum(resep_counter.values())
-
-    tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
-    tmp_path = tmp.name
-    tmp.close()
 
     try:
         pdf = MedWatchReportPDF()
@@ -396,9 +406,8 @@ def generate_efek_samping():
             ),
         )
 
-        pdf.output(tmp_path)
         return send_file(
-            tmp_path,
+            BytesIO(bytes(pdf.output())),
             mimetype="application/pdf",
             as_attachment=True,
             download_name="laporan-efek-samping.pdf",
@@ -426,10 +435,6 @@ def generate_inventaris():
     by_kategori: Counter[str] = Counter(
         (d.get("kategori") or "Tidak terklasifikasi") for d in drugs
     )
-
-    tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
-    tmp_path = tmp.name
-    tmp.close()
 
     try:
         pdf = MedWatchReportPDF()
@@ -522,9 +527,8 @@ def generate_inventaris():
             )
             pdf.ln(1)
 
-        pdf.output(tmp_path)
         return send_file(
-            tmp_path,
+            BytesIO(bytes(pdf.output())),
             mimetype="application/pdf",
             as_attachment=True,
             download_name="laporan-inventaris-obat.pdf",
