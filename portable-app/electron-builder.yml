@@ -1,5 +1,5 @@
-# MedWatch Electron Builder configuration. Portable variant.
-# Wave 5 will fill in the renderer build and backend binary that this config references.
+# MedWatch Electron Builder configuration. Portable variant
+# (zip on macOS, single portable exe on Windows).
 
 appId: com.medwatch.desktop.portable
 productName: MedWatch
@@ -7,27 +7,39 @@ productName: MedWatch
 directories:
   output: dist
 
-# Source files that ship inside the asar bundle.
+# Source files that ship inside the asar bundle. The Next.js static export
+# is shipped as an extra resource (below) so the bundled Flask backend can
+# serve it from disk over the loopback port.
 files:
   - main/**
   - preload/**
-  - resources/renderer/**
   - package.json
 
-# Native resources that ship alongside the app (unpacked from asar).
-# Wave 2 produces the backend binary. Wave 4 produces the SQLite database.
-extraResources:
-  - from: resources/drugs.db
-    to: drugs.db
-  - from: resources/medwatch-backend.exe
-    to: medwatch-backend.exe
+# macOS portable build: a zipped .app the user can run from anywhere.
+mac:
+  category: public.app-category.medical
+  target:
+    - zip
+  artifactName: MedWatch-${version}-portable-${arch}.${ext}
+  identity: null
+  extraResources:
+    - from: resources/renderer
+      to: renderer
+    - from: resources/drugs.db
+      to: drugs.db
+    - from: resources/medwatch-backend
+      to: medwatch-backend
 
-# Windows configuration.
-# Note: win.icon line intentionally omitted because resources/icon.ico
-# does not exist. electron-builder uses the default icon. Adding a custom
-# icon is a low-impact follow-up that does not block the build.
+# Windows portable single executable (produced natively in CI).
 win:
   target: portable
+  extraResources:
+    - from: resources/renderer
+      to: renderer
+    - from: resources/drugs.db
+      to: drugs.db
+    - from: resources/medwatch-backend.exe
+      to: medwatch-backend.exe
 
 # Portable single executable. The file name embeds the version so a user can
 # keep multiple builds side by side without renaming.

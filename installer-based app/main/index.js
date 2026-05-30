@@ -36,6 +36,21 @@ function resolveUserDbPath() {
   return path.join(app.getPath("userData"), "drugs.db");
 }
 
+function resolveRendererDir() {
+  // The Next.js static export is shipped as an extra resource and served
+  // by the Flask backend over the loopback port as a single-page app.
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, "renderer");
+  }
+  return path.join(__dirname, "..", "resources", "renderer");
+}
+
+function resolveDataDir() {
+  // Writable per-user directory for users.json / patients.json so records
+  // persist across restarts (the backend seeds it from its bundled copy).
+  return path.join(app.getPath("userData"), "data");
+}
+
 async function ensureUserDb() {
   const target = resolveUserDbPath();
   if (fs.existsSync(target)) return target;
@@ -68,6 +83,8 @@ function spawnBackend(dbPath) {
       env: Object.assign({}, process.env, {
         MEDWATCH_DESKTOP: "1",
         MEDWATCH_DB_PATH: dbPath,
+        MEDWATCH_RENDERER_DIR: resolveRendererDir(),
+        MEDWATCH_DATA_DIR: resolveDataDir(),
         PYTHONIOENCODING: "utf-8"
       }),
       stdio: ["ignore", "pipe", "pipe"]
@@ -115,7 +132,17 @@ function createMainWindow(port) {
       additionalArguments: [`--medwatch-backend-port=${port}`]
     }
   });
-  mainWindow.loadURL(`http://127.0.0.1:${port}/`);
+  const targetUrl = `http://127.0.0.1:${port}/`;
+  mainWindow.loadURL(targetUrl);
+  // Retry once on a transient load failure (backend accepting connections
+  // a moment after the port handshake). -3 is ERR_ABORTED, ignored.
+  mainWindow.webContents.on("did-fail-load", (_e, errorCode) => {
+    if (errorCode !== -3 && mainWindow) {
+      setTimeout(() => {
+        if (mainWindow) mainWindow.loadURL(targetUrl);
+      }, 600);
+    }
+  });
   mainWindow.on("closed", () => { mainWindow = null; });
 }
 

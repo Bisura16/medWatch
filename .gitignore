@@ -17,6 +17,10 @@ dist/
 # Node (if any subdir uses it)
 node_modules/
 
+# Desktop backend binaries (built natively per OS by PyInstaller / CI, not committed)
+**/resources/medwatch-backend
+**/resources/medwatch-backend.exe
+
 # OS
 .DS_Store
 Thumbs.db

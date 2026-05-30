@@ -1,0 +1,118 @@
+name: Build desktop installers
+
+# Builds the MedWatch desktop backend (PyInstaller) and the Electron
+# installers natively on each OS. PyInstaller does not cross-compile, so the
+# Windows backend.exe is built on a Windows runner and the macOS binary on a
+# macOS runner. The large drugs.db is pulled from a published release asset.
+
+on:
+  workflow_dispatch:
+    inputs:
+      db_tag:
+        description: "Release tag to pull drugs.db from (blank = latest)"
+        required: false
+        default: ""
+  push:
+    branches:
+      - feat/offline-production
+    paths:
+      - "api/**"
+      - "anggota1/data/**"
+      - "anggota2/**"
+      - "anggota4/**"
+      - "anggota5/**"
+      - "medwatch_desktop.spec"
+      - "installer-based app/**"
+      - "portable-app/**"
+      - ".github/workflows/build-desktop.yml"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            backend_name: medwatch-backend.exe
+            eb_flag: "--win"
+          - os: macos-latest
+            backend_name: medwatch-backend
+            eb_flag: "--mac zip"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip wheel setuptools
+          pip install -r api/requirements.txt
+          pip install pyinstaller==6.16.0 pyinstaller-hooks-contrib==2025.11
+
+      - name: Build backend binary
+        env:
+          PYINSTALLER_DISABLE_ISOLATION: "1"
+        run: pyinstaller medwatch_desktop.spec --clean --noconfirm
+
+      - name: Stage backend binary into resources
+        shell: bash
+        run: |
+          for v in "installer-based app" "portable-app"; do
+            cp "dist/${{ matrix.backend_name }}" "$v/resources/${{ matrix.backend_name }}"
+          done
+
+      - name: Fetch drugs.db from release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/db
+          TAG="${{ github.event.inputs.db_tag }}"
+          if [ -n "$TAG" ]; then
+            gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern 'drugs.db' --dir /tmp/db
+          else
+            gh release download --repo "$GITHUB_REPOSITORY" --pattern 'drugs.db' --dir /tmp/db
+          fi
+          for v in "installer-based app" "portable-app"; do
+            cp /tmp/db/drugs.db "$v/resources/drugs.db"
+          done
+
+      - name: Build installers
+        shell: bash
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: |
+          for v in "installer-based app" "portable-app"; do
+            ( cd "$v" \
+              && { [ -f package-lock.json ] && npm ci || npm install; } \
+              && npx electron-builder --config electron-builder.yml ${{ matrix.eb_flag }} )
+          done
+
+      - name: Report artifact hashes
+        shell: bash
+        run: |
+          for d in "installer-based app/dist" "portable-app/dist"; do
+            find "$d" -maxdepth 1 -type f \( -name '*.exe' -o -name '*.dmg' -o -name '*.zip' \) -print0 \
+              | while IFS= read -r -d '' f; do shasum -a 256 "$f"; done
+          done
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: medwatch-${{ matrix.os }}
+          path: |
+            installer-based app/dist/*.exe
+            installer-based app/dist/*.dmg
+            installer-based app/dist/*.zip
+            portable-app/dist/*.exe
+            portable-app/dist/*.zip
+          if-no-files-found: warn
+          retention-days: 14
