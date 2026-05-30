@@ -97,14 +97,18 @@ jobs:
           done
 
       - name: Report artifact hashes
+        if: always()
+        continue-on-error: true
         shell: bash
         run: |
+          hash_one() { sha256sum "$1" 2>/dev/null || shasum -a 256 "$1" 2>/dev/null || certutil -hashfile "$1" SHA256; }
           for d in "installer-based app/dist" "portable-app/dist"; do
             find "$d" -maxdepth 1 -type f \( -name '*.exe' -o -name '*.dmg' -o -name '*.zip' \) -print0 \
-              | while IFS= read -r -d '' f; do shasum -a 256 "$f"; done
+              | while IFS= read -r -d '' f; do hash_one "$f"; done
           done
 
       - name: Upload installers
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: medwatch-${{ matrix.os }}
