@@ -15,6 +15,72 @@
 
 ---
 
+## 0. Status terkini (rilis multi-sumber, Mei 2026)
+
+MedWatch sekarang punya dua cara pakai: aplikasi desktop offline (Windows + macOS) dan
+showcase web. Berikut keadaan nyata per rilis ini.
+
+### Basis data obat multi-sumber
+
+Katalog obat ngga lagi cuma openFDA. Database SQLite `drugs.db` yang dibundel ke desktop
+dan dipasang di Cloud Run sekarang multi-sumber dan dilabel jujur per kolom:
+
+| Sumber | Cakupan | Isi |
+|---|---|---|
+| openFDA | 8.678 baris | label FDA: indikasi, peringatan, kontraindikasi, efek samping, recall, reaksi FAERS |
+| RxNorm (RxNav, NLM) | 20.803 baris | RXCUI kanonik plus bahan aktif (ingredient) |
+| DailyMed (SPL, NLM) | 8.673 baris | SPL set id plus judul label |
+
+Total baris katalog naik dari 8.678 jadi 20.828. Tiap baris bawa flag sumber
+(`source_openfda`, `source_rxnorm`, `source_dailymed`) plus kolom `rxcui`,
+`rxnorm_ingredients`, `spl_setid`, `spl_title`. Index FTS5 dipertahankan. Detail obat di
+UI nampilin RXCUI, bahan aktif, dan tautan label DailyMed kalau tersedia, dan panel
+cakupan sumber di halaman visualisasi nunjukin tiga sumber apa adanya. ETL enrichment
+query RxNav dan DailyMed REST API per nama obat (bukan download bulk), dengan rate limit,
+backoff, dan cache resumable. Ingredient kanonik RxNorm yang ngga ada di set openFDA
+ditambahin sebagai baris baru berlabel sumber RxNorm, makanya total lebih dari 8.678.
+
+### Model autentikasi
+
+- Hash password Argon2id (m=19456, t=2, p=1), auto-upgrade dari bcrypt seed lama saat login.
+- Self-service register untuk role `tenaga_kesehatan` dan `masyarakat` (`admin` ngga bisa
+  di-register), policy password minimal 12 karakter plus tolak password umum.
+- Rate limit dan lockout di login dan register.
+- JWT HMAC-SHA256, secret di-generate per-install (`token_hex(32)`) di data dir; di Cloud
+  Run secret dari Google Secret Manager.
+- Transport token Bearer (`Authorization: Bearer <jwt>`) seragam buat desktop dan web.
+  Model cookie-proxy lama udah ngga dipakai.
+- Demo admin di web lewat endpoint server `POST /api/auth/demo-admin`, jadi ngga ada
+  kredensial admin yang ke-bundle di JavaScript klien.
+
+### Aplikasi desktop (offline)
+
+Installer dibangun dari backend Flask yang di-freeze pakai PyInstaller plus renderer
+Next.js (static export) yang diserve Flask lewat loopback, dipaket pakai electron-builder,
+dan `drugs.db` multi-sumber ikut dibundel. Semua jalan offline (font self-host, nol
+panggilan CDN). Asset ada di Release
+https://github.com/Bisura16/medWatch/releases/tag/v0.1.0:
+
+- macOS (Apple Silicon / arm64): download `MedWatch-0.1.0-arm64.dmg`, buka, drag ke
+  Applications. Karena unsigned, klik kanan aplikasi lalu Open, atau jalanin
+  `xattr -dr com.apple.quarantine /Applications/MedWatch.app` buat lewatin Gatekeeper.
+- Windows: download `MedWatch.Setup.0.1.0.exe` (installer NSIS) atau
+  `MedWatch-0.1.0-portable.exe` (portable). Karena unsigned, SmartScreen muncul, klik
+  More info lalu Run anyway.
+
+Catatan: build macOS = arm64 (Apple Silicon), bukan universal. Startup pertama sekitar
+9 detik karena ekstraksi onefile.
+
+### Web showcase
+
+- Frontend live: https://medwatch-frontend.vercel.app (Vercel, static export).
+- Backend live: https://medwatch-api-517694123086.asia-southeast1.run.app (Cloud Run,
+  region asia-southeast1, image membawa `drugs.db` multi-sumber).
+- Web mode nunjuk api-base ke Cloud Run via `NEXT_PUBLIC_API_BASE`, transport Bearer sama
+  kaya desktop, CORS allowlist mengizinkan domain Vercel.
+
+---
+
 ## 1. Apa Itu MedWatch
 
 MedWatch adalah aplikasi sistem informasi kesehatan yang membantu fasilitas kesehatan tingkat pertama (Faskes 1) dalam dua hal utama: (1) mengelola rekam medis pasien dengan skema SOAP, dan (2) memantau keamanan obat melalui data adverse event dan recall yang diambil dari openFDA. Sistem terdiri dari lima modul Python (anggota1 sampai anggota5) yang dirakit menjadi satu aplikasi desktop CLI di folder `integrasi/`, dan sebuah layer integrasi Flask di folder `api/` yang membungkus kelima modul tersebut menjadi REST endpoint untuk frontend Next.js.
@@ -43,11 +109,11 @@ Daftar fitur disusun mengikuti ID requirement dari [`docs/SRS.md`](./docs/SRS.md
 
 1. **Autentikasi peran tiga jenis** (FR-001 sampai FR-008): login JWT bertanda tangan HMAC-SHA256, role-based access control untuk `tenaga_kesehatan`, `masyarakat`, dan `admin`, plus middleware defense-in-depth di sisi backend dan frontend.
 2. **CRUD pasien SOAP** (FR-010 sampai FR-019): rekam medis dengan field S/O/A/P (Subjective, Objective, Assessment, Plan), pengurutan newest-first dengan parser tanggal `DD-MM-YYYY`, validasi range klinis pada field numerik medis di server dan client.
-3. **Katalog dan pencarian obat** (FR-020 sampai FR-024): daftar obat lengkap dari `anggota4/data/drug_database.json`, pencarian berbasis kata kunci dengan dukungan alias, profil keamanan per obat.
+3. **Katalog dan pencarian obat** (FR-020 sampai FR-024): katalog obat multi-sumber 20.828 baris dari SQLite `drugs.db` (openFDA + RxNorm + DailyMed) dengan pencarian full-text FTS5; fallback ke `anggota4/data/drug_database.json` kalau database ngga tersedia. Profil keamanan per obat menampilkan RXCUI, bahan aktif, dan info label.
 4. **Pengecekan keamanan obat** (FR-030 sampai FR-039): analisis interaksi multi-obat dengan skor severitas 0-100, penggabungan obat aktif pasien dari `P.resep`, panel edukasi cara membaca verdict.
 5. **Visualisasi data kesehatan** (FR-040 sampai FR-049): tren kunjungan 12 bulan, distribusi kategori keluhan, top-10 efek samping, heatmap obat x efek dengan skala warna kontinu 5-stop.
 6. **Ekspor PDF** (FR-050 sampai FR-054): rekam medis per pasien, laporan kunjungan bulanan, laporan efek samping ter-ranked, laporan inventaris obat dengan distribusi per kategori farmakologi.
-7. **Admin tooling** (FR-060 sampai FR-069): trigger scraper, manajemen pengguna dengan hash bcrypt cost 12, statistik sistem, proteksi penghapusan admin terakhir.
+7. **Admin tooling** (FR-060 sampai FR-069): trigger scraper, manajemen pengguna dengan hash Argon2id, statistik sistem, proteksi penghapusan admin terakhir.
 8. **Akuisisi data openFDA** (lihat seksi 11): pengambilan real adverse event reports dan FDA recall pages dengan polite delay, exponential backoff, dan rate-limit handling.
 
 Daftar requirement non-functional (performance, security, usability, accessibility) lengkap di [`docs/SRS.md`](./docs/SRS.md) bagian 4.
