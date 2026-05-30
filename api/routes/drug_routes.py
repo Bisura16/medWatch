@@ -39,8 +39,10 @@ def list_drugs():
         limit / offset: Pagination over the SQLite catalog.
 
     Returns:
-        HTTP 200 with ``{items, total}`` (SQLite) or a list
-        (anggota4). HTTP 503 when neither source is available.
+        HTTP 200 with a JSON array of catalog rows (both the SQLite
+        and anggota4 paths return a bare list; the frontend loads the
+        whole catalog once and searches client-side). HTTP 503 when
+        neither source is available.
     """
     category = request.args.get("category")
     if drug_db.available():

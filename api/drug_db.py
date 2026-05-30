@@ -22,6 +22,7 @@ Every connection is opened read-only (``mode=ro``) and per-call, so
 the loader is safe under Flask's threaded request handling and never
 mutates the shipped database.
 """
+import json
 import logging
 import os
 import re
@@ -150,21 +151,29 @@ def _kategori(route: Optional[str]) -> str:
 
 
 def _map_light(row: sqlite3.Row) -> dict[str, Any]:
-    """Map a drugs row into the light catalog shape (no long text fields)."""
+    """Map a drugs row into the light catalog shape (no long text fields).
+
+    Active ingredients prefer the canonical RxNorm ingredient list when the
+    row was enriched, falling back to the openFDA generic-name split. The
+    ``sumber`` field honestly reflects every source that backs the row.
+    """
     generic = _clean(row["generic_name"])
     brand = _clean(row["brand_name"])
     nama = generic or brand or "(tanpa nama)"
     alias = [brand] if brand and brand.lower() != nama.lower() else []
+    sources = _sources(row)
     return {
         "nama_obat": nama,
         "alias": alias,
         "kategori": _kategori(row["route"]),
-        "bahan_aktif": _ingredients(generic),
+        "bahan_aktif": _rx_ingredients(row) or _ingredients(generic),
         "produsen": _clean(row["manufacturer"]),
         "rute": _kategori(row["route"]),
         "bentuk_sediaan": _clean(row["dosage_form"]).title(),
         "product_ndc": row["product_ndc"],
-        "sumber": "openFDA",
+        "rxcui": _col(row, "rxcui"),
+        "sumber": " + ".join(sources),
+        "sumber_list": sources,
     }
 
 
@@ -183,6 +192,9 @@ def _map_catalog(row: sqlite3.Row) -> dict[str, Any]:
         "dosis_umum": _clean(row["dosage_administration"])[:120],
         "peringatan": [peringatan[0][:200]] if peringatan else [],
         "interaksi": [],
+        "rxnorm_name": _clean(_col(row, "rxnorm_name")),
+        "spl_setid": _col(row, "spl_setid") or "",
+        "spl_title": _clean(_col(row, "spl_title"))[:120],
     })
     return base
 
@@ -200,6 +212,17 @@ def _map_full(row: sqlite3.Row, conn: sqlite3.Connection) -> dict[str, Any]:
         "interaksi": [],
         "efek_samping": _to_list(row["adverse_reactions"]),
         "nomor_aplikasi": _clean(row["application_number"]),
+        "rxnorm_name": _clean(_col(row, "rxnorm_name")),
+        "spl_setid": _col(row, "spl_setid") or "",
+        "spl_title": _clean(_col(row, "spl_title")),
+        "dailymed_url": (
+            "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid="
+            f"{_col(row, 'spl_setid')}" if _col(row, "spl_setid") else ""
+        ),
+        "rxnav_url": (
+            "https://mor.nlm.nih.gov/RxNav/search?searchBy=RXCUI&searchTerm="
+            f"{_col(row, 'rxcui')}" if _col(row, "rxcui") else ""
+        ),
     })
     # Attach FAERS reaction frequencies and recall reports when present.
     if generic:
@@ -233,8 +256,52 @@ _COLS = (
     "product_ndc, brand_name, generic_name, manufacturer, route, dosage_form, "
     "indications, contraindications, warnings, adverse_reactions, "
     "dosage_administration, pregnancy, pediatric_use, application_number, "
-    "product_type, scraped_at"
+    "product_type, scraped_at, "
+    "rxcui, rxnorm_name, rxnorm_ingredients, spl_setid, spl_title, "
+    "source_openfda, source_rxnorm, source_dailymed"
 )
+
+
+def _col(row: sqlite3.Row, name: str) -> Any:
+    """Safely read a column that may be absent in older databases."""
+    try:
+        return row[name]
+    except (IndexError, KeyError):
+        return None
+
+
+def _sources(row: sqlite3.Row) -> list[str]:
+    """Return the honest list of data sources backing a row."""
+    out: list[str] = []
+    if _col(row, "source_openfda"):
+        out.append("openFDA")
+    if _col(row, "source_rxnorm"):
+        out.append("RxNorm")
+    if _col(row, "source_dailymed"):
+        out.append("DailyMed")
+    return out or ["openFDA"]
+
+
+def _rx_ingredients(row: sqlite3.Row) -> list[str]:
+    """Parse the RxNorm ingredient JSON array into a clean display list."""
+    raw = _col(row, "rxnorm_ingredients")
+    if not raw:
+        return []
+    try:
+        items = json.loads(raw)
+    except (json.JSONDecodeError, TypeError):
+        return []
+    out: list[str] = []
+    seen: set[str] = set()
+    for x in items:
+        name = str(x).strip().title()
+        key = name.lower()
+        if name and key not in seen:
+            seen.add(key)
+            out.append(name)
+        if len(out) >= _MAX_LIST_ITEMS:
+            break
+    return out
 
 
 def list_drugs(category: Optional[str] = None, limit: int = 0, offset: int = 0) -> list[dict[str, Any]]:
@@ -262,10 +329,17 @@ def list_drugs(category: Optional[str] = None, limit: int = 0, offset: int = 0) 
             where = "WHERE UPPER(route) LIKE ?"
             params.append(f"%{category.upper()}%")
         sql = f"SELECT {_COLS} FROM drugs {where} ORDER BY generic_name"
-        limit = int(limit or 0)
+        # Coerce defensively: query params arrive as strings and a non-numeric
+        # ?limit=abc must not raise (which would surface as a 500); treat any
+        # unparseable value as "no pagination".
+        try:
+            limit = int(limit or 0)
+            offset = max(0, int(offset or 0))
+        except (TypeError, ValueError):
+            limit, offset = 0, 0
         if limit > 0:
             sql += " LIMIT ? OFFSET ?"
-            params += [min(limit, 10000), max(0, int(offset or 0))]
+            params += [min(limit, 10000), offset]
         rows = conn.execute(sql, params).fetchall()
         return [_map_catalog(r) for r in rows]
     except sqlite3.Error as e:
@@ -471,6 +545,12 @@ def aggregates() -> dict[str, Any]:
         )
         generics_with_faers = scalar("SELECT COUNT(DISTINCT generic_name) FROM reactions")
 
+        # Honest multi-source coverage: how many rows each source backs.
+        n_openfda = scalar("SELECT COUNT(*) FROM drugs WHERE source_openfda=1")
+        n_rxnorm = scalar("SELECT COUNT(*) FROM drugs WHERE source_rxnorm=1")
+        n_dailymed = scalar("SELECT COUNT(*) FROM drugs WHERE source_dailymed=1")
+        n_rxcui = scalar("SELECT COUNT(*) FROM drugs WHERE rxcui IS NOT NULL")
+
         return {
             "stat_band": {
                 "total_obat": total_drugs,
@@ -478,17 +558,23 @@ def aggregates() -> dict[str, Any]:
                 "total_rute": n_routes,
                 "total_reaksi_faers": total_reactions,
                 "total_penarikan": total_recalls,
+                "total_rxcui": n_rxcui,
             },
             "per_rute": per_route,
             "per_bentuk_sediaan": per_form,
             "penarikan_per_kelas": recalls_by_class,
             "efek_samping_terbanyak": top_reactions,
             "cakupan_sumber": [
-                {"label": "Punya label openFDA", "value": with_label},
-                {"label": "Punya data reaksi FAERS", "value": generics_with_faers},
-                {"label": "Total obat", "value": total_drugs},
+                {"label": "openFDA (label FDA)", "value": n_openfda},
+                {"label": "RxNorm (RxNav / NLM)", "value": n_rxnorm},
+                {"label": "DailyMed (SPL / NLM)", "value": n_dailymed},
             ],
-            "sumber": "U.S. National Library of Medicine / openFDA",
+            "cakupan_kelengkapan": [
+                {"label": "Punya label openFDA", "value": with_label},
+                {"label": "Punya RXCUI (RxNorm)", "value": n_rxcui},
+                {"label": "Punya data reaksi FAERS", "value": generics_with_faers},
+            ],
+            "sumber": "openFDA + RxNorm (RxNav) + DailyMed, U.S. National Library of Medicine",
         }
     except sqlite3.Error as e:
         logger.warning("aggregates failed: %s", e)
