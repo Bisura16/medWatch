@@ -361,11 +361,14 @@ gcloud run services describe medwatch-api --region asia-southeast1 \
   --format="value(status.latestReadyRevisionName,status.url)"
 ```
 
-Deploy from source (Cloud Build memakai `api/Dockerfile`):
+Deploy from source dari ROOT repo (Cloud Build memakai `Dockerfile` di root, yang
+membake `anggota1/Hasil-Scrap/drugs.db` ke image lewat aturan `.gcloudignore`).
+JANGAN pakai `--source api/`: konteks itu tidak menyertakan `drugs.db` sehingga
+katalog kosong di produksi.
 
 ```bash
 gcloud run deploy medwatch-api \
-  --source api/ \
+  --source . \
   --region asia-southeast1 \
   --allow-unauthenticated \
   --set-env-vars=USE_CLOUD_STORAGE=true,GCS_BUCKET=medwatch-polban-2026-state \

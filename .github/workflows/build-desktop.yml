@@ -85,6 +85,12 @@ jobs:
             cp /tmp/db/drugs.db "$v/resources/drugs.db"
           done
 
+      - name: Assert bundled drugs.db catalog
+        shell: bash
+        run: |
+          node scripts/assert-drugsdb.js "installer-based app/resources/drugs.db"
+          node scripts/assert-drugsdb.js "portable-app/resources/drugs.db"
+
       - name: Build installers
         shell: bash
         env:

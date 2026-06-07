@@ -106,7 +106,10 @@ exe = EXE(
     upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,
+    # Windowed (no console). On Windows console=True pops a terminal window on
+    # launch; the Electron parent reads the port handshake over a stdout pipe,
+    # which works regardless. Paired with windowsHide:true on the spawn side.
+    console=False,
     disable_windowed_traceback=False,
     target_arch=None,
     codesign_identity=None,

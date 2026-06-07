@@ -8,6 +8,12 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 const readline = require("readline");
 
+// Disable GPU/hardware acceleration before the app becomes ready. Target
+// machines (puskesmas) may have no GPU or a flaky driver; forcing CPU
+// rendering avoids GPU-process crashes. This is paired with renderer-side
+// reduced-motion / "Mode Ringan" fallbacks so visuals degrade gracefully.
+app.disableHardwareAcceleration();
+
 let backendChild = null;
 let backendPort = null;
 let mainWindow = null;
@@ -87,7 +93,8 @@ function spawnBackend(dbPath) {
         MEDWATCH_DATA_DIR: resolveDataDir(),
         PYTHONIOENCODING: "utf-8"
       }),
-      stdio: ["ignore", "pipe", "pipe"]
+      stdio: ["ignore", "pipe", "pipe"],
+      windowsHide: true
     });
 
     const rl = readline.createInterface({ input: child.stdout });

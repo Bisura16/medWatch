@@ -4,6 +4,9 @@
 appId: com.medwatch.desktop.installer
 productName: MedWatch
 
+# Fail the build if the bundled drug catalog is missing or empty.
+beforeBuild: build-hooks.js
+
 directories:
   output: dist
 

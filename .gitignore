@@ -82,3 +82,6 @@ portable-app/node_modules/
 *.key
 service-account*.json
 gcp-key*.json
+
+# Per-install JWT secret (runtime generated)
+api/data/.jwt_secret
