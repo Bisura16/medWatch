@@ -1,4 +1,4 @@
-# integrasi/ — Merge Handler Desktop CLI
+# integrasi/ - Merge Handler Desktop CLI
 
 Folder ini adalah merge layer yang nge-compose modul `anggota1` sampai `anggota5` jadi satu desktop CLI app dengan login + role-based menu. Implementasi target tim "merge masing-masing modul" tanpa modify file anggota satu pun.
 
@@ -35,9 +35,9 @@ python integrasi/app_terpadu.py
 
 ## Arsitektur
 
-- `app_terpadu.py` — entry point, panggil login dari anggota5/auth.py terus dispatch menu sesuai role
-- `adapter.py` — shim functions untuk panggil tiap modul anggota via subprocess atau import langsung
-- `__init__.py` — package marker
+- `app_terpadu.py` - entry point, panggil login dari anggota5/auth.py terus dispatch menu sesuai role
+- `adapter.py` - shim functions untuk panggil tiap modul anggota via subprocess atau import langsung
+- `__init__.py` - package marker
 
 ## Catatan
 
