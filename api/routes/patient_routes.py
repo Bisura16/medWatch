@@ -12,6 +12,7 @@ import logging
 import re
 import threading
 from copy import deepcopy
+from datetime import datetime, timezone
 from flask import Blueprint, request, g, jsonify
 from ..middleware import require_auth, require_role
 from ..storage import load_patients, save_patients
@@ -172,7 +173,18 @@ def _summary(p: dict) -> dict:
         "umur": p.get("umur"),
         "tanggal_kunjungan": p.get("tanggal_kunjungan"),
         "kategori": p.get("kategori"),
+        "created_at": p.get("created_at"),
     }
+
+
+def _created_sort_key(p: dict) -> tuple:
+    """Sort key for newest-CREATED first.
+
+    Primary: created_at (ISO string; missing sorts low). Secondary: the
+    numeric id suffix, which tracks creation order for legacy records that
+    predate the created_at field. Used with reverse=True.
+    """
+    return (p.get("created_at") or "", _id_num(p.get("id")))
 
 
 def _deep_merge(base: dict, updates: dict) -> dict:
@@ -195,24 +207,47 @@ def _deep_merge(base: dict, updates: dict) -> dict:
 @bp.route("/api/patients", methods=["GET"])
 @require_role("tenaga_kesehatan", "admin")
 def list_patients():
-    """List patients ordered newest visit first (fix for B07).
+    """List patients ordered newest-CREATED first, with optional search and cap.
 
-    Sort is descending by (parsed visit date, numeric id suffix) so
-    patients with the same ``tanggal_kunjungan`` are tie-broken by
-    the highest patient id.
+    Ordering is descending by creation (created_at, then numeric id suffix),
+    so a freshly created patient always appears at the TOP regardless of the
+    user-editable visit date. The previous ordering used the visit date, which
+    let a backdated or blank date push a brand-new record to the bottom.
+
+    Query parameters:
+        q: Optional case-insensitive filter over patient name and id (P00x).
+        limit: Page size (default 50, ``0`` returns all). Display-only cap;
+            no patient data is removed, only the page returned.
+        offset: Row offset for "load more" pagination.
 
     Returns:
-        HTTP 200 with a list of slim ``_summary`` projections.
+        HTTP 200 with a bare list of slim ``_summary`` projections (newest
+        first), plus an ``X-Total-Count`` header carrying the unpaged total.
     """
+    q = (request.args.get("q") or "").strip().lower()
+    try:
+        limit = int(request.args.get("limit", 50))
+    except (TypeError, ValueError):
+        limit = 50
+    try:
+        offset = max(0, int(request.args.get("offset", 0)))
+    except (TypeError, ValueError):
+        offset = 0
+
     patients = load_patients()
-    # B07: newest visit first. Tiebreak by descending numeric patient id so
-    # P003 lists before P001 when both have the same kunjungan date.
-    patients_sorted = sorted(
-        patients,
-        key=lambda p: (_parse_visit_date(p.get("tanggal_kunjungan")), _id_num(p.get("id"))),
-        reverse=True,
-    )
-    return ok([_summary(p) for p in patients_sorted])
+    patients_sorted = sorted(patients, key=_created_sort_key, reverse=True)
+
+    if q:
+        patients_sorted = [
+            p for p in patients_sorted
+            if q in (p.get("nama") or "").lower() or q in (p.get("id") or "").lower()
+        ]
+
+    total = len(patients_sorted)
+    page = patients_sorted[offset:offset + limit] if limit > 0 else patients_sorted
+    resp = jsonify([_summary(p) for p in page])
+    resp.headers["X-Total-Count"] = str(total)
+    return resp
 
 
 @bp.route("/api/patients/<pid>", methods=["GET"])
@@ -278,6 +313,9 @@ def create_patient():
         new_patient = deepcopy(body)
         new_patient["id"] = _generate_id(patients)
         new_patient["created_by"] = g.user["username"]
+        # Creation timestamp drives newest-first ordering, independent of the
+        # user-editable visit date, so a new record always lists at the top.
+        new_patient["created_at"] = datetime.now(timezone.utc).isoformat()
         patients.append(new_patient)
         save_patients(patients)
     logger.info(f"patient created: {new_patient['id']} by {g.user['username']}")
