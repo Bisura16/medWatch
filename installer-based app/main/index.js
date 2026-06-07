@@ -59,13 +59,25 @@ function resolveDataDir() {
 
 async function ensureUserDb() {
   const target = resolveUserDbPath();
-  if (fs.existsSync(target)) return target;
   const source = resolveBundledDbPath();
   if (!fs.existsSync(source)) {
     throw new Error(
       "Database bawaan tidak ditemukan pada paket aplikasi. Ulangi instalasi."
     );
   }
+  // Copy on first launch, and refresh when the bundled catalog differs in size
+  // from the user copy. After an app upgrade that ships a newer catalog, the
+  // old per-user copy must not be reused, or the app would serve a stale
+  // catalog from a previous version.
+  let needCopy = !fs.existsSync(target);
+  if (!needCopy) {
+    try {
+      if (fs.statSync(target).size !== fs.statSync(source).size) needCopy = true;
+    } catch (e) {
+      needCopy = true;
+    }
+  }
+  if (!needCopy) return target;
   fs.mkdirSync(path.dirname(target), { recursive: true });
   await new Promise((resolve, reject) => {
     const rd = fs.createReadStream(source);
