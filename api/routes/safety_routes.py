@@ -44,6 +44,13 @@ def safety_check():
     if not isinstance(drugs, list) or not drugs:
         return err("drugs (non-empty list) required", 400)
 
+    # Bound the request: each drug triggers a per-name catalog lookup, so an
+    # unbounded list would amplify into many scans. No real interaction check
+    # involves more than a handful of drugs; cap defensively.
+    _MAX_DRUGS = 25
+    if len(drugs) > _MAX_DRUGS:
+        drugs = [d for d in drugs if isinstance(d, str)][:_MAX_DRUGS]
+
     sc = get_module("anggota4", "safety_checker")
     if sc:
         try:

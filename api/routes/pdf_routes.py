@@ -139,13 +139,34 @@ def _parse_resep_drugs(resep: str) -> list[str]:
     return raw_tokens
 
 
+def _deep_safe(obj):
+    """Recursively Latin-1-sanitize every string in a nested structure.
+
+    anggota5/export_pdf renders with fpdf2 core fonts (Latin-1 only). Patient
+    free-text can contain characters outside Latin-1 (smart quotes, non-Latin
+    scripts), which would raise mid-render and 500 the export. We sanitize the
+    payload here, in api/, so the read-only anggota5 module is never touched.
+    """
+    if isinstance(obj, dict):
+        return {k: _deep_safe(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_deep_safe(v) for v in obj]
+    if isinstance(obj, str):
+        return _safe(obj)
+    return obj
+
+
 def _to_anggota5_format(p: dict) -> dict:
-    """Translate canonical Bimo SOAP shape -> Abhidal nested shape for export_pdf."""
+    """Translate canonical Bimo SOAP shape -> Abhidal nested shape for export_pdf.
+
+    The result is Latin-1-sanitized so the fpdf2-based anggota5 exporter never
+    crashes on non-Latin-1 patient text.
+    """
     S = p.get("S", {}) or {}
     O = p.get("O", {}) or {}
     A = p.get("A", {}) or {}
     P = p.get("P", {}) or {}
-    return {
+    return _deep_safe({
         "identitas": {
             "ID Pasien": p.get("id", "-"),
             "Nama Pasien": p.get("nama", "-"),
@@ -170,7 +191,7 @@ def _to_anggota5_format(p: dict) -> dict:
             f"RESEP OBAT : {P.get('resep', '-')}\n"
             f"JADWAL KONTROL : {P.get('jadwal_kontrol', '-')}"
         ),
-    }
+    })
 
 
 @bp.route("/api/pdf/generate-rekam-medis", methods=["POST"])

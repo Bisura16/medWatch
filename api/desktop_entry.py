@@ -17,17 +17,43 @@ from wsgiref.simple_server import WSGIServer, make_server
 
 
 def _resolve_db_path() -> str:
-    """Return the SQLite path passed by Electron via MEDWATCH_DB_PATH.
+    """Return the validated SQLite path passed by Electron via MEDWATCH_DB_PATH.
+
+    Fails loudly (RuntimeError, which exits the backend non-zero so the
+    Electron shell shows an error dialog) when the path is missing, the
+    file is absent or unreadable, or it has no ``drugs`` table. A missing
+    or empty catalog is never allowed to start up and silently serve
+    nothing.
 
     Raises:
-        RuntimeError: When the env var is missing or empty. The
-            Electron parent is contractually obliged to set this
-            before spawning the bundled backend.
+        RuntimeError: When the env var is missing, the file is absent or
+            unreadable, or the database has no ``drugs`` table.
     """
     db = os.environ.get("MEDWATCH_DB_PATH")
     if not db:
         raise RuntimeError(
             "MEDWATCH_DB_PATH is required when running in desktop mode."
+        )
+    if not os.path.isfile(db):
+        raise RuntimeError(
+            f"Database obat tidak ditemukan di {db}. Ulangi instalasi aplikasi."
+        )
+    import sqlite3
+    try:
+        con = sqlite3.connect(f"file:{db}?mode=ro", uri=True, timeout=5)
+        try:
+            n = con.execute(
+                "SELECT COUNT(*) FROM sqlite_master "
+                "WHERE type='table' AND name='drugs'"
+            ).fetchone()[0]
+        finally:
+            con.close()
+    except sqlite3.Error as e:
+        raise RuntimeError(f"Database obat di {db} tidak terbaca: {e}")
+    if not n:
+        raise RuntimeError(
+            f"Database obat di {db} tidak punya tabel drugs. "
+            "Ulangi instalasi aplikasi."
         )
     return db
 
