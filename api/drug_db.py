@@ -404,49 +404,76 @@ def _fts_escape(q: str) -> str:
     return " ".join(f'"{t}"*' for t in tokens)
 
 
-def search_drugs(q: str, limit: int = 50) -> list[dict[str, Any]]:
+def search_drugs(q: str, limit: int = 15) -> list[dict[str, Any]]:
     """Full-text search the catalog, returning light records.
 
-    Uses the FTS5 index with a prefix query and falls back to a
-    ``LIKE`` scan on generic/brand name when FTS yields nothing.
+    Prioritises exact name matches so typing ``ibuprofen`` shows that
+    drug first rather than dozens of weak prefix hits. Falls back to
+    FTS5 prefix search (up to ``limit`` rows) when no exact match is
+    found, then to a ``LIKE`` scan on generic/brand name.
     """
     conn = _connect()
     if not conn:
         return []
     try:
-        limit = max(1, min(int(limit or 50), 100))
+        limit = max(1, min(int(limit or 15), 50))
+        name = q.strip().lower()
+        seen_ndcs: set[str] = set()
+        results: list[dict[str, Any]] = []
+
+        # 1) Exact match on generic_name or brand_name — highest relevance.
+        exact_rows = conn.execute(
+            "SELECT product_ndc FROM drugs "
+            "WHERE LOWER(generic_name) = ? OR LOWER(brand_name) = ? LIMIT 3",
+            (name, name),
+        ).fetchall()
+        for r in exact_rows:
+            ndc = r["product_ndc"]
+            if ndc not in seen_ndcs:
+                seen_ndcs.add(ndc)
+                full = conn.execute(
+                    f"SELECT {_COLS} FROM drugs WHERE product_ndc = ?", (ndc,)
+                ).fetchone()
+                if full:
+                    results.append(_map_light(full))
+
+        # 2) FTS5 prefix search (broad but capped).
         match = _fts_escape(q)
-        rows: list[sqlite3.Row] = []
+        fts_rows: list[sqlite3.Row] = []
         if match:
             try:
-                rows = conn.execute(
-                    f"SELECT d.product_ndc, d.brand_name, d.generic_name, d.manufacturer, "
-                    f"d.route, d.dosage_form FROM drugs_fts f "
-                    f"JOIN drugs d ON d.rowid = f.rowid "
+                fts_rows = conn.execute(
+                    f"SELECT d.product_ndc, d.brand_name, d.generic_name "
+                    f"FROM drugs_fts f JOIN drugs d ON d.rowid = f.rowid "
                     f"WHERE drugs_fts MATCH ? ORDER BY rank LIMIT ?",
                     (match, limit),
                 ).fetchall()
             except sqlite3.Error:
-                rows = []
-        if not rows:
-            like = f"%{q.strip()}%"
-            rows = conn.execute(
-                "SELECT product_ndc, brand_name, generic_name, manufacturer, route, dosage_form "
+                fts_rows = []
+        if not fts_rows:
+            like = f"%{name}%"
+            fts_rows = conn.execute(
+                "SELECT product_ndc, brand_name, generic_name "
                 "FROM drugs WHERE generic_name LIKE ? OR brand_name LIKE ? LIMIT ?",
                 (like, like, limit),
             ).fetchall()
-        # _map_light reads more columns than the search projection selects;
-        # re-read full columns only for the matched NDCs to keep payload light.
-        ndcs = [r["product_ndc"] for r in rows]
-        if not ndcs:
-            return []
-        placeholders = ",".join("?" * len(ndcs))
-        full = conn.execute(
-            f"SELECT {_COLS} FROM drugs WHERE product_ndc IN ({placeholders})", ndcs
-        ).fetchall()
-        order = {ndc: i for i, ndc in enumerate(ndcs)}
-        full.sort(key=lambda r: order.get(r["product_ndc"], 1_000))
-        return [_map_light(r) for r in full]
+
+        # Re-read full columns for unseen FTS5/LIKE matches.
+        new_ndcs = [r["product_ndc"] for r in fts_rows
+                    if r["product_ndc"] not in seen_ndcs]
+        if new_ndcs:
+            placeholders = ",".join("?" * len(new_ndcs))
+            full_rows = conn.execute(
+                f"SELECT {_COLS} FROM drugs WHERE product_ndc IN ({placeholders})",
+                new_ndcs,
+            ).fetchall()
+            # Preserve the FTS5 rank order.
+            order = {ndc: i for i, ndc in enumerate(new_ndcs)}
+            full_rows.sort(key=lambda r: order.get(r["product_ndc"], 1_000))
+            results.extend(_map_light(r) for r in full_rows)
+
+        # Hard cap so the UI never feels flooded.
+        return results[:limit]
     except sqlite3.Error as e:
         logger.warning("search_drugs failed: %s", e)
         return []
