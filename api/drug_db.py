@@ -414,21 +414,48 @@ def _apply_synonyms(q: str) -> str:
     return re.sub(r"[A-Za-z][A-Za-z\-]+", repl, q)
 
 
-def _fts_escape(q: str) -> str:
-    """Build a safe FTS5 prefix query from arbitrary user input."""
+def _fts_name_query(q: str) -> str:
+    """Build a safe FTS5 prefix query restricted to the name columns.
+
+    Searching only brand_name and generic_name stops a drug-name search from
+    matching the term buried in a different drug's warnings or interaction
+    text (for example a saline label that mentions ibuprofen), which used to
+    let irrelevant rows outrank the drug the user actually typed.
+    """
     tokens = re.findall(r"[A-Za-z0-9]+", q)
     if not tokens:
         return ""
-    return " ".join(f'"{t}"*' for t in tokens)
+    return "{brand_name generic_name} : " + " ".join(f'"{t}"*' for t in tokens)
+
+
+def _name_tier(name: Optional[str], q_norm: str) -> int:
+    """How well a name matches the query: 0 exact, 1 prefix, 2 word, 3 partial, 4 none."""
+    if not name:
+        return 4
+    s = name.lower().strip()
+    if s == q_norm:
+        return 0
+    if s.startswith(q_norm):
+        return 1
+    if re.search(r"\b" + re.escape(q_norm) + r"\b", s):
+        return 2
+    return 3
+
+
+# bm25 weights for the indexed drugs_fts columns in order: brand_name,
+# generic_name, indications, contraindications, warnings, adverse_reactions.
+# Name columns dominate so they rank far above label-text mentions.
+_BM25_WEIGHTS = "10.0, 10.0, 0.3, 0.3, 0.1, 0.1"
 
 
 def search_drugs(q: str, limit: int = 15) -> list[dict[str, Any]]:
-    """Full-text search the catalog, returning light records.
+    """Search the catalog by drug name, returning ranked light records.
 
-    Uses the FTS5 index with a prefix query and falls back to a
-    ``LIKE`` scan on generic/brand name when FTS yields nothing. The
-    default limit is small (15) so the search-first UI never pulls the
-    whole catalog; callers may raise it up to a hard cap of 100.
+    Matches the query against the name columns only (FTS5 prefix), then
+    re-ranks so the drug the user typed surfaces at the top: exact display
+    name first, then prefix, then whole word, then partial; ties broken by
+    the shorter display name and the bm25 score. Falls back to a LIKE scan on
+    the name columns when FTS yields nothing. Default limit is small (15).
     """
     conn = _connect()
     if not conn:
@@ -436,29 +463,45 @@ def search_drugs(q: str, limit: int = 15) -> list[dict[str, Any]]:
     try:
         limit = max(1, min(int(limit or 15), 100))
         q = _apply_synonyms(q)
-        match = _fts_escape(q)
+        q_norm = q.lower().strip()
+        candidates = max(limit * 5, 50)
+        has_display = "display_name" in _select_cols(conn)
+        disp_sel = "d.display_name" if has_display else "NULL AS display_name"
         rows: list[sqlite3.Row] = []
-        if match:
+        name_expr = _fts_name_query(q)
+        if name_expr:
             try:
                 rows = conn.execute(
-                    f"SELECT d.product_ndc, d.brand_name, d.generic_name, d.manufacturer, "
-                    f"d.route, d.dosage_form FROM drugs_fts f "
-                    f"JOIN drugs d ON d.rowid = f.rowid "
-                    f"WHERE drugs_fts MATCH ? ORDER BY rank LIMIT ?",
-                    (match, limit),
+                    f"SELECT d.product_ndc, d.brand_name, d.generic_name, {disp_sel}, "
+                    f"bm25(drugs_fts, {_BM25_WEIGHTS}) AS _rank "
+                    f"FROM drugs_fts f JOIN drugs d ON d.rowid = f.rowid "
+                    f"WHERE drugs_fts MATCH ? ORDER BY _rank LIMIT ?",
+                    (name_expr, candidates),
                 ).fetchall()
             except sqlite3.Error:
                 rows = []
         if not rows:
+            disp_sel2 = "display_name" if has_display else "NULL AS display_name"
             like = f"%{q.strip()}%"
             rows = conn.execute(
-                "SELECT product_ndc, brand_name, generic_name, manufacturer, route, dosage_form "
-                "FROM drugs WHERE generic_name LIKE ? OR brand_name LIKE ? LIMIT ?",
-                (like, like, limit),
+                f"SELECT product_ndc, brand_name, generic_name, {disp_sel2}, 0.0 AS _rank "
+                f"FROM drugs WHERE generic_name LIKE ? OR brand_name LIKE ? LIMIT ?",
+                (like, like, candidates),
             ).fetchall()
-        # _map_light reads more columns than the search projection selects;
-        # re-read full columns only for the matched NDCs to keep payload light.
-        ndcs = [r["product_ndc"] for r in rows]
+        if not rows:
+            return []
+
+        def sort_key(r: sqlite3.Row):
+            disp = _clean(_col(r, "display_name")) or _clean(r["generic_name"]) or _clean(r["brand_name"]) or ""
+            t_display = _name_tier(disp, q_norm)
+            t_best = min(
+                _name_tier(_col(r, "display_name"), q_norm),
+                _name_tier(r["generic_name"], q_norm),
+                _name_tier(r["brand_name"], q_norm),
+            )
+            return (t_display, t_best, len(disp), r["_rank"])
+
+        ndcs = [r["product_ndc"] for r in sorted(rows, key=sort_key)[:limit]]
         if not ndcs:
             return []
         placeholders = ",".join("?" * len(ndcs))
