@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MedWatch — Monitoring Obat & Manajemen Pasien untuk Semua</title>
+<title>MedWatch - Monitoring Obat & Manajemen Pasien untuk Semua</title>
 <meta name="description" content="MedWatch adalah aplikasi desktop offline-first untuk faskes tingkat pertama. Kelola data pasien dan pantau keamanan obat tanpa koneksi internet." />
 <meta name="keywords" content="medwatch, rekam medis, aplikasi kesehatan, monitoring obat, faskes, puskesmas, offline" />
 <meta name="author" content="Tim MedWatch - Politeknik Negeri Bandung" />
 
 <!-- Open Graph / Social Share -->
 <meta property="og:type" content="website" />
-<meta property="og:title" content="MedWatch — Monitoring Obat & Manajemen Pasien" />
+<meta property="og:title" content="MedWatch - Monitoring Obat & Manajemen Pasien" />
 <meta property="og:description" content="Aplikasi desktop offline-first untuk faskes tingkat pertama. Kelola rekam medis dan pantau keamanan obat tanpa internet." />
 <meta property="og:image" content="assets/dashboard.png" />
 
@@ -24,7 +24,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* Teal palette — muted, warmer, more sage-like */
+      /* Teal palette - muted, warmer, more sage-like */
       --teal-50: #E8F4F0;
       --teal-100: #C2DDD5;
       --teal-200: #7BBDAD;
@@ -33,14 +33,14 @@
       --teal-800: #0E4B42;
       --teal-900: #082E28;
 
-      /* Blue palette — slate-blue, cooler */
+      /* Blue palette - slate-blue, cooler */
       --blue-50:  #EAF0F8;
       --blue-100: #BDD0E9;
       --blue-400: #4A7FC1;
       --blue-600: #2558A0;
       --blue-800: #133775;
 
-      /* Neutral — warm stone */
+      /* Neutral - warm stone */
       --gray-50:  #F5F3EF;
       --gray-100: #DDD9D1;
       --gray-200: #BCB8B0;
@@ -49,7 +49,7 @@
       --gray-800: #3E3C38;
       --gray-900: #252320;
 
-      /* Semantic tokens — now warm parchment + teal accent */
+      /* Semantic tokens - now warm parchment + teal accent */
       --bg: #F6F4EF;
       --surface: #FDFCFA;
       --surface2: #EEE9E0;
@@ -717,9 +717,9 @@
       max-width: 1140px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 40px;
+      grid-template-columns: 1fr;
+      align-items: stretch;
+      gap: 28px;
       position: relative;
       z-index: 1;
     }
@@ -782,6 +782,30 @@
     .sysreq-title { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 7px; }
     .sysreq-item { font-size: 11.5px; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
     .sysreq-item svg { width: 12px; height: 12px; fill: none; stroke: var(--teal-200); stroke-width: 2; flex-shrink: 0; }
+
+    /* Three download cards, one per installer */
+    .download-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+    }
+    .dl-card {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.14);
+      border-radius: var(--radius-xl);
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+    .dl-sub { font-size: 11px; color: var(--teal-200); font-weight: 600; letter-spacing: 0.3px; margin-bottom: 6px; min-height: 28px; }
+    .dl-os { font-family: var(--font-display); font-size: 18px; color: #fff; margin-bottom: 14px; }
+    .dl-card .btn-download { margin-top: auto; }
+    .dl-size { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 8px; }
+    @media (max-width: 860px) {
+      .download-cards { grid-template-columns: 1fr; }
+    }
 
     /* ─── FOOTER ─── */
     footer {
@@ -1118,7 +1142,7 @@
     </div>
     <h1>Transformasi Rekam Medis &amp; Pantau Keamanan Obat <em>Tanpa Bergantung Internet.</em></h1>
     <p class="hero-desc">
-      <strong>MedWatch</strong> adalah aplikasi desktop offline-first untuk faskes tingkat pertama. Kelola data pasien dan hindari risiko efek samping obat dalam satu platform yang terintegrasi — berjalan sepenuhnya di komputer Anda, tanpa perlu koneksi internet.
+      <strong>MedWatch</strong> adalah aplikasi desktop offline-first untuk faskes tingkat pertama. Kelola data pasien dan hindari risiko efek samping obat dalam satu platform yang terintegrasi - berjalan sepenuhnya di komputer Anda, tanpa perlu koneksi internet.
     </p>
     <div class="hero-actions">
       <a href="#download" class="btn-primary">
@@ -1152,7 +1176,7 @@
           <div class="dot dot-y"></div>
           <div class="dot dot-g"></div>
         </div>
-        <div class="mockup-title">MedWatch — Dashboard Utama</div>
+        <div class="mockup-title">MedWatch - Dashboard Utama</div>
       </div>
       <div class="mockup-body">
         <div class="mockup-header-row">
@@ -1235,7 +1259,7 @@
       </div>
       <div class="pain-stat">
         <div class="pain-stat-number amber">1:2.500</div>
-        <div class="pain-stat-label">rasio dokter terhadap penduduk — jauh di bawah standar WHO yang ideal</div>
+        <div class="pain-stat-label">rasio dokter terhadap penduduk - jauh di bawah standar WHO yang ideal</div>
         <div class="pain-stat-source">Sumber: Kemenkes RI</div>
       </div>
       <div class="pain-stat">
@@ -1253,7 +1277,7 @@
         <div class="pain-card-tag red">Risiko Keselamatan</div>
         <div class="pain-card-title">Efek Samping Obat Tidak Terpantau</div>
         <div class="pain-card-desc">Dengan 79% masyarakat yang melakukan swamedikasi dan rasio dokter yang belum ideal, risiko interaksi obat berbahaya dan efek samping yang tidak tertangani semakin tinggi setiap harinya.</div>
-        <div class="pain-card-highlight">"Pasien datang sudah dalam kondisi parah — ternyata salah kombinasi obat warung selama seminggu."</div>
+        <div class="pain-card-highlight">"Pasien datang sudah dalam kondisi parah - ternyata salah kombinasi obat warung selama seminggu."</div>
       </div>
 
       <div class="pain-card">
@@ -1272,7 +1296,7 @@
         </div>
         <div class="pain-card-tag blue">Kendala Infrastruktur</div>
         <div class="pain-card-title">Sistem RME Mahal &amp; Butuh Internet Stabil</div>
-        <div class="pain-card-desc">Solusi RME yang ada di pasaran seringkali berbiaya tinggi dengan lisensi tahunan, dan bergantung pada koneksi internet yang tidak selalu stabil — terutama di daerah terpencil dan 3T.</div>
+        <div class="pain-card-desc">Solusi RME yang ada di pasaran seringkali berbiaya tinggi dengan lisensi tahunan, dan bergantung pada koneksi internet yang tidak selalu stabil - terutama di daerah terpencil dan 3T.</div>
         <div class="pain-card-highlight">"Sistem cloud kami mati seharian waktu provider internet gangguan. Pelayanan terhenti."</div>
       </div>
     </div>
@@ -1289,7 +1313,7 @@
     <div class="solution-wrap">
       <div class="solution-statement">
         <span class="solution-quote-mark">"</span>
-        <p>MedWatch hadir sebagai <strong>sistem informasi kesehatan</strong> yang menjembatani manajemen rekam medis digital dengan <strong>monitoring keamanan obat secara menyeluruh</strong> — bekerja sepenuhnya offline, terjangkau, dan siap digunakan tanpa pelatihan teknis yang panjang.</p>
+        <p>MedWatch hadir sebagai <strong>sistem informasi kesehatan</strong> yang menjembatani manajemen rekam medis digital dengan <strong>monitoring keamanan obat secara menyeluruh</strong> - bekerja sepenuhnya offline, terjangkau, dan siap digunakan tanpa pelatihan teknis yang panjang.</p>
         <div class="solution-author">
           <div>
             <div class="solution-author-name">Tim MedWatch</div>
@@ -1303,7 +1327,7 @@
           <div class="solution-pillar-num">1</div>
           <div class="solution-pillar-content">
             <h4>Offline-First, Tanpa Gangguan</h4>
-            <p>Semua data tersimpan lokal di perangkat Anda. Tidak ada ketergantungan pada internet — layanan tetap berjalan meski koneksi putus.</p>
+            <p>Semua data tersimpan lokal di perangkat Anda. Tidak ada ketergantungan pada internet - layanan tetap berjalan meski koneksi putus.</p>
           </div>
         </div>
         <div class="solution-pillar">
@@ -1317,7 +1341,7 @@
           <div class="solution-pillar-num">3</div>
           <div class="solution-pillar-content">
             <h4>Monitoring Keamanan Obat Terintegrasi</h4>
-            <p>Deteksi otomatis interaksi obat, efek samping, dan kontraindikasi — melindungi pasien sebelum obat diberikan.</p>
+            <p>Deteksi otomatis interaksi obat, efek samping, dan kontraindikasi - melindungi pasien sebelum obat diberikan.</p>
           </div>
         </div>
         <div class="solution-pillar">
@@ -1366,7 +1390,7 @@
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
         </div>
         <div class="feature-title">Pengingat Jadwal Minum Obat</div>
-        <div class="feature-desc">Atur jadwal konsumsi obat harian dan terima notifikasi agar tidak melewatkan dosis — cocok untuk kebutuhan swamedikasi pribadi.</div>
+        <div class="feature-desc">Atur jadwal konsumsi obat harian dan terima notifikasi agar tidak melewatkan dosis - cocok untuk kebutuhan swamedikasi pribadi.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">
@@ -1523,10 +1547,10 @@
         <div class="step-num">1</div>
         <div class="step-content">
           <h4>Download File Installer</h4>
-          <p>Klik tombol "Download Gratis" di halaman ini. File installer berformat <code>.exe</code> akan otomatis tersimpan di folder Unduhan komputer Anda.</p>
+          <p>Pilih kartu unduhan sesuai sistem operasi Anda di bagian Download. macOS mengunduh berkas <code>.dmg</code>, Windows mengunduh berkas <code>.exe</code>. Berkas tersimpan otomatis di folder Unduhan.</p>
           <span class="step-note">
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Ukuran file: ~180 MB
+            Ukuran file sekitar 140 sampai 210 MB tergantung sistem operasi
           </span>
         </div>
       </div>
@@ -1535,10 +1559,10 @@
         <div class="step-num">2</div>
         <div class="step-content">
           <h4>Jalankan File Installer</h4>
-          <p>Buka file <code>MedWatch-Setup.exe</code> yang telah diunduh. Jika muncul peringatan Windows SmartScreen, klik <strong>"More info"</strong> lalu <strong>"Run anyway"</strong> karena aplikasi ini aman.</p>
+          <p><strong>Windows:</strong> buka file <code>.exe</code>. Jika muncul peringatan SmartScreen, klik <strong>"More info"</strong> lalu <strong>"Run anyway"</strong>. <strong>macOS:</strong> buka file <code>.dmg</code> lalu seret MedWatch ke folder Applications. Jika muncul "Apple could not verify...", buka <strong>System Settings &gt; Privacy &amp; Security</strong>, gulir ke bagian Security, klik <strong>"Open Anyway"</strong> dalam 1 jam lalu autentikasi, kemudian buka aplikasinya lagi. Alternatif lewat Terminal: <code>xattr -dr com.apple.quarantine /Applications/MedWatch.app</code></p>
           <span class="step-note">
             <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Membutuhkan hak akses Administrator
+            Aplikasi belum bertanda tangan kode berbayar; langkah ini wajar dan aman
           </span>
         </div>
       </div>
@@ -1547,7 +1571,7 @@
         <div class="step-num">3</div>
         <div class="step-content">
           <h4>Ikuti Wizard Instalasi</h4>
-          <p>Klik <strong>Next</strong> hingga proses instalasi selesai. Pilih direktori instalasi atau biarkan default di <code>C:\Program Files\MedWatch</code>. Proses membutuhkan waktu sekitar 2–3 menit.</p>
+          <p>Klik <strong>Next</strong> hingga proses instalasi selesai. Pilih direktori instalasi atau biarkan default di <code>C:\Program Files\MedWatch</code>. Proses membutuhkan waktu sekitar 2-3 menit.</p>
         </div>
       </div>
 
@@ -1571,31 +1595,36 @@
   <div class="download-inner">
     <div>
       <div class="download-eyebrow">Download Sekarang</div>
-      <h2 class="download-title">MedWatch — Gratis untuk<br>Faskes &amp; Masyarakat Umum</h2>
-      <p class="download-desc">Baik Anda tenaga kesehatan di Puskesmas maupun individu yang ingin swamedikasi lebih aman — MedWatch siap membantu Anda hari ini.</p>
+      <h2 class="download-title">MedWatch - Gratis untuk<br>Faskes &amp; Masyarakat Umum</h2>
+      <p class="download-desc">Baik Anda tenaga kesehatan di Puskesmas maupun individu yang ingin swamedikasi lebih aman - MedWatch siap membantu Anda hari ini.</p>
     </div>
-    <div class="download-box">
-      <div class="download-version">Versi Terbaru · Windows</div>
-      <!-- GANTI href="#" dengan link download Anda -->
-      <a href="#" class="btn-download">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download Gratis
-      </a>
-      <div class="download-size">MedWatch-Setup.exe · ~80 MB</div>
-      <div class="sysreq">
-        <div class="sysreq-title">Persyaratan Sistem</div>
-        <div class="sysreq-item">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          Windows 10 / 11 (64-bit)
-        </div>
-        <div class="sysreq-item">
-          <svg viewBox="0 0 24 24"><path d="M5 12H3l9-9 9 9h-2M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
-          RAM minimal 4 GB
-        </div>
-        <div class="sysreq-item">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Penyimpanan 500 MB
-        </div>
+    <div class="download-cards">
+      <div class="dl-card">
+        <div class="dl-sub">Mac chip Apple Silicon (M1/M2/M3 dst)</div>
+        <div class="dl-os">macOS</div>
+        <a href="https://github.com/Bisura16/medWatch/releases/latest/download/MedWatch-0.2.0-arm64.dmg" class="btn-download">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download .dmg
+        </a>
+        <div class="dl-size">MedWatch-0.2.0-arm64.dmg · ~206 MB</div>
+      </div>
+      <div class="dl-card">
+        <div class="dl-sub">Installer otomatis, tinggal next-next</div>
+        <div class="dl-os">Windows Installer</div>
+        <a href="https://github.com/Bisura16/medWatch/releases/latest/download/MedWatch.Setup.0.2.0.exe" class="btn-download">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download .exe
+        </a>
+        <div class="dl-size">MedWatch.Setup.0.2.0.exe · ~163 MB</div>
+      </div>
+      <div class="dl-card">
+        <div class="dl-sub">Ga perlu install, langsung jalan</div>
+        <div class="dl-os">Windows Portable</div>
+        <a href="https://github.com/Bisura16/medWatch/releases/latest/download/MedWatch-0.2.0-portable.exe" class="btn-download">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download .exe
+        </a>
+        <div class="dl-size">MedWatch-0.2.0-portable.exe · ~134 MB</div>
       </div>
     </div>
   </div>
