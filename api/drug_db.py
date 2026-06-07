@@ -183,20 +183,40 @@ def _map_catalog(row: sqlite3.Row) -> dict[str, Any]:
     Includes the fields the frontend catalog card and client-side search
     need (name, class, ingredients, a short indication and warning), but
     keeps long label text out so the full-catalog payload stays small.
+
+    Text fields are truncated at fetch time (SQL ``SUBSTR``) so Python
+    never touches multi-kilobyte label text for the full 20k-row load.
     """
     base = _map_light(row)
-    indikasi = _to_list(row["indications"])
-    peringatan = _to_list(row["warnings"])
     base.update({
-        "indikasi": [indikasi[0][:200]] if indikasi else [],
-        "dosis_umum": _clean(row["dosage_administration"])[:120],
-        "peringatan": [peringatan[0][:200]] if peringatan else [],
+        "indikasi": _strip_col(row, "indications", 200),
+        "dosis_umum": _strip_col(row, "dosage_administration", 120),
+        "peringatan": _strip_col(row, "warnings", 200),
         "interaksi": [],
-        "rxnorm_name": _clean(_col(row, "rxnorm_name")),
+        "rxnorm_name": _strip_col(row, "rxnorm_name", 0),
         "spl_setid": _col(row, "spl_setid") or "",
-        "spl_title": _clean(_col(row, "spl_title"))[:120],
+        "spl_title": _strip_col(row, "spl_title", 120),
     })
     return base
+
+
+def _strip_col(row: sqlite3.Row, name: str, max_len: int) -> str | list[str]:
+    """Read a column, strip whitespace, and optionally truncate.
+
+    When ``max_len > 0`` the result is wrapped in a single-element list
+    for the Katong API shape.
+    """
+    raw = row[name] if _col(row, name) else None
+    if not raw:
+        return [] if max_len > 0 else ""
+    val = raw.strip()[:max_len] if max_len > 0 else raw.strip()
+    if not val:
+        return [] if max_len > 0 else ""
+    if max_len > 0:
+        # Collapse internal whitespace for the short snippet.
+        val = " ".join(val.split()) if val else ""
+        return [val] if val else []
+    return " ".join(val.split())
 
 
 def _map_full(row: sqlite3.Row, conn: sqlite3.Connection) -> dict[str, Any]:
@@ -261,6 +281,16 @@ _COLS = (
     "source_openfda, source_rxnorm, source_dailymed"
 )
 
+# Light column set for catalog listing — excludes large text fields that are
+# not shown in the compact projection so the frontend can load the full catalog
+# without pulling megabytes of label text.
+_LIST_COLS = (
+    "product_ndc, brand_name, generic_name, manufacturer, route, dosage_form, "
+    "indications, warnings, dosage_administration, "
+    "rxcui, rxnorm_name, rxnorm_ingredients, spl_setid, spl_title, "
+    "source_openfda, source_rxnorm, source_dailymed"
+)
+
 
 def _col(row: sqlite3.Row, name: str) -> Any:
     """Safely read a column that may be absent in older databases."""
@@ -311,6 +341,10 @@ def list_drugs(category: Optional[str] = None, limit: int = 0, offset: int = 0) 
     default (``limit=0``) every row is returned with the compact catalog
     projection. A positive ``limit`` paginates instead.
 
+    The query uses the lighter ``_LIST_COLS`` projection (omitting large
+    text fields not shown in the catalog card) so the full-catalog payload
+    stays small and loads fast even for 20k+ rows.
+
     Args:
         category: Optional case-insensitive route/category filter.
         limit: ``0`` returns all rows; a positive value paginates.
@@ -328,7 +362,7 @@ def list_drugs(category: Optional[str] = None, limit: int = 0, offset: int = 0) 
         if category:
             where = "WHERE UPPER(route) LIKE ?"
             params.append(f"%{category.upper()}%")
-        sql = f"SELECT {_COLS} FROM drugs {where} ORDER BY generic_name"
+        sql = f"SELECT {_LIST_COLS} FROM drugs {where} ORDER BY generic_name"
         # Coerce defensively: query params arrive as strings and a non-numeric
         # ?limit=abc must not raise (which would surface as a 500); treat any
         # unparseable value as "no pagination".
