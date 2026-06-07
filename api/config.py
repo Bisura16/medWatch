@@ -7,10 +7,37 @@ reading from ``os.environ``; nothing is written to disk and no
 network call is made.
 """
 import os
+import sys
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-API_DIR = Path(__file__).resolve().parent
+def _resolve_base_dir() -> Path:
+    """Return the project root directory, compatible with both normal Python
+    and PyInstaller frozen bundles.
+
+    In a normal Python process the root is two levels up from ``config.py``
+    (``api/config.py`` → parent ``api/`` → grandparent ``medWatch/``).
+    In a PyInstaller frozen bundle the modules sit inside ``sys._MEIPASS``
+    which IS the project root; the extra ``..`` does not apply because
+    ``__file__`` resolves to an archive-internal path.
+    """
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS)
+    return Path(__file__).resolve().parent.parent
+
+
+def _resolve_api_dir() -> Path:
+    """Return the ``api/`` directory, PyInstaller-aware.
+
+    Normal: ``config.py`` itself lives in ``api/``.
+    Frozen: ``sys._MEIPASS/api/`` is the intended path.
+    """
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS) / "api"
+    return Path(__file__).resolve().parent
+
+
+BASE_DIR = _resolve_base_dir()
+API_DIR = _resolve_api_dir()
 
 # Seed data ships read-only inside the bundle at api/data. The desktop
 # launcher points MEDWATCH_DATA_DIR at a writable per-user directory so
