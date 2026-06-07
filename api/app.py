@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from api.config import CORS_ORIGINS, DEBUG, PORT, API_DIR, RENDERER_DIR
 from api.routes import auth_routes, health
@@ -80,6 +81,11 @@ def create_app() -> Flask:
         Configured ``flask.Flask`` instance ready to serve requests.
     """
     app = Flask(__name__, static_folder=str(API_DIR / "static"), static_url_path="/static")
+
+    # Behind the Cloud Run front end the direct peer is the proxy, so trust one
+    # X-Forwarded-For hop to recover the real client IP for rate-limit keying.
+    # On desktop/local there is no proxy header, so this is a safe no-op.
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 
     CORS(app,
          origins=CORS_ORIGINS,

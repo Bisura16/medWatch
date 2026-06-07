@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, request, g
 from ..middleware import require_role
 from ..auth import hash_password
+from ..security import validate_password
 from ..storage import load_users, save_users, load_patients
 from ..bootstrap import get_module
 from ..helpers import ok, err, strip_password_fields
@@ -102,8 +103,15 @@ def create_user():
     if role not in ("tenaga_kesehatan", "masyarakat", "admin"):
         return err("invalid role", 400)
 
+    # Enforce the same password policy as self-registration so an admin
+    # account (the highest privilege) can never be created with a trivial
+    # password. Previously this route skipped the policy entirely.
+    valid, reason = validate_password(password, username)
+    if not valid:
+        return err(reason, 400)
+
     users = load_users()
-    if any(u.get("username") == username for u in users):
+    if any((u.get("username") or "").lower() == username.lower() for u in users):
         return err("username exists", 409)
 
     new_user = {

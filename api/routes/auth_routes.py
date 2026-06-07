@@ -98,49 +98,6 @@ def login():
     })
 
 
-_DEMO_ADMIN_USERNAME = "admin_ghaisan"
-
-
-@bp.route("/api/auth/demo-admin", methods=["POST"])
-def demo_admin():
-    """Issue a token for the seeded admin demo account (web showcase tour).
-
-    The web entry screen offers a one-click admin tour. Rather than ship the
-    admin password in the static bundle, the client calls this passwordless
-    endpoint and the server mints a token for the pre-seeded demo admin only.
-    Arbitrary usernames are never accepted; it is lightly rate limited per IP.
-
-    Returns:
-        HTTP 200 with ``{token, user}`` when the seeded demo admin exists,
-        HTTP 404 when it does not, HTTP 429 when rate limited.
-    """
-    rl_key = f"demo-admin:{_client_ip()}"
-    locked, retry_after = ratelimit.check(rl_key)
-    if locked:
-        return err("too many attempts, try again later", 429, retry_after=retry_after)
-
-    record = next(
-        (u for u in load_users()
-         if (u.get("username") or "").lower() == _DEMO_ADMIN_USERNAME
-         and u.get("role") == "admin"),
-        None,
-    )
-    if record is None:
-        ratelimit.record_failure(rl_key)
-        return err("demo admin tidak tersedia", 404)
-
-    token = issue_token(record["username"], record["role"], record.get("name", ""))
-    logger.info("demo admin tour token issued")
-    return ok({
-        "token": token,
-        "user": {
-            "username": record["username"],
-            "role": record["role"],
-            "name": record.get("name", ""),
-        },
-    })
-
-
 @bp.route("/api/auth/register", methods=["POST"])
 def register():
     """Self-service registration for the public roles.
