@@ -82,15 +82,18 @@ def create_app() -> Flask:
     """
     app = Flask(__name__, static_folder=str(API_DIR / "static"), static_url_path="/static")
 
-    # Behind the Cloud Run front end the direct peer is the proxy, so trust one
-    # X-Forwarded-For hop to recover the real client IP for rate-limit keying.
-    # On desktop/local there is no proxy header, so this is a safe no-op.
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
+    # Only trust X-Forwarded-For when explicitly running behind a known proxy
+    # (Cloud Run sets MEDWATCH_TRUST_PROXY=1). On desktop/local there is no
+    # trusted proxy, so honoring a client-supplied XFF would let an attacker
+    # rotate it to evade the per-ip login rate limit; keep the real peer there.
+    if os.environ.get("MEDWATCH_TRUST_PROXY", "").lower() in ("1", "true", "yes"):
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
 
     CORS(app,
          origins=CORS_ORIGINS,
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization"],
+         expose_headers=["X-Total-Count"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
     app.register_blueprint(health.bp)

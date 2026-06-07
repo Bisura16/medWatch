@@ -58,6 +58,10 @@ def list_drugs():
         return err(_CATALOG_UNAVAILABLE, 503)
     category = request.args.get("category")
     limit = _int_arg("limit", _DEFAULT_LIMIT)
+    # Negative limit must not bypass the bound into a full-catalog dump; only an
+    # explicit 0 means "return everything" (export path).
+    if limit < 0:
+        limit = _DEFAULT_LIMIT
     offset = _int_arg("offset", 0)
     return ok(drug_db.list_drugs(category=category, limit=limit, offset=offset))
 

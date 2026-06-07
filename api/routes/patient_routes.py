@@ -351,7 +351,12 @@ def update_patient(pid: str):
         patients = load_patients()
         for i, p in enumerate(patients):
             if p.get("id") == pid:
-                patients[i] = _deep_merge(p, body)
+                # Server-managed fields are never client-writable: drop them
+                # from the update so an edit cannot spoof attribution or pin a
+                # record to the top by overwriting created_at.
+                clean = {k: v for k, v in body.items()
+                         if k not in ("id", "created_at", "created_by")}
+                patients[i] = _deep_merge(p, clean)
                 patients[i]["id"] = pid
                 save_patients(patients)
                 return ok(patients[i])

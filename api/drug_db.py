@@ -227,8 +227,10 @@ def _map_full(row: sqlite3.Row, conn: sqlite3.Connection) -> dict[str, Any]:
     })
     # Attach FAERS reaction frequencies and recall reports when present.
     if generic:
+        # reactions.generic_name is stored upper-cased, so match case-insensitively
+        # or the FAERS reaction list comes back empty for almost every drug.
         reacts = conn.execute(
-            "SELECT reaction_term, count FROM reactions WHERE generic_name = ? "
+            "SELECT reaction_term, count FROM reactions WHERE UPPER(generic_name) = UPPER(?) "
             "ORDER BY count DESC LIMIT 10",
             (generic,),
         ).fetchall()
@@ -479,7 +481,7 @@ def get_drug(nama_obat: str) -> Optional[dict[str, Any]]:
     if not conn:
         return None
     try:
-        name = (nama_obat or "").strip()
+        name = _apply_synonyms((nama_obat or "").strip())
         if not name:
             return None
         row = conn.execute(

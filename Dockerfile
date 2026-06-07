@@ -16,6 +16,9 @@ COPY . /app
 ENV PYTHONUNBUFFERED=1
 ENV USE_CLOUD_STORAGE=true
 ENV PORT=8080
+# Running behind the Cloud Run front end (a trusted single-hop proxy), so honor
+# one X-Forwarded-For hop to recover the real client ip for rate-limit keying.
+ENV MEDWATCH_TRUST_PROXY=1
 # Bake the multi-source SQLite catalog into the image so the web backend
 # serves the full enriched drug database (openFDA + RxNorm + DailyMed)
 # instead of falling back to the small JSON catalog.
