@@ -142,3 +142,44 @@ def format_profil_keamanan(payload: Dict) -> str:
         lines.append(f"- {item}")
 
     return "\n".join(lines)
+
+
+# ══════════════════════════════════════════════
+# MAIN — interactive search loop
+# ══════════════════════════════════════════════
+
+def _main():
+    print("╔══════════════════════════════════════════════╗")
+    print("║      MEDWATCH — PENCARIAN OBAT & SAFETY     ║")
+    print("╚══════════════════════════════════════════════╝")
+    print()
+    print("  Ketik nama obat untuk mencari. Contoh: ibuprofen, amoxicillin")
+    print("  Ketik 'selesai' atau kosong untuk kembali.\n")
+
+    while True:
+        print("─" * 55)
+        try:
+            kata = input("  Cari obat: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            break
+
+        if not kata or kata.lower() in ("selesai", "exit", "0", "q"):
+            break
+
+        print()
+        hasil = cari_obat(kata)
+        print(format_hasil_pencarian(hasil))
+
+        if hasil["jumlah_hasil"] > 0:
+            print()
+            tanya = input("  Tampilkan profil keamanan lengkap? [y/n]: ").strip().lower()
+            if tanya == "y":
+                profil = ambil_profil_keamanan_lengkap(kata)
+                print()
+                print(format_profil_keamanan(profil))
+
+    print("\n  Kembali ke menu utama.\n")
+
+
+if __name__ == "__main__":
+    _main()

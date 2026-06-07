@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MedWatch — Monitoring Obat & Manajemen Pasien untuk Semua</title>
+<meta name="description" content="MedWatch adalah aplikasi desktop offline-first untuk faskes tingkat pertama. Kelola data pasien dan pantau keamanan obat tanpa koneksi internet." />
+<meta name="keywords" content="medwatch, rekam medis, aplikasi kesehatan, monitoring obat, faskes, puskesmas, offline" />
+<meta name="author" content="Tim MedWatch - Politeknik Negeri Bandung" />
+
+<!-- Open Graph / Social Share -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="MedWatch — Monitoring Obat & Manajemen Pasien" />
+<meta property="og:description" content="Aplikasi desktop offline-first untuk faskes tingkat pertama. Kelola rekam medis dan pantau keamanan obat tanpa internet." />
+<meta property="og:image" content="assets/dashboard.png" />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233A9688'/><path d='M50 25v50M25 50h50' stroke='white' stroke-width='12' stroke-linecap='round'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Teal palette — muted, warmer, more sage-like */
+      --teal-50: #E8F4F0;
+      --teal-100: #C2DDD5;
+      --teal-200: #7BBDAD;
+      --teal-400: #3A9688;
+      --teal-600: #1E6E62;
+      --teal-800: #0E4B42;
+      --teal-900: #082E28;
+
+      /* Blue palette — slate-blue, cooler */
+      --blue-50:  #EAF0F8;
+      --blue-100: #BDD0E9;
+      --blue-400: #4A7FC1;
+      --blue-600: #2558A0;
+      --blue-800: #133775;
+
+      /* Neutral — warm stone */
+      --gray-50:  #F5F3EF;
+      --gray-100: #DDD9D1;
+      --gray-200: #BCB8B0;
+      --gray-400: #8A867E;
+      --gray-600: #605D57;
+      --gray-800: #3E3C38;
+      --gray-900: #252320;
+
+      /* Semantic tokens — now warm parchment + teal accent */
+      --bg: #F6F4EF;
+      --surface: #FDFCFA;
+      --surface2: #EEE9E0;
+      --text-main: #1A1714;
+      --text-sub: #3D3830;
+      --text-muted: #726D65;
+      --accent: #3A9688;
+      --accent-dark: #1E6E62;
+      --accent-light: #E0EDE9;
+      --border: rgba(30, 110, 98, 0.13);
+      --border-strong: rgba(30, 110, 98, 0.26);
+
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+
+      /* New warm accent for highlights */
+      --warm-amber: #C47B2B;
+      --warm-amber-light: #F5E9D5;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text-main);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(10, 8, 6, 0.88);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lightbox-overlay.active {
+      display: flex;
+    }
+    .lightbox-img-wrap {
+      position: relative;
+      max-width: min(90vw, 1100px);
+      max-height: 88vh;
+      cursor: default;
+      animation: lightboxIn .22s cubic-bezier(0.34,1.5,0.64,1) both;
+    }
+    @keyframes lightboxIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .lightbox-img-wrap img {
+      max-width: 100%;
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.55);
+      display: block;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      transition: background .15s;
+      z-index: 1;
+    }
+    .lightbox-close:hover { background: var(--gray-100); }
+    .lightbox-close svg { width: 16px; height: 16px; fill: none; stroke: var(--text-main); stroke-width: 2.2; }
+    .lightbox-caption {
+      position: absolute;
+      bottom: -40px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.55);
+      font-weight: 500;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(246, 244, 239, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5vw;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-logo-icon svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 1.8; }
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--accent-dark); }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 7px 18px;
+      border-radius: 999px;
+      font-weight: 600 !important;
+      font-size: 13px !important;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: var(--accent-dark) !important; }
+    .hamburger { display: none; }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 72px 5vw 60px;
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--teal-50);
+      color: var(--teal-800);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--teal-100);
+      margin-bottom: 20px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .hero-badge span { color: var(--teal-400); }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4.5vw, 52px);
+      line-height: 1.12;
+      color: var(--text-main);
+      letter-spacing: -1px;
+      margin-bottom: 18px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-desc {
+      font-size: 15.5px;
+      color: var(--text-sub);
+      line-height: 1.75;
+      margin-bottom: 32px;
+      max-width: 460px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 26px;
+      border-radius: 999px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .btn-primary svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--accent-dark);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      border: 1.5px solid var(--border-strong);
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-secondary:hover { background: var(--accent-light); border-color: var(--accent); }
+    .hero-meta {
+      margin-top: 28px;
+      display: flex;
+      gap: 24px;
+    }
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .hero-meta-item svg { width: 14px; height: 14px; stroke: var(--accent); fill: none; stroke-width: 2; }
+
+    /* ─── HERO VISUAL / MOCK SCREEN ─── */
+    .hero-visual {
+      position: relative;
+    }
+    .app-mockup {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      border: 1.5px solid var(--border-strong);
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(30, 110, 98, 0.10), 0 4px 16px rgba(30, 110, 98, 0.06);
+    }
+    .mockup-titlebar {
+      background: var(--surface2);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mockup-dots { display: flex; gap: 5px; }
+    .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .dot-r { background: #FF6059; }
+    .dot-y { background: #FFBD2E; }
+    .dot-g { background: #28CA41; }
+    .mockup-title {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+      flex: 1;
+      text-align: center;
+      letter-spacing: 0.2px;
+    }
+    .mockup-body { padding: 18px; }
+    .mockup-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .mockup-header-row h3 { font-size: 13.5px; font-weight: 600; color: var(--text-main); }
+    .badge-green {
+      background: var(--teal-50);
+      color: var(--teal-800);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--teal-100);
+    }
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-bottom: 14px;
+    }
+    .stat-card {
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      padding: 10px 11px;
+      border: 1px solid var(--border);
+    }
+    .stat-label { font-size: 10px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px; }
+    .stat-value { font-size: 19px; font-weight: 700; color: var(--text-main); font-family: var(--font-display); }
+    .stat-value.green { color: var(--accent); }
+    .stat-value.amber { color: #BA7517; }
+    .stat-value.red { color: #A32D2D; }
+    .mockup-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .mockup-table th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 5px 6px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .mockup-table td {
+      padding: 6px 6px;
+      border-bottom: 1px solid rgba(30, 110, 98, 0.07);
+      color: var(--text-main);
+    }
+    .mockup-table tr:last-child td { border-bottom: none; }
+    .pill {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .pill-ok { background: var(--teal-50); color: var(--teal-800); }
+    .pill-warn { background: #FAEEDA; color: #854F0B; }
+    .pill-exp { background: #FCEBEB; color: #A32D2D; }
+
+    .hero-float-card {
+      position: absolute;
+      bottom: -16px;
+      left: -28px;
+      background: var(--surface);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      min-width: 170px;
+      box-shadow: 0 8px 28px rgba(30,110,98,0.10);
+    }
+    .float-title { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px; }
+    .float-alert { display: flex; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 500; color: #854F0B; background: #FAEEDA; padding: 6px 9px; border-radius: 7px; margin-bottom: 5px; }
+    .float-alert svg { width: 13px; height: 13px; fill: none; stroke: #854F0B; stroke-width: 2; flex-shrink: 0; }
+    .float-ok { display: flex; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 500; color: var(--teal-800); background: var(--teal-50); padding: 6px 9px; border-radius: 7px; }
+    .float-ok svg { width: 13px; height: 13px; fill: none; stroke: var(--teal-600); stroke-width: 2; flex-shrink: 0; }
+
+    /* ─── SECTION COMMON ─── */
+    section { padding: 70px 5vw; }
+    .section-inner { max-width: 1140px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.5vw, 38px);
+      color: var(--text-main);
+      letter-spacing: -0.6px;
+      line-height: 1.18;
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      font-size: 15px;
+      color: var(--text-sub);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ─── USER SEGMENTS ─── */
+    #pengguna { background: var(--surface2); }
+    .segments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 44px;
+    }
+    .segment-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 26px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .segment-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 6px 28px rgba(58,150,136,0.10);
+    }
+    .segment-card.featured {
+      border: 2px solid var(--accent);
+    }
+    .segment-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--teal-50);
+      color: var(--teal-800);
+      border: 1px solid var(--teal-100);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .segment-badge.blue {
+      background: var(--blue-50);
+      color: var(--blue-800);
+      border-color: var(--blue-100);
+    }
+    .segment-icon-wrap {
+      width: 50px; height: 50px;
+      border-radius: var(--radius-md);
+      background: var(--teal-50);
+      border: 1px solid var(--teal-100);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .segment-icon-wrap.blue {
+      background: var(--blue-50);
+      border-color: var(--blue-100);
+    }
+    .segment-icon-wrap svg { width: 24px; height: 24px; fill: none; stroke-width: 1.7; }
+    .segment-icon-wrap svg { stroke: var(--accent); }
+    .segment-icon-wrap.blue svg { stroke: var(--blue-600); }
+    .segment-title { font-size: 17px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
+    .segment-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.68; margin-bottom: 16px; }
+    .segment-usecases { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .segment-usecases li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .segment-usecases li svg { width: 14px; height: 14px; fill: none; stroke: var(--accent); stroke-width: 2.2; flex-shrink: 0; margin-top: 2px; }
+    .segment-usecases li.blue svg { stroke: var(--blue-600); }
+
+
+    #fitur { background: var(--surface); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 44px;
+    }
+    .feature-card {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 26px 24px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 6px 24px rgba(58, 150, 136, 0.10);
+    }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background: var(--teal-50);
+      border: 1px solid var(--teal-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .feature-icon svg { width: 22px; height: 22px; fill: none; stroke: var(--accent); stroke-width: 1.8; }
+    .feature-title { font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 7px; }
+    .feature-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ─── SCREENSHOTS ─── */
+    #screenshot { background: var(--bg); }
+    .screens-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 40px;
+    }
+    .screen-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color .2s, box-shadow .2s, transform .2s;
+    }
+    .screen-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 32px rgba(58,150,136,0.12);
+      transform: translateY(-2px);
+    }
+    .screen-preview {
+      background: var(--surface2);
+      padding: 20px;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      cursor: zoom-in;
+    }
+    .screen-preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(10,8,6,0);
+      transition: background .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .screen-preview:hover::after {
+      background: rgba(10,8,6,0.18);
+    }
+    .screen-zoom-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      width: 46px;
+      height: 46px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .2s, transform .2s;
+      z-index: 2;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+    .screen-zoom-icon svg { width: 20px; height: 20px; fill: none; stroke: var(--accent-dark); stroke-width: 2; }
+    .screen-preview:hover .screen-zoom-icon {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .screen-placeholder {
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .screen-placeholder svg { width: 36px; height: 36px; fill: none; stroke: var(--teal-200); stroke-width: 1.4; margin-bottom: 8px; }
+    .screen-placeholder p { font-size: 12px; color: var(--teal-200); }
+    .screen-info { padding: 14px 16px; }
+    .screen-info h4 { font-size: 13.5px; font-weight: 600; color: var(--text-main); margin-bottom: 3px; }
+    .screen-info p { font-size: 12.5px; color: var(--text-muted); }
+
+    /* ─── INSTALASI ─── */
+    #instalasi { background: var(--surface); }
+    .steps-container {
+      margin-top: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 680px;
+    }
+    .step {
+      display: flex;
+      gap: 20px;
+      position: relative;
+    }
+    .step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 44px;
+      bottom: 0;
+      width: 1.5px;
+      background: var(--border);
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      position: relative;
+      z-index: 1;
+    }
+    .step-content {
+      padding: 4px 0 32px;
+    }
+    .step-content h4 { font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 5px; }
+    .step-content p { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; }
+    .step-content .step-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--teal-50);
+      border: 1px solid var(--teal-100);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      margin-top: 9px;
+      font-size: 12.5px;
+      color: var(--teal-800);
+      font-weight: 500;
+    }
+    .step-note svg { width: 13px; height: 13px; fill: none; stroke: var(--accent); stroke-width: 2; flex-shrink: 0; }
+
+    /* ─── DOWNLOAD CTA ─── */
+    #download {
+      background: linear-gradient(145deg, var(--teal-900) 0%, var(--teal-800) 45%, #124E44 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    #download::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+    }
+    #download::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(29,158,117,0.12);
+    }
+    .download-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 40px;
+      position: relative;
+      z-index: 1;
+    }
+    .download-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--teal-200);
+      margin-bottom: 8px;
+    }
+    .download-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 3.8vw, 42px);
+      color: #fff;
+      letter-spacing: -0.6px;
+      line-height: 1.14;
+      margin-bottom: 12px;
+    }
+    .download-desc { font-size: 14.5px; color: rgba(255,255,255,0.68); line-height: 1.7; max-width: 500px; }
+    .download-box {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.14);
+      border-radius: var(--radius-xl);
+      padding: 28px 30px;
+      min-width: 260px;
+      text-align: center;
+    }
+    .download-version {
+      font-size: 11.5px;
+      color: var(--teal-200);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: #fff;
+      color: var(--teal-800);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 13px 26px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform .15s, background .2s;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .btn-download:hover { transform: translateY(-1px); background: var(--teal-50); }
+    .btn-download svg { width: 18px; height: 18px; fill: none; stroke: var(--accent-dark); stroke-width: 2; }
+    .download-size { font-size: 11.5px; color: rgba(255,255,255,0.45); margin-top: 6px; }
+    .sysreq {
+      margin-top: 14px;
+      text-align: left;
+    }
+    .sysreq-title { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 7px; }
+    .sysreq-item { font-size: 11.5px; color: rgba(255,255,255,0.6); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .sysreq-item svg { width: 12px; height: 12px; fill: none; stroke: var(--teal-200); stroke-width: 2; flex-shrink: 0; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--gray-900);
+      padding: 36px 5vw;
+      color: rgba(255,255,255,0.45);
+      font-size: 12.5px;
+    }
+    .footer-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 17px;
+      color: #fff;
+    }
+    .footer-logo-icon {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .footer-logo-icon svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2; }
+    .footer-note { color: rgba(255,255,255,0.35); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 48px 5vw 40px;
+        gap: 36px;
+      }
+      .hero-float-card { display: none; }
+      .screens-grid { grid-template-columns: 1fr; }
+      .download-inner { grid-template-columns: 1fr; }
+      .download-box { width: 100%; }
+      nav { padding: 0 4vw; }
+      .nav-links { display: none; flex-direction: column; gap: 0; position: absolute; top: 58px; left: 0; right: 0; background: rgba(246,244,239,0.97); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); padding: 12px 0; }
+      .nav-links.open { display: flex; }
+      .nav-links.open li { padding: 10px 5vw; }
+      .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+      .hamburger span { width: 22px; height: 2px; background: var(--text-main); border-radius: 2px; transition: .2s; }
+    }
+
+    /* ─── PAIN POINTS ─── */
+    #masalah {
+      background: var(--gray-900);
+      position: relative;
+      overflow: hidden;
+    }
+    #masalah::before {
+      content: '';
+      position: absolute;
+      top: -120px; left: -80px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(58,150,136,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #masalah::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; right: -60px;
+      width: 360px; height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196,123,43,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #masalah .section-eyebrow { color: var(--teal-400); }
+    #masalah .section-title { color: #fff; }
+    #masalah .section-desc { color: rgba(255,255,255,0.55); }
+
+    .pain-stat-bar {
+      display: flex;
+      gap: 16px;
+      margin: 36px 0 44px;
+      flex-wrap: wrap;
+    }
+    .pain-stat {
+      flex: 1;
+      min-width: 160px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .pain-stat:hover { border-color: rgba(58,150,136,0.4); }
+    .pain-stat-number {
+      font-family: var(--font-display);
+      font-size: 38px;
+      font-weight: 400;
+      color: var(--teal-400);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .pain-stat-number.amber { color: var(--warm-amber); }
+    .pain-stat-label {
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+    .pain-stat-source {
+      font-size: 10px;
+      color: rgba(255,255,255,0.25);
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    .pain-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .pain-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg);
+      padding: 28px 26px;
+      position: relative;
+      transition: border-color .2s, background .2s;
+    }
+    .pain-card:hover {
+      background: rgba(255,255,255,0.055);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .pain-card-icon {
+      width: 46px; height: 46px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+    }
+    .pain-card-icon.red   { background: rgba(220,60,60,0.15); border: 1px solid rgba(220,60,60,0.2); }
+    .pain-card-icon.amber { background: rgba(196,123,43,0.15); border: 1px solid rgba(196,123,43,0.2); }
+    .pain-card-icon.blue  { background: rgba(74,127,193,0.15); border: 1px solid rgba(74,127,193,0.2); }
+    .pain-card-icon svg   { width: 22px; height: 22px; fill: none; stroke-width: 1.8; }
+    .pain-card-icon.red svg   { stroke: #F87171; }
+    .pain-card-icon.amber svg { stroke: #F5A623; }
+    .pain-card-icon.blue svg  { stroke: var(--blue-400); }
+    .pain-card-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .pain-card-tag.red   { background: rgba(220,60,60,0.15); color: #F87171; }
+    .pain-card-tag.amber { background: rgba(196,123,43,0.15); color: #F5A623; }
+    .pain-card-tag.blue  { background: rgba(74,127,193,0.15); color: var(--blue-400); }
+    .pain-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .pain-card-desc {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.68;
+    }
+    .pain-card-highlight {
+      margin-top: 14px;
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid rgba(255,255,255,0.15);
+      border-radius: 0 6px 6px 0;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.38);
+      font-style: italic;
+    }
+
+    /* ─── SOLUTION ─── */
+    #solusi { background: var(--surface); }
+    .solution-wrap {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .solution-statement {
+      background: linear-gradient(135deg, var(--teal-900) 0%, var(--teal-800) 100%);
+      border-radius: var(--radius-xl);
+      padding: 36px 34px;
+      position: relative;
+      overflow: hidden;
+    }
+    .solution-statement::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+    .solution-quote-mark {
+      font-family: var(--font-display);
+      font-size: 72px;
+      line-height: 0.7;
+      color: rgba(255,255,255,0.12);
+      margin-bottom: 18px;
+      display: block;
+    }
+    .solution-statement p {
+      font-size: 16px;
+      line-height: 1.72;
+      color: rgba(255,255,255,0.82);
+      position: relative;
+      z-index: 1;
+    }
+    .solution-statement p strong { color: var(--teal-200); font-weight: 600; }
+    .solution-author {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .solution-author-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .solution-author-icon svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
+    .solution-author-name { font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.7); }
+    .solution-author-role { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+
+    .solution-pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .solution-pillar {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px 22px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .solution-pillar:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 18px rgba(58,150,136,0.09);
+    }
+    .solution-pillar-num {
+      flex-shrink: 0;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: 1.5px solid var(--teal-200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: var(--accent-dark);
+    }
+    .solution-pillar-content h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .solution-pillar-content p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .pain-stat-bar { gap: 12px; }
+      .solution-wrap { grid-template-columns: 1fr; gap: 28px; }
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-badge { animation: fadeUp .5s ease both; }
+    .hero h1   { animation: fadeUp .55s .08s ease both; }
+    .hero-desc { animation: fadeUp .55s .14s ease both; }
+    .hero-actions { animation: fadeUp .55s .2s ease both; }
+    .hero-meta { animation: fadeUp .55s .26s ease both; }
+    .hero-visual { animation: fadeUp .65s .18s ease both; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-text">MedWatch</span>
+  </a>
+  <button class="hamburger" id="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+  <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="#masalah">Masalah</a></li>
+    <li><a href="#solusi">Solusi</a></li>
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#pengguna">Target Pengguna</a></li>
+    <li><a href="#screenshot">Tampilan</a></li>
+    <li><a href="#instalasi">Instalasi</a></li>
+    <li><a href="#download" class="nav-cta">Download</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span>●</span> Aplikasi Desktop Offline-First untuk Faskes Tingkat Pertama
+    </div>
+    <h1>Transformasi Rekam Medis &amp; Pantau Keamanan Obat <em>Tanpa Bergantung Internet.</em></h1>
+    <p class="hero-desc">
+      <strong>MedWatch</strong> adalah aplikasi desktop offline-first untuk faskes tingkat pertama. Kelola data pasien dan hindari risiko efek samping obat dalam satu platform yang terintegrasi — berjalan sepenuhnya di komputer Anda, tanpa perlu koneksi internet.
+    </p>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Sekarang
+      </a>
+      <a href="#masalah" class="btn-secondary">Pelajari Lebih Lanjut</a>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Windows 10/11
+      </div>
+      <div class="hero-meta-item">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Data Lokal & Aman
+      </div>
+      <div class="hero-meta-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Tanpa Internet
+      </div>
+    </div>
+  </div>
+
+  <!-- MOCK APP WINDOW -->
+  <div class="hero-visual">
+    <div class="app-mockup">
+      <div class="mockup-titlebar">
+        <div class="mockup-dots">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+        </div>
+        <div class="mockup-title">MedWatch — Dashboard Utama</div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-header-row">
+          <h3>Ringkasan Hari Ini</h3>
+          <span class="badge-green">● Sistem Aktif</span>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-label">Pasien</div>
+            <div class="stat-value">48</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Obat Aman</div>
+            <div class="stat-value green">124</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Peringatan</div>
+            <div class="stat-value amber">3</div>
+          </div>
+        </div>
+        <table class="mockup-table">
+          <thead>
+            <tr>
+              <th>Nama Pasien</th>
+              <th>Obat</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Budi Santoso</td>
+              <td>Amoxicillin 500mg</td>
+              <td><span class="pill pill-ok">Aman</span></td>
+            </tr>
+            <tr>
+              <td>Sri Wahyuni</td>
+              <td>Metformin 850mg</td>
+              <td><span class="pill pill-warn">Periksa</span></td>
+            </tr>
+            <tr>
+              <td>Ahmad Rizal</td>
+              <td>Captopril 25mg</td>
+              <td><span class="pill pill-ok">Aman</span></td>
+            </tr>
+            <tr>
+              <td>Dewi Lestari</td>
+              <td>Tetracycline 250mg</td>
+              <td><span class="pill pill-exp">Kadaluarsa</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="hero-float-card">
+      <div class="float-title">Notifikasi Terbaru</div>
+      <div class="float-alert">
+        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        1 obat hampir kadaluarsa
+      </div>
+      <div class="float-ok">
+        <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Stok obat mencukupi
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MASALAH / PAIN POINTS -->
+<section id="masalah">
+  <div class="section-inner">
+    <div class="section-eyebrow">Tantangan Nyata</div>
+    <h2 class="section-title">Masalah yang Dihadapi<br>Faskes Tingkat Pertama Hari Ini</h2>
+    <p class="section-desc">Data lapangan menunjukkan kesenjangan besar antara kebutuhan layanan kesehatan dan sistem yang tersedia saat ini.</p>
+
+    <div class="pain-stat-bar">
+      <div class="pain-stat">
+        <div class="pain-stat-number">79%</div>
+        <div class="pain-stat-label">masyarakat Indonesia melakukan swamedikasi tanpa pengawasan tenaga medis</div>
+        <div class="pain-stat-source">Sumber: BPS / Riskesdas</div>
+      </div>
+      <div class="pain-stat">
+        <div class="pain-stat-number amber">1:2.500</div>
+        <div class="pain-stat-label">rasio dokter terhadap penduduk — jauh di bawah standar WHO yang ideal</div>
+        <div class="pain-stat-source">Sumber: Kemenkes RI</div>
+      </div>
+      <div class="pain-stat">
+        <div class="pain-stat-number">60%</div>
+        <div class="pain-stat-label">puskesmas di daerah 3T belum memiliki sistem RME yang memadai</div>
+        <div class="pain-stat-source">Sumber: Laporan Dinkes</div>
+      </div>
+    </div>
+
+    <div class="pain-cards">
+      <div class="pain-card">
+        <div class="pain-card-icon red">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="pain-card-tag red">Risiko Keselamatan</div>
+        <div class="pain-card-title">Efek Samping Obat Tidak Terpantau</div>
+        <div class="pain-card-desc">Dengan 79% masyarakat yang melakukan swamedikasi dan rasio dokter yang belum ideal, risiko interaksi obat berbahaya dan efek samping yang tidak tertangani semakin tinggi setiap harinya.</div>
+        <div class="pain-card-highlight">"Pasien datang sudah dalam kondisi parah — ternyata salah kombinasi obat warung selama seminggu."</div>
+      </div>
+
+      <div class="pain-card">
+        <div class="pain-card-icon amber">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div class="pain-card-tag amber">Inefisiensi Operasional</div>
+        <div class="pain-card-title">Catatan Manual Rawan Kehilangan Data</div>
+        <div class="pain-card-desc">Sistem berbasis kertas menyebabkan risiko kehilangan rekam medis, duplikasi entri pasien, dan pencarian riwayat yang memakan waktu hingga belasan menit per pasien di jam sibuk.</div>
+        <div class="pain-card-highlight">"Kami pernah kehilangan seluruh data pasien sebulan karena banjir merusak arsip."</div>
+      </div>
+
+      <div class="pain-card">
+        <div class="pain-card-icon blue">
+          <svg viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0119 12.55M5 12.55a10.94 10.94 0 015.17-2.39M10.71 5.05A16 16 0 0122.56 9M1.42 9a15.91 15.91 0 014.7-2.88M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+        </div>
+        <div class="pain-card-tag blue">Kendala Infrastruktur</div>
+        <div class="pain-card-title">Sistem RME Mahal &amp; Butuh Internet Stabil</div>
+        <div class="pain-card-desc">Solusi RME yang ada di pasaran seringkali berbiaya tinggi dengan lisensi tahunan, dan bergantung pada koneksi internet yang tidak selalu stabil — terutama di daerah terpencil dan 3T.</div>
+        <div class="pain-card-highlight">"Sistem cloud kami mati seharian waktu provider internet gangguan. Pelayanan terhenti."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUSI -->
+<section id="solusi">
+  <div class="section-inner">
+    <div class="section-eyebrow">Mengapa MedWatch?</div>
+    <h2 class="section-title">Satu Platform, Jawaban<br>untuk Semua Tantangan</h2>
+    <p class="section-desc">MedWatch dirancang khusus sebagai jawaban terhadap tiga masalah utama yang dihadapi faskes tingkat pertama Indonesia.</p>
+
+    <div class="solution-wrap">
+      <div class="solution-statement">
+        <span class="solution-quote-mark">"</span>
+        <p>MedWatch hadir sebagai <strong>sistem informasi kesehatan</strong> yang menjembatani manajemen rekam medis digital dengan <strong>monitoring keamanan obat secara menyeluruh</strong> — bekerja sepenuhnya offline, terjangkau, dan siap digunakan tanpa pelatihan teknis yang panjang.</p>
+        <div class="solution-author">
+          <div>
+            <div class="solution-author-name">Tim MedWatch</div>
+            <div class="solution-author-role">Teknik Komputer &amp; Informatika, Politeknik Negeri Bandung</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-pillars">
+        <div class="solution-pillar">
+          <div class="solution-pillar-num">1</div>
+          <div class="solution-pillar-content">
+            <h4>Offline-First, Tanpa Gangguan</h4>
+            <p>Semua data tersimpan lokal di perangkat Anda. Tidak ada ketergantungan pada internet — layanan tetap berjalan meski koneksi putus.</p>
+          </div>
+        </div>
+        <div class="solution-pillar">
+          <div class="solution-pillar-num">2</div>
+          <div class="solution-pillar-content">
+            <h4>Rekam Medis Digital Terstruktur</h4>
+            <p>Gantikan tumpukan kertas dengan sistem pencarian instan. Temukan riwayat pasien dalam hitungan detik, bukan menit.</p>
+          </div>
+        </div>
+        <div class="solution-pillar">
+          <div class="solution-pillar-num">3</div>
+          <div class="solution-pillar-content">
+            <h4>Monitoring Keamanan Obat Terintegrasi</h4>
+            <p>Deteksi otomatis interaksi obat, efek samping, dan kontraindikasi — melindungi pasien sebelum obat diberikan.</p>
+          </div>
+        </div>
+        <div class="solution-pillar">
+          <div class="solution-pillar-num">4</div>
+          <div class="solution-pillar-content">
+            <h4>Gratis &amp; Terjangkau untuk Faskes</h4>
+            <p>Tanpa biaya lisensi atau langganan bulanan. MedWatch tersedia gratis untuk semua faskes tingkat pertama.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR -->
+<section id="fitur">
+  <div class="section-inner">
+    <div class="section-eyebrow">Fitur Unggulan</div>
+    <h2 class="section-title">Lengkap untuk Semua<br>Kebutuhan Anda</h2>
+    <p class="section-desc">Dari manajemen klinis di faskes hingga kebutuhan swamedikasi sehari-hari masyarakat umum.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3zM9 9h6M9 12h6M9 15h4"/><path d="M15 3v4M9 3v4"/></svg>
+        </div>
+        <div class="feature-title">Manajemen Data Pasien</div>
+        <div class="feature-desc">Rekam medis terstruktur, riwayat kunjungan, dan data demografis pasien tersimpan aman di perangkat Anda.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="feature-title">Monitoring Keamanan Obat</div>
+        <div class="feature-desc">Deteksi otomatis interaksi obat berbahaya, overdosis, dan kontraindikasi sebelum obat diberikan ke pasien.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        </div>
+        <div class="feature-title">Manajemen Stok Obat</div>
+        <div class="feature-desc">Pantau stok, tanggal kadaluarsa, dan notifikasi otomatis ketika persediaan obat hampir habis.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="feature-title">Pengingat Jadwal Minum Obat</div>
+        <div class="feature-desc">Atur jadwal konsumsi obat harian dan terima notifikasi agar tidak melewatkan dosis — cocok untuk kebutuhan swamedikasi pribadi.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="feature-title">Cek Efek Samping Obat</div>
+        <div class="feature-desc">Database efek samping obat yang komprehensif. Cukup masukkan nama obat untuk mengetahui potensi efek samping dan cara mengatasinya.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="feature-title">Laporan &amp; Analitik</div>
+        <div class="feature-desc">Ekspor laporan harian, mingguan, dan bulanan sesuai format yang diperlukan untuk pelaporan ke Dinkes.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        </div>
+        <div class="feature-title">Dashboard Real-Time</div>
+        <div class="feature-desc">Tampilan ringkasan aktivitas harian, statistik pasien, dan status obat secara langsung dalam satu layar.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="feature-title">Berjalan Offline</div>
+        <div class="feature-desc">Tidak memerlukan koneksi internet. Semua data tersimpan lokal dan aman di komputer Anda.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UNTUK SIAPA -->
+<section id="pengguna">
+  <div class="section-inner">
+    <div class="section-eyebrow">Target Pengguna</div>
+    <h2 class="section-title">Satu Aplikasi, Dua Kebutuhan<br>yang Berbeda</h2>
+    <p class="section-desc">MedWatch dirancang untuk melayani dua kelompok pengguna dengan kebutuhan yang berbeda namun saling melengkapi.</p>
+
+    <div class="segments-grid">
+      <div class="segment-card featured">
+        <div class="segment-badge">Tenaga Kesehatan &amp; Faskes</div>
+        <div class="segment-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="segment-title">Puskesmas, Klinik &amp; Apotek</div>
+        <div class="segment-desc">Untuk tenaga medis dan pengelola fasilitas kesehatan tingkat pertama yang membutuhkan sistem manajemen pasien dan pengawasan obat yang terstruktur.</div>
+        <ul class="segment-usecases">
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Rekam medis &amp; manajemen pasien</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Deteksi interaksi obat antar pasien</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Pantau stok &amp; kadaluarsa obat</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Laporan untuk pelaporan ke Dinkes</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Dashboard aktivitas harian faskes</li>
+        </ul>
+      </div>
+
+      <div class="segment-card">
+        <div class="segment-badge blue">Masyarakat Umum</div>
+        <div class="segment-icon-wrap blue">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="segment-title">Pengguna Pribadi &amp; Keluarga</div>
+        <div class="segment-desc">Untuk individu yang melakukan swamedikasi dan ingin memastikan konsumsi obat bebas atau obat rutin mereka aman dan tepat.</div>
+        <ul class="segment-usecases">
+          <li class="blue"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Cek efek samping obat secara mandiri</li>
+          <li class="blue"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Deteksi interaksi obat yang dikonsumsi</li>
+          <li class="blue"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Pengingat jadwal minum obat harian</li>
+          <li class="blue"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Pantau riwayat konsumsi obat pribadi</li>
+          <li class="blue"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Informasi dosis dan aturan pakai</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOT -->
+<section id="screenshot">
+  <div class="section-inner">
+    <div class="section-eyebrow">Tampilan Aplikasi</div>
+    <h2 class="section-title">Antarmuka Bersih &amp;<br>Mudah Digunakan</h2>
+    <p class="section-desc">Dirancang agar tenaga kesehatan maupun pengguna umum dapat langsung menggunakannya tanpa pelatihan teknis yang panjang.</p>
+
+    <div class="screens-grid">
+      <div class="screen-card">
+        <div class="screen-preview" style="padding: 0;">
+          <!-- GANTI: ubah src="screenshots/dashboard.png" dengan path file screenshot Anda -->
+          <img src="assets/dashboard.png" alt="Dashboard Utama MedWatch"
+               style="width:100%; height:100%; object-fit:cover; display:block; border-radius: var(--radius-lg) var(--radius-lg) 0 0;" />
+          <div class="screen-zoom-icon">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </div>
+        </div>
+        <div class="screen-info">
+          <h4>Dashboard Utama</h4>
+          <p>Ringkasan aktivitas harian, jumlah pasien, dan status keamanan obat.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-preview" style="padding: 0;">
+          <!-- GANTI: ubah src="screenshots/pasien.png" dengan path file screenshot Anda -->
+          <img src="assets/pasien.png" alt="Data Pasien MedWatch"
+               style="width:100%; height:100%; object-fit:cover; display:block; border-radius: var(--radius-lg) var(--radius-lg) 0 0;" />
+          <div class="screen-zoom-icon">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </div>
+        </div>
+        <div class="screen-info">
+          <h4>Data Pasien</h4>
+          <p>Pencarian cepat, detail rekam medis, dan riwayat kunjungan pasien.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-preview" style="padding: 0;">
+          <!-- GANTI: ubah src="screenshots/efek-samping.png" dengan path file screenshot Anda -->
+          <img src="assets/efek-samping.jpeg" alt="Cek Efek Samping Obat MedWatch"
+               style="width:100%; height:100%; object-fit:cover; display:block; border-radius: var(--radius-lg) var(--radius-lg) 0 0;" />
+          <div class="screen-zoom-icon">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </div>
+        </div>
+        <div class="screen-info">
+          <h4>Cek Efek Samping Obat</h4>
+          <p>Masukkan nama obat, lihat efek samping, interaksi, dan peringatan konsumsi secara lengkap.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-preview" style="padding: 0;">
+          <!-- GANTI: ubah src="screenshots/jadwal.png" dengan path file screenshot Anda -->
+          <img src="assets/jadwal.jpeg" alt="Jadwal Minum Obat MedWatch"
+               style="width:100%; height:100%; object-fit:cover; display:block; border-radius: var(--radius-lg) var(--radius-lg) 0 0;" />
+          <div class="screen-zoom-icon">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </div>
+        </div>
+        <div class="screen-info">
+          <h4>Visualisasi Fasilitas Kesehatan &amp; Obat</h4>
+          <p>Menampilkan dinamika fasilitas kesehatan dan stok obat secara real-time.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALASI -->
+<section id="instalasi">
+  <div class="section-inner">
+    <div class="section-eyebrow">Panduan Instalasi</div>
+    <h2 class="section-title">Siap Digunakan dalam<br>4 Langkah Mudah</h2>
+    <p class="section-desc">Proses instalasi hanya membutuhkan beberapa menit tanpa konfigurasi yang rumit.</p>
+
+    <div class="steps-container">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Download File Installer</h4>
+          <p>Klik tombol "Download Gratis" di halaman ini. File installer berformat <code>.exe</code> akan otomatis tersimpan di folder Unduhan komputer Anda.</p>
+          <span class="step-note">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Ukuran file: ~180 MB
+          </span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Jalankan File Installer</h4>
+          <p>Buka file <code>MedWatch-Setup.exe</code> yang telah diunduh. Jika muncul peringatan Windows SmartScreen, klik <strong>"More info"</strong> lalu <strong>"Run anyway"</strong> karena aplikasi ini aman.</p>
+          <span class="step-note">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Membutuhkan hak akses Administrator
+          </span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Ikuti Wizard Instalasi</h4>
+          <p>Klik <strong>Next</strong> hingga proses instalasi selesai. Pilih direktori instalasi atau biarkan default di <code>C:\Program Files\MedWatch</code>. Proses membutuhkan waktu sekitar 2–3 menit.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Buka &amp; Mulai Gunakan</h4>
+          <p>Setelah instalasi selesai, ikon MedWatch akan muncul di Desktop. Buka aplikasi dan pilih mode penggunaan: <strong>Mode Faskes</strong> untuk tenaga kesehatan, atau <strong>Mode Pribadi</strong> untuk swamedikasi.</p>
+          <span class="step-note">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Tidak perlu koneksi internet
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD CTA -->
+<section id="download">
+  <div class="download-inner">
+    <div>
+      <div class="download-eyebrow">Download Sekarang</div>
+      <h2 class="download-title">MedWatch — Gratis untuk<br>Faskes &amp; Masyarakat Umum</h2>
+      <p class="download-desc">Baik Anda tenaga kesehatan di Puskesmas maupun individu yang ingin swamedikasi lebih aman — MedWatch siap membantu Anda hari ini.</p>
+    </div>
+    <div class="download-box">
+      <div class="download-version">Versi Terbaru · Windows</div>
+      <!-- GANTI href="#" dengan link download Anda -->
+      <a href="#" class="btn-download">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Gratis
+      </a>
+      <div class="download-size">MedWatch-Setup.exe · ~80 MB</div>
+      <div class="sysreq">
+        <div class="sysreq-title">Persyaratan Sistem</div>
+        <div class="sysreq-item">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Windows 10 / 11 (64-bit)
+        </div>
+        <div class="sysreq-item">
+          <svg viewBox="0 0 24 24"><path d="M5 12H3l9-9 9 9h-2M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+          RAM minimal 4 GB
+        </div>
+        <div class="sysreq-item">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Penyimpanan 500 MB
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      MedWatch
+    </div>
+<div class="footer-note">
+  &copy; 2026 MedWatch.
+  <br />
+  Dikembangkan oleh Kelompok B5 - Teknik Komputer dan Informatika, Politeknik Negeri Bandung.
+  <br />
+  <a href="https://github.com/Bisura16/medWatch" target="_blank" style="color:rgba(255,255,255,0.5); text-decoration:none; display:inline-flex; align-items:center; gap:5px; margin-top:6px; transition:color .2s;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="white" opacity="0.5"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    GitHub Repository
+  </a>
+</div>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-img-wrap" id="lightbox-wrap">
+    <button class="lightbox-close" onclick="closeLightboxDirect()">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+
+<script>
+  function openLightbox(src, alt) {
+    const overlay = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    const caption = document.getElementById('lightbox-caption');
+    img.src = src;
+    img.alt = alt;
+    caption.textContent = alt;
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(e) {
+    if (e.target === document.getElementById('lightbox')) {
+      closeLightboxDirect();
+    }
+  }
+
+  function closeLightboxDirect() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLightboxDirect();
+  });
+
+  // Make all screen-preview elements clickable
+  document.querySelectorAll('.screen-preview').forEach(function(preview) {
+    const img = preview.querySelector('img');
+    if (img) {
+      preview.addEventListener('click', function() {
+        openLightbox(img.src, img.alt);
+      });
+    }
+  });
+</script>
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="
+  position:fixed; bottom:28px; right:28px; z-index:999;
+  width:44px; height:44px; border-radius:50%;
+  background:var(--accent); border:none; cursor:pointer;
+  display:none; align-items:center; justify-content:center;
+  box-shadow:0 4px 16px rgba(58,150,136,0.35);
+  transition:background .2s, transform .15s;
+">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+  const btn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  });
+</script>
+</body>
+</html>
