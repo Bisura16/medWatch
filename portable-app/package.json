@@ -1,6 +1,6 @@
 {
   "name": "medwatch-portable",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "MedWatch desktop wrapper (portable variant)",
   "main": "main/index.js",
   "author": "Ghaisan Khoirul Badruzaman <ghaisan.khoirul.b@gmail.com>",
