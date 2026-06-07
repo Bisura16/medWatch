@@ -164,6 +164,7 @@ def _map_light(row: sqlite3.Row) -> dict[str, Any]:
     sources = _sources(row)
     return {
         "nama_obat": nama,
+        "display_name": _clean(_col(row, "display_name")) or nama,
         "alias": alias,
         "kategori": _kategori(row["route"]),
         "bahan_aktif": _rx_ingredients(row) or _ingredients(generic),
@@ -252,14 +253,36 @@ def _map_full(row: sqlite3.Row, conn: sqlite3.Connection) -> dict[str, Any]:
     return base
 
 
-_COLS = (
-    "product_ndc, brand_name, generic_name, manufacturer, route, dosage_form, "
-    "indications, contraindications, warnings, adverse_reactions, "
-    "dosage_administration, pregnancy, pediatric_use, application_number, "
-    "product_type, scraped_at, "
-    "rxcui, rxnorm_name, rxnorm_ingredients, spl_setid, spl_title, "
-    "source_openfda, source_rxnorm, source_dailymed"
+_DESIRED_COLS = (
+    "product_ndc", "brand_name", "generic_name", "manufacturer", "route", "dosage_form",
+    "indications", "contraindications", "warnings", "adverse_reactions",
+    "dosage_administration", "pregnancy", "pediatric_use", "application_number",
+    "product_type", "scraped_at",
+    "rxcui", "rxnorm_name", "rxnorm_ingredients", "spl_setid", "spl_title",
+    "source_openfda", "source_rxnorm", "source_dailymed", "display_name",
 )
+
+_cols_cache: Optional[str] = None
+
+
+def _select_cols(conn: sqlite3.Connection) -> str:
+    """Return the SELECT column list, restricted to columns that actually exist.
+
+    Older or partially-enriched databases may lack some columns (display_name,
+    rxnorm_*, etc.). Selecting only existing columns keeps the loader working
+    against any vintage of the schema; the mappers read each field through
+    :func:`_col`, which tolerates absent keys. Memoised for the process life.
+    """
+    global _cols_cache
+    if _cols_cache is not None:
+        return _cols_cache
+    try:
+        existing = {r["name"] for r in conn.execute("PRAGMA table_info(drugs)")}
+    except sqlite3.Error:
+        existing = set()
+    cols = [c for c in _DESIRED_COLS if c in existing] or ["product_ndc"]
+    _cols_cache = ", ".join(cols)
+    return _cols_cache
 
 
 def _col(row: sqlite3.Row, name: str) -> Any:
@@ -328,7 +351,9 @@ def list_drugs(category: Optional[str] = None, limit: int = 0, offset: int = 0) 
         if category:
             where = "WHERE UPPER(route) LIKE ?"
             params.append(f"%{category.upper()}%")
-        sql = f"SELECT {_COLS} FROM drugs {where} ORDER BY generic_name"
+        cols = _select_cols(conn)
+        order = "display_name" if "display_name" in cols else "generic_name"
+        sql = f"SELECT {cols} FROM drugs {where} ORDER BY {order}"
         # Coerce defensively: query params arrive as strings and a non-numeric
         # ?limit=abc must not raise (which would surface as a 500); treat any
         # unparseable value as "no pagination".
@@ -362,6 +387,31 @@ def count_drugs() -> int:
         conn.close()
 
 
+# International / Indonesian generic names mapped to the US (openFDA) spelling
+# the catalog actually stores, so a bidan searching the name they know gets
+# results. Whole-word, case-insensitive. Catalog rows are never modified.
+_SYNONYMS = {
+    "paracetamol": "acetaminophen",
+    "salbutamol": "albuterol",
+    "adrenaline": "epinephrine",
+    "noradrenaline": "norepinephrine",
+    "lignocaine": "lidocaine",
+    "frusemide": "furosemide",
+    "rifampicin": "rifampin",
+    "amoxycillin": "amoxicillin",
+    "cotrimoxazole": "sulfamethoxazole",
+    "glibenclamide": "glyburide",
+    "co-amoxiclav": "amoxicillin",
+}
+
+
+def _apply_synonyms(q: str) -> str:
+    """Rewrite known international/Indonesian generic names to the US spelling."""
+    def repl(m):
+        return _SYNONYMS.get(m.group(0).lower(), m.group(0))
+    return re.sub(r"[A-Za-z][A-Za-z\-]+", repl, q)
+
+
 def _fts_escape(q: str) -> str:
     """Build a safe FTS5 prefix query from arbitrary user input."""
     tokens = re.findall(r"[A-Za-z0-9]+", q)
@@ -370,17 +420,20 @@ def _fts_escape(q: str) -> str:
     return " ".join(f'"{t}"*' for t in tokens)
 
 
-def search_drugs(q: str, limit: int = 50) -> list[dict[str, Any]]:
+def search_drugs(q: str, limit: int = 15) -> list[dict[str, Any]]:
     """Full-text search the catalog, returning light records.
 
     Uses the FTS5 index with a prefix query and falls back to a
-    ``LIKE`` scan on generic/brand name when FTS yields nothing.
+    ``LIKE`` scan on generic/brand name when FTS yields nothing. The
+    default limit is small (15) so the search-first UI never pulls the
+    whole catalog; callers may raise it up to a hard cap of 100.
     """
     conn = _connect()
     if not conn:
         return []
     try:
-        limit = max(1, min(int(limit or 50), 100))
+        limit = max(1, min(int(limit or 15), 100))
+        q = _apply_synonyms(q)
         match = _fts_escape(q)
         rows: list[sqlite3.Row] = []
         if match:
@@ -408,7 +461,7 @@ def search_drugs(q: str, limit: int = 50) -> list[dict[str, Any]]:
             return []
         placeholders = ",".join("?" * len(ndcs))
         full = conn.execute(
-            f"SELECT {_COLS} FROM drugs WHERE product_ndc IN ({placeholders})", ndcs
+            f"SELECT {_select_cols(conn)} FROM drugs WHERE product_ndc IN ({placeholders})", ndcs
         ).fetchall()
         order = {ndc: i for i, ndc in enumerate(ndcs)}
         full.sort(key=lambda r: order.get(r["product_ndc"], 1_000))
@@ -430,14 +483,14 @@ def get_drug(nama_obat: str) -> Optional[dict[str, Any]]:
         if not name:
             return None
         row = conn.execute(
-            f"SELECT {_COLS} FROM drugs WHERE LOWER(generic_name) = LOWER(?) "
+            f"SELECT {_select_cols(conn)} FROM drugs WHERE LOWER(generic_name) = LOWER(?) "
             f"OR LOWER(brand_name) = LOWER(?) LIMIT 1",
             (name, name),
         ).fetchone()
         if not row:
             like = f"%{name}%"
             row = conn.execute(
-                f"SELECT {_COLS} FROM drugs WHERE generic_name LIKE ? OR brand_name LIKE ? "
+                f"SELECT {_select_cols(conn)} FROM drugs WHERE generic_name LIKE ? OR brand_name LIKE ? "
                 f"ORDER BY LENGTH(generic_name) LIMIT 1",
                 (like, like),
             ).fetchone()
