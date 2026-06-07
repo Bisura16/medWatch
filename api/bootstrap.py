@@ -13,6 +13,7 @@ process to avoid retrying broken imports on every request.
 import sys
 import importlib
 import logging
+from pathlib import Path
 from typing import Any
 from .config import ANGGOTA_DIRS
 
@@ -22,12 +23,24 @@ _loaded: dict[str, Any] = {}
 
 
 def _inject_paths() -> None:
-    """Prepend each existing ``anggota<n>`` directory to ``sys.path``."""
+    """Prepend each existing ``anggota<n>`` directory to ``sys.path``.
+
+    Works in both normal Python and PyInstaller frozen bundles. In a
+    frozen app the anggota directories live under ``sys._MEIPASS``;
+    the fallback path is used when the primary resolution fails.
+    """
     for name, path in ANGGOTA_DIRS.items():
         p = str(path)
         if path.exists() and p not in sys.path:
             sys.path.insert(0, p)
             logger.info(f"injected {p}")
+            continue
+        # PyInstaller fallback: resolve under sys._MEIPASS.
+        if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+            meipass_path = str(Path(sys._MEIPASS) / name)
+            if Path(meipass_path).exists() and meipass_path not in sys.path:
+                sys.path.insert(0, meipass_path)
+                logger.info(f"injected (MEIPASS) {meipass_path}")
 
 
 def get_module(anggota: str, module_name: str) -> Any | None:
