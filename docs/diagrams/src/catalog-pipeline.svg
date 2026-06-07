@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="620" viewBox="0 0 1240 620">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2E8B7A"/></marker></defs>
+<rect width="1240" height="620" fill="#FBFDFC"/>
+<text x="40" y="44" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#0E4B42" text-anchor="start" font-weight="bold">MedWatch Drug Catalog Pipeline</text>
+<text x="40" y="70" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#46514C" text-anchor="start" font-weight="normal">Tiga sumber publik NLM/FDA digabung jadi satu SQLite FTS5 lokal, dilabel jujur per baris.</text>
+<rect x="40" y="110" width="360" height="92" rx="10" fill="#E8F4F0" stroke="#3A9688" stroke-width="1.5"/>
+<text x="54" y="134" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#1E6E62" text-anchor="start" font-weight="bold">openFDA (label FDA)</text>
+<text x="54" y="156" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">8.678 baris: indikasi, peringatan,</text>
+<text x="54" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">kontraindikasi, efek samping,</text>
+<text x="54" y="188" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">recall + reaksi FAERS</text>
+<rect x="440" y="110" width="360" height="92" rx="10" fill="#E8F4F0" stroke="#3A9688" stroke-width="1.5"/>
+<text x="454" y="134" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#1E6E62" text-anchor="start" font-weight="bold">RxNorm (RxNav, NLM)</text>
+<text x="454" y="156" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">20.803 baris: RXCUI kanonik</text>
+<text x="454" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">+ bahan aktif (ingredient).</text>
+<text x="454" y="188" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">Ingredient baru jadi baris berlabel</text>
+<rect x="840" y="110" width="360" height="92" rx="10" fill="#E8F4F0" stroke="#3A9688" stroke-width="1.5"/>
+<text x="854" y="134" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#1E6E62" text-anchor="start" font-weight="bold">DailyMed (SPL, NLM)</text>
+<text x="854" y="156" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">8.673 baris: SPL set id</text>
+<text x="854" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">+ judul label. Per nama obat,</text>
+<text x="854" y="188" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">rate limit + backoff + cache</text>
+<line x1="220" y1="202" x2="620" y2="250" stroke="#C9D6D0" stroke-width="2"/>
+<line x1="620" y1="202" x2="620" y2="250" stroke="#C9D6D0" stroke-width="2"/>
+<line x1="1020" y1="202" x2="620" y2="250" stroke="#C9D6D0" stroke-width="2"/>
+<line x1="220" y1="202" x2="600" y2="250" stroke="#C9D6D0" stroke-width="2"/>
+<line x1="1020" y1="202" x2="640" y2="250" stroke="#C9D6D0" stroke-width="2"/>
+<line x1="620" y1="202" x2="620" y2="250" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="360" y="254" width="520" height="48" rx="10" fill="#2E8B7A"/>
+<text x="620" y="283" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="bold">ETL enrichment (anggota1/openfda + RxNav/DailyMed REST)</text>
+<line x1="620" y1="302" x2="620" y2="330" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="300" y="334" width="640" height="110" rx="10" fill="#FFFFFF" stroke="#3A9688" stroke-width="1.5"/>
+<text x="314" y="358" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#1E6E62" text-anchor="start" font-weight="bold">drugs.db (SQLite, read-only per-call)</text>
+<text x="314" y="380" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">Tabel: drugs (20.828) + reactions + recalls. Index FTS5 drugs_fts (brand/generic/indikasi/warning).</text>
+<text x="314" y="396" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">Kolom multi-sumber: rxcui, rxnorm_ingredients, spl_setid, spl_title, source_openfda/rxnorm/dailymed.</text>
+<text x="314" y="412" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">display_name di-precompute: brand -&gt; generik ternormalisasi -&gt; ingredient dibersihkan, title-case, kombinasi diringkas.</text>
+<text x="314" y="428" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">Journal mode DELETE supaya open read-only jalan di direktori read-only (Cloud Run /app).</text>
+<line x1="620" y1="444" x2="620" y2="470" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="300" y="474" width="300" height="96" rx="10" fill="#FBF1E0" stroke="#D9B870" stroke-width="1.5"/>
+<text x="314" y="498" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#9A6B12" text-anchor="start" font-weight="bold">GET /api/drugs</text>
+<text x="314" y="520" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">list default 15 (paginated),</text>
+<text x="314" y="536" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">bukan dump 20.828.</text>
+<text x="314" y="552" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">GET /api/drugs/count -&gt; total</text>
+<rect x="640" y="474" width="300" height="96" rx="10" fill="#FBF1E0" stroke="#D9B870" stroke-width="1.5"/>
+<text x="654" y="498" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#9A6B12" text-anchor="start" font-weight="bold">GET /api/drugs/search?q=</text>
+<text x="654" y="520" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">FTS5 prefix MATCH, ORDER BY rank,</text>
+<text x="654" y="536" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">LIMIT 15, input disanitasi.</text>
+<text x="654" y="552" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">Sinonim id-&gt;us (paracetamol)</text>
+</svg>

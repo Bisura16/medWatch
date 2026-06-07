@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="600" viewBox="0 0 1240 600">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2E8B7A"/></marker></defs>
+<rect width="1240" height="600" fill="#FBFDFC"/>
+<text x="40" y="44" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#0E4B42" text-anchor="start" font-weight="bold">MedWatch Auth and Dual-Mode Transport</text>
+<text x="40" y="70" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#46514C" text-anchor="start" font-weight="normal">Argon2id + JWT Bearer seragam di desktop dan web. Resolusi base URL via api-base detection.</text>
+<rect x="40" y="110" width="360" height="96" rx="10" fill="#EAF1F7" stroke="#A8C2DC" stroke-width="1.5"/>
+<text x="54" y="134" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#3A6EA5" text-anchor="start" font-weight="bold">Login (username + password)</text>
+<text x="54" y="156" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">form klien -&gt; POST /api/auth/login</text>
+<text x="54" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">password tidak pernah disimpan</text>
+<text x="54" y="188" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">plaintext di repo (seed di-hash)</text>
+<line x1="400" y1="158" x2="440" y2="158" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="440" y="110" width="380" height="96" rx="10" fill="#E8F4F0" stroke="#3A9688" stroke-width="1.5"/>
+<text x="454" y="134" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#1E6E62" text-anchor="start" font-weight="bold">Flask verify (api/auth.py)</text>
+<text x="454" y="156" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">Argon2id m=19456 t=2 p=1 + pepper server,</text>
+<text x="454" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">policy 12+ char, rate limit + lockout.</text>
+<text x="454" y="188" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">Legacy bcrypt auto-upgrade saat login</text>
+<line x1="820" y1="158" x2="860" y2="158" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="860" y="110" width="340" height="96" rx="10" fill="#E8F4F0" stroke="#3A9688" stroke-width="1.5"/>
+<text x="874" y="134" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#1E6E62" text-anchor="start" font-weight="bold">Issue JWT</text>
+<text x="874" y="156" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">HS256, secret per-install (data dir)</text>
+<text x="874" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">atau Secret Manager di Cloud Run.</text>
+<text x="874" y="188" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">iss medwatch-api, exp di-enforce</text>
+<line x1="1030" y1="206" x2="1030" y2="244" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="1040" y="232" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#46514C" text-anchor="start" font-weight="normal">token</text>
+<rect x="300" y="248" width="640" height="44" rx="10" fill="#2E8B7A"/>
+<text x="620" y="276" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="bold">Token Bearer disimpan di localStorage (medwatch_token)</text>
+<line x1="620" y1="292" x2="620" y2="320" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="280" y="324" width="680" height="44" rx="10" fill="#F2F8F6" stroke="#C2DDD5" stroke-width="1.5"/>
+<text x="620" y="351" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#0E4B42" text-anchor="middle" font-weight="bold">Tiap request: Authorization: Bearer &lt;jwt&gt; via authHeaders() di src/lib/api-base.ts</text>
+<line x1="480" y1="368" x2="360" y2="404" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="760" y1="368" x2="880" y2="404" stroke="#2E8B7A" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="120" y="408" width="460" height="96" rx="10" fill="#FFFFFF" stroke="#3A9688" stroke-width="1.5"/>
+<text x="134" y="432" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#1E6E62" text-anchor="start" font-weight="bold">Desktop: loopback</text>
+<text x="134" y="454" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">window.__MEDWATCH_BACKEND_PORT__ ada (preload)</text>
+<text x="134" y="470" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">-&gt; base http://127.0.0.1:&lt;port&gt;</text>
+<text x="134" y="486" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">Flask frozen lokal, offline penuh</text>
+<rect x="660" y="408" width="460" height="96" rx="10" fill="#FFFFFF" stroke="#3A9688" stroke-width="1.5"/>
+<text x="674" y="432" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#1E6E62" text-anchor="start" font-weight="bold">Web: Cloud Run</text>
+<text x="674" y="454" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">tidak ada port global -&gt; NEXT_PUBLIC_API_BASE</text>
+<text x="674" y="470" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">-&gt; base https://...run.app (cross-origin)</text>
+<text x="674" y="486" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#46514C" text-anchor="start" font-weight="normal">CORS allowlist mengizinkan origin Vercel</text>
+<rect x="40" y="520" width="1160" height="36" rx="8" fill="#FBF1E0" stroke="#D9B870" stroke-width="1.5"/>
+<text x="60" y="543" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#9A6B12" text-anchor="start" font-weight="bold">Dicabut run ini: endpoint demo-admin passwordless. Admin tidak pernah bisa self-register. Pepper di env, bukan di repo.</text>
+</svg>

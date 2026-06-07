@@ -1,6 +1,6 @@
 # MedWatch Backend - Flask API + Modul Anggota1-5 + openFDA Acquisition
 
-> Sistem informasi kesehatan untuk Faskes 1 yang menggabungkan modul desktop Python (CustomTkinter) dengan layer integrasi REST API berbasis Flask. Dideploy ke Google Cloud Run dan dipasangkan dengan frontend Next.js di Vercel.
+> Sistem informasi kesehatan untuk Faskes 1. Dibangun dari lima modul Python (anggota1-5) plus layer integrasi REST API berbasis Flask. Dikemas jadi aplikasi desktop offline (Electron + backend Flask yang di-freeze PyInstaller + Next.js static export + SQLite `drugs.db` lokal) dan showcase web (Next.js di Vercel + Flask di Cloud Run). Satu codebase, dua mode runtime.
 
 | Metadata | Nilai |
 |---|---|
@@ -42,34 +42,47 @@ ditambahin sebagai baris baru berlabel sumber RxNorm, makanya total lebih dari 8
 
 ### Model autentikasi
 
-- Hash password Argon2id (m=19456, t=2, p=1), auto-upgrade dari bcrypt seed lama saat login.
-- Self-service register untuk role `tenaga_kesehatan` dan `masyarakat` (`admin` ngga bisa
-  di-register), policy password minimal 12 karakter plus tolak password umum.
-- Rate limit dan lockout di login dan register.
-- JWT HMAC-SHA256, secret di-generate per-install (`token_hex(32)`) di data dir; di Cloud
-  Run secret dari Google Secret Manager.
-- Transport token Bearer (`Authorization: Bearer <jwt>`) seragam buat desktop dan web.
-  Model cookie-proxy lama udah ngga dipakai.
-- Demo admin di web lewat endpoint server `POST /api/auth/demo-admin`, jadi ngga ada
-  kredensial admin yang ke-bundle di JavaScript klien.
+- Hash password Argon2id (m=19456, t=2, p=1). Seed user di repo udah ke-hash Argon2id (ngga
+  ada `password_plain`); hash bcrypt lama tetap auto-upgrade ke Argon2id saat login.
+- Pepper server-side opsional via env `MEDWATCH_PEPPER` (di env, bukan di repo). Di Cloud Run
+  pepper di-set + user store di GCS di-hash dengan pepper itu.
+- Self-service register cuma untuk role `tenaga_kesehatan` dan `masyarakat` (`admin` ngga
+  pernah bisa di-register), policy password minimal 12 karakter plus tolak password umum.
+  Admin create-user juga ditegakkan policy yang sama.
+- Rate limit dan lockout di login dan register. Di Cloud Run pakai ProxyFix (di-gate env
+  `MEDWATCH_TRUST_PROXY`) supaya key rate-limit pakai client IP asli, bukan IP proxy.
+- JWT HMAC-SHA256, secret di-generate per-install di data dir; di Cloud Run dari Google
+  Secret Manager. Transport token Bearer (`Authorization: Bearer <jwt>`) seragam buat
+  desktop dan web; model cookie-proxy lama udah ngga dipakai.
+- Endpoint demo-admin passwordless udah DICABUT. Ngga ada jalan mint token admin tanpa
+  kredensial, dan ngga ada kredensial admin yang ke-bundle di klien.
 
 ### Aplikasi desktop (offline)
 
 Installer dibangun dari backend Flask yang di-freeze pakai PyInstaller plus renderer
 Next.js (static export) yang diserve Flask lewat loopback, dipaket pakai electron-builder,
-dan `drugs.db` multi-sumber ikut dibundel. Semua jalan offline (font self-host, nol
-panggilan CDN). Asset ada di Release
-https://github.com/Bisura16/medWatch/releases/tag/v0.1.0:
+dan `drugs.db` multi-sumber (20.828 baris) ikut dibundel via extraResources (bukan di
+dalam ASAR). Ada assertion build yang bikin build GAGAL kalau `drugs.db` ilang atau lebih
+kecil dari 150 MB, jadi installer tanpa katalog ngga mungkin ke-publish. Saat launch,
+katalog disalin ke direktori per-user dan di-refresh kalau ukuran bundel beda (anti katalog
+basi pasca upgrade). DB ngga ada = error yang kedengeran, bukan diam-diam katalog kosong.
+Semua jalan offline (font self-host, nol panggilan CDN).
 
-- macOS (Apple Silicon / arm64): download `MedWatch-0.1.0-arm64.dmg`, buka, drag ke
-  Applications. Karena unsigned, klik kanan aplikasi lalu Open, atau jalanin
-  `xattr -dr com.apple.quarantine /Applications/MedWatch.app` buat lewatin Gatekeeper.
-- Windows: download `MedWatch.Setup.0.1.0.exe` (installer NSIS) atau
-  `MedWatch-0.1.0-portable.exe` (portable). Karena unsigned, SmartScreen muncul, klik
-  More info lalu Run anyway.
+Asset ada di Release https://github.com/Bisura16/medWatch/releases/tag/v0.2.0 (juga ke-link
+dari landing page https://medwatch-landing.vercel.app):
 
-Catatan: build macOS = arm64 (Apple Silicon), bukan universal. Startup pertama sekitar
-9 detik karena ekstraksi onefile.
+- macOS (Apple Silicon / arm64): download `MedWatch-0.2.0-arm64.dmg`, buka, drag ke
+  Applications. Karena unsigned, di macOS Sequoia (15) dan Tahoe (26) cara klik-kanan-Open
+  udah ngga jalan; buka System Settings > Privacy & Security, scroll ke Security, klik
+  "Open Anyway" (dalam 1 jam) lalu authenticate, terus buka lagi. Alternatif Terminal:
+  `xattr -dr com.apple.quarantine /Applications/MedWatch.app`.
+- Windows: download `MedWatch.Setup.0.2.0.exe` (installer NSIS) atau
+  `MedWatch-0.2.0-portable.exe` (portable). Karena unsigned, SmartScreen muncul, klik
+  "More info" lalu "Run anyway".
+
+Verifikasi unduhan terhadap `SHA256SUMS.txt` yang ke-attach di Release. Catatan: build macOS
+= arm64 (Apple Silicon), bukan universal. Installer Windows di-build native di GitHub Actions
+(windows-latest), bukan cross-build dari Mac.
 
 ### Web showcase
 
@@ -78,6 +91,14 @@ Catatan: build macOS = arm64 (Apple Silicon), bukan universal. Startup pertama s
   region asia-southeast1, image membawa `drugs.db` multi-sumber).
 - Web mode nunjuk api-base ke Cloud Run via `NEXT_PUBLIC_API_BASE`, transport Bearer sama
   kaya desktop, CORS allowlist mengizinkan domain Vercel.
+
+### Batasan yang diketahui (untuk produksi pasien nyata)
+
+Rilis ini ngga nyimpen data pasien nyata. Beberapa item kelas medis sengaja DI-DEFER dan
+belum diimplementasikan (jadi jangan diasumsikan ada): migrasi storage user/pasien dari JSON
+ke SQLite, enkripsi data pasien at-rest, dan audit trail akses/ubah data pasien. Buat dipake
+bidan dengan data pasien nyata, item ini wajib dikerjain dulu (konteks UU PDP: data kesehatan
+butuh enkripsi at-rest, audit trail, consent tercatat, notifikasi breach <= 3 hari).
 
 ---
 
@@ -109,7 +130,7 @@ Daftar fitur disusun mengikuti ID requirement dari [`docs/SRS.md`](./docs/SRS.md
 
 1. **Autentikasi peran tiga jenis** (FR-001 sampai FR-008): login JWT bertanda tangan HMAC-SHA256, role-based access control untuk `tenaga_kesehatan`, `masyarakat`, dan `admin`, plus middleware defense-in-depth di sisi backend dan frontend.
 2. **CRUD pasien SOAP** (FR-010 sampai FR-019): rekam medis dengan field S/O/A/P (Subjective, Objective, Assessment, Plan), pengurutan newest-first dengan parser tanggal `DD-MM-YYYY`, validasi range klinis pada field numerik medis di server dan client.
-3. **Katalog dan pencarian obat** (FR-020 sampai FR-024): katalog obat multi-sumber 20.828 baris dari SQLite `drugs.db` (openFDA + RxNorm + DailyMed) dengan pencarian full-text FTS5; fallback ke `anggota4/data/drug_database.json` kalau database ngga tersedia. Profil keamanan per obat menampilkan RXCUI, bahan aktif, dan info label.
+3. **Katalog dan pencarian obat** (FR-020 sampai FR-024): katalog obat multi-sumber 20.828 baris dari SQLite `drugs.db` (openFDA + RxNorm + DailyMed) dengan pencarian full-text FTS5, search-first dan paginated (list default 15, search `LIMIT 15 ORDER BY rank`), nama tampil bersih via kolom `display_name`. Kalau `drugs.db` ngga tersedia, endpoint balikin error 503 yang kedengeran (loud failure), BUKAN diam-diam fallback ke JSON kecil. Profil keamanan per obat menampilkan RXCUI, bahan aktif, dan info label.
 4. **Pengecekan keamanan obat** (FR-030 sampai FR-039): analisis interaksi multi-obat dengan skor severitas 0-100, penggabungan obat aktif pasien dari `P.resep`, panel edukasi cara membaca verdict.
 5. **Visualisasi data kesehatan** (FR-040 sampai FR-049): tren kunjungan 12 bulan, distribusi kategori keluhan, top-10 efek samping, heatmap obat x efek dengan skala warna kontinu 5-stop.
 6. **Ekspor PDF** (FR-050 sampai FR-054): rekam medis per pasien, laporan kunjungan bulanan, laporan efek samping ter-ranked, laporan inventaris obat dengan distribusi per kategori farmakologi.
@@ -131,7 +152,8 @@ Sumber versi: [`api/requirements.txt`](./api/requirements.txt).
 | Flask | 3.1.3 | HTTP server |
 | Flask-Cors | 6.0.0 | CORS allowlist untuk domain Vercel |
 | PyJWT | 2.12.0 | Issuance dan verifikasi token JWT |
-| bcrypt | 4.2.1 | Hash password dengan cost 12 |
+| argon2-cffi | 25.1.0 | Hash password Argon2id (primary, OWASP m=19456 t=2 p=1) |
+| bcrypt | 4.2.1 | Verifikasi hash bcrypt seed lama (auto-upgrade ke Argon2id saat login) |
 | google-cloud-storage | 2.18.2 | Persistensi state ke GCS bucket |
 | gunicorn | 23.0.0 | Production WSGI server |
 | requests | 2.33.0 | HTTP client untuk openFDA |
@@ -148,17 +170,44 @@ Modul Python murni dengan dependency CustomTkinter, Pillow, matplotlib, fpdf2, r
 
 ## 5. Arsitektur
 
+### Arsitektur sistem (rilis final)
+
+Tiga diagram di bawah ini mencerminkan arsitektur final yang di-ship: satu backend Flask dan
+satu codebase Next.js, dijalankan di dua mode (desktop offline dan web), dengan katalog obat
+SQLite FTS5 lokal. Source SVG ada di [`docs/diagrams/src/`](./docs/diagrams/src/).
+
+![Arsitektur sistem MedWatch: mode desktop offline (Electron, Flask frozen di loopback, renderer Next.js, drugs.db userData) di kiri dan mode web (Next.js Vercel, Flask Cloud Run, drugs.db image, GCS) di kanan, dengan inti bersama Flask dan dual-mode api-base](./docs/diagrams/png/system-architecture.png)
+
+Mode desktop: Electron shell men-spawn backend Flask yang di-freeze (PyInstaller) di
+`127.0.0.1` pada port ephemeral, menyajikan static export Next.js lewat loopback, dan membaca
+`drugs.db` plus JSON pasien/user dari direktori per-user. Mode web: browser memuat static
+export dari Vercel yang base API-nya di-bake ke Cloud Run lewat `NEXT_PUBLIC_API_BASE`, lalu
+memanggil Flask di Cloud Run (CORS allowlist). Keduanya berbagi inti `api/` yang sama, dan
+`src/lib/api-base.ts` yang memilih loopback (desktop) atau Cloud Run (web) saat runtime.
+
+![Pipeline katalog obat MedWatch: openFDA, RxNorm, dan DailyMed digabung lewat ETL enrichment menjadi drugs.db SQLite FTS5 dengan display_name precompute, lalu disajikan via GET /api/drugs paginated dan GET /api/drugs/search FTS5](./docs/diagrams/png/catalog-pipeline.png)
+
+Pipeline katalog: tiga sumber publik (openFDA, RxNorm/RxNav, DailyMed) digabung jadi satu
+`drugs.db` SQLite ber-FTS5 dengan kolom `display_name` yang di-precompute, lalu disajikan
+search-first (`/api/drugs` default 15, `/api/drugs/search` FTS5 `ORDER BY rank LIMIT 15`).
+
+![Alur auth dan transport dual-mode MedWatch: login diverifikasi Argon2id plus pepper di Flask, JWT HS256 diterbitkan, token Bearer disimpan di localStorage dan dikirim sebagai header Authorization di setiap request, base URL dipilih loopback untuk desktop atau Cloud Run untuk web](./docs/diagrams/png/auth-dual-mode.png)
+
+Alur auth: password diverifikasi dengan Argon2id (plus pepper server di Cloud Run), JWT HS256
+diterbitkan, token disimpan sebagai Bearer di `localStorage` dan dikirim sebagai header
+`Authorization` di setiap panggilan. Model cookie httpOnly lama sudah tidak dipakai.
+
 ### Diagram C4 Level 1 (System Context)
 
 ![C4 Level 1 Context: aktor tenaga kesehatan, masyarakat, admin terhubung ke MedWatch melalui Vercel frontend; MedWatch terkoneksi ke openFDA API dan GCS state bucket](./docs/diagrams/png/c4-l1-context.png)
 
-Sistem MedWatch berinteraksi dengan tiga aktor (tenaga kesehatan, masyarakat, admin) melalui frontend Vercel yang memproksi semua request ke backend Cloud Run. Sumber data eksternal adalah openFDA REST API (untuk efek samping dan recall obat) sementara state persistensi disimpan di Google Cloud Storage.
+Sistem MedWatch berinteraksi dengan tiga aktor (tenaga kesehatan, masyarakat, admin) melalui frontend Vercel yang memanggil backend Cloud Run lewat transport Bearer (CORS allowlist; bukan lagi proxy cookie). Sumber data katalog adalah openFDA + RxNorm + DailyMed yang sudah digabung ke `drugs.db`; state pasien/user disimpan di Google Cloud Storage. Untuk pandangan terkini yang lebih akurat, lihat diagram arsitektur sistem di atas.
 
 ### Diagram C4 Level 2 (Container)
 
 ![C4 Level 2 Container: container Next.js (Vercel) memproksi ke container Flask (Cloud Run) yang membaca-tulis container GCS dan memanggil container openFDA eksternal](./docs/diagrams/png/c4-l2-container.png)
 
-Sistem terdiri dari empat container utama: (a) Frontend Next.js di Vercel dengan proxy API route, (b) Backend Flask di Cloud Run yang menjalankan WSGI server gunicorn, (c) Bucket GCS `medwatch-polban-2026-state` untuk penyimpanan JSON pasien dan users, (d) openFDA REST API sebagai data source eksternal. Detail justifikasi pemilihan arsitektur ini ada di [`docs/adr/0001-vercel-cloud-run-security-pattern.md`](./docs/adr/0001-vercel-cloud-run-security-pattern.md).
+Sistem terdiri dari empat container utama: (a) Frontend Next.js (static export) di Vercel yang memanggil backend lewat Bearer, (b) Backend Flask di Cloud Run yang menjalankan WSGI server gunicorn dengan `drugs.db` di-bake ke image, (c) Bucket GCS `medwatch-polban-2026-state` untuk penyimpanan JSON pasien dan users, (d) sumber data publik openFDA + RxNorm + DailyMed (dipakai offline saat akuisisi katalog, bukan saat runtime). Detail justifikasi pemilihan arsitektur ini ada di [`docs/adr/0001-vercel-cloud-run-security-pattern.md`](./docs/adr/0001-vercel-cloud-run-security-pattern.md).
 
 ### Diagram Deployment
 
@@ -168,7 +217,12 @@ Frontend dijalankan di Vercel Hobby tier dengan domain `medwatch-frontend.vercel
 
 ### Diagram alur sequence (Login)
 
-![Sequence diagram login: browser POST credentials ke Vercel API route, route forward ke Flask login, Flask verifikasi bcrypt dan terbitkan JWT, route set httpOnly cookie](./docs/diagrams/png/seq-login.png)
+Alur login final memakai Argon2id plus token Bearer; lihat diagram "Alur auth dan transport
+dual-mode" di awal seksi ini sebagai acuan terkini. Diagram sequence lama di bawah berasal
+dari era proxy cookie dan disimpan sebagai referensi historis (notasi cookie httpOnly sudah
+tidak berlaku):
+
+![Sequence diagram login era proxy lama (historis): browser POST credentials, Flask verifikasi dan terbitkan JWT](./docs/diagrams/png/seq-login.png)
 
 Daftar lengkap diagram (use case, class, activity, state machine, ERD Chen, ERD Crow's Foot, sequence safety check, sequence PDF) tersedia di folder [`docs/diagrams/png/`](./docs/diagrams/png/) beserta source Mermaid di [`docs/diagrams/src/`](./docs/diagrams/src/). Setiap diagram memiliki file `.legend.md` pendamping yang menjelaskan notasi.
 
@@ -266,7 +320,9 @@ python integrasi/app_terpadu.py
 | POST | `/api/auth/login` | semua | Login dengan username + password |
 | GET | `/api/patients` | tenaga_kesehatan, admin | Daftar pasien terurut newest-first |
 | POST | `/api/patients` | tenaga_kesehatan, admin | Tambah rekam pasien baru |
-| GET | `/api/drugs/search?q=<kata>` | semua | Pencarian obat dengan alias |
+| GET | `/api/drugs` | semua | List katalog paginated (default 15, bukan dump 20.828) |
+| GET | `/api/drugs/count` | semua | Total baris katalog (buat header UI tanpa load semua) |
+| GET | `/api/drugs/search?q=<kata>` | semua | Pencarian FTS5 ber-rank, LIMIT 15, sinonim id ke us |
 | POST | `/api/safety/check` | semua | Analisis interaksi multi-obat |
 | GET | `/api/visualizations/heatmap-efek` | semua terotentikasi | Matriks obat x efek samping |
 | POST | `/api/pdf/generate-rekam-medis` | tenaga_kesehatan, admin | PDF rekam medis per pasien |
@@ -349,10 +405,10 @@ MedWatch mengelola enam entitas inti yang skema lengkapnya didokumentasikan di [
 
 | Entitas | Sumber kebenaran skema | File data |
 |---|---|---|
-| User auth | `api/data/users.json` schema bcrypt | `api/data/users.json` |
-| Pasien (SOAP) | `anggota2/pasien_helper.py` | `api/data/patients.json` (web), `anggota2/Pasien.json` (desktop) |
-| Drug catalog | `anggota4/data/drug_database.json` | sama, read-only |
-| Side effect dictionary | `anggota4/data/effect_database.json` | sama, read-only |
+| User auth | `api/data/users.json` (hash Argon2id, tanpa plaintext) | `api/data/users.json` (lokal/desktop), GCS (Cloud Run) |
+| Pasien (SOAP) | `anggota2/pasien_helper.py` | `api/data/patients.json` (web/GCS), `anggota2/Pasien.json` (desktop) |
+| Drug catalog | SQLite `drugs.db` (skema di `api/drug_db.py`) | `anggota1/Hasil-Scrap/drugs.db`, 20.828 baris, FTS5, read-only |
+| Side effect dictionary | `anggota4/data/effect_database.json` | sama, read-only (dipakai laporan PDF) |
 | Adverse event report | openFDA FAERS | `anggota1/data/drug_safety_data.json` |
 | Drug recall | openFDA Enforcement | `anggota1/data/drug_recalls.json` |
 
@@ -447,7 +503,7 @@ Real execution evidence disimpan di `docs/testing/evidence/` per TC-ID (transcri
 
 ## 14. Deployment
 
-Backend dideploy ke Google Cloud Run di region `asia-southeast1` lewat Cloud Build dari [`api/Dockerfile`](./api/Dockerfile). Frontend dideploy ke Vercel dari repo `Finerium/FrontendMedwatch`. Panduan langkah demi langkah, termasuk setup Secret Manager, GCS bucket, dan environment variable di Vercel, ada di [`docs/INSTALL.md`](./docs/INSTALL.md) bagian Deploy.
+Backend dideploy ke Google Cloud Run di region `asia-southeast1` dengan `gcloud run deploy --source .` dari ROOT repo (Cloud Build memakai [`Dockerfile`](./Dockerfile) di root yang membake `anggota1/Hasil-Scrap/drugs.db` ke image lewat aturan `.gcloudignore`). JANGAN pakai `--source api/`: konteks itu tidak menyertakan `drugs.db` sehingga katalog kosong di produksi. Frontend dideploy ke Vercel dari repo `Finerium/FrontendMedwatch` dengan `NEXT_PUBLIC_API_BASE` di-set ke URL Cloud Run. Panduan langkah demi langkah, termasuk setup Secret Manager dan GCS bucket, ada di [`docs/INSTALL.md`](./docs/INSTALL.md) bagian Deploy.
 
 ---
 
@@ -500,7 +556,7 @@ Detail openFDA acquisition pipeline yang menggantikan scraping drugs.com (akibat
 | Repo | Kegunaan | URL |
 |---|---|---|
 | Backend (THIS repo) | Modul anggota1-5 plus integration layer Flask plus desktop CLI | https://github.com/Bisura16/medWatch |
-| Frontend showcase | Next.js 15 plus Tailwind v4 plus shadcn glassmorphism, dideploy ke Vercel | https://github.com/Finerium/FrontendMedwatch |
+| Frontend showcase | Next.js 16 plus Tailwind v4 plus shadcn glassmorphism, dideploy ke Vercel | https://github.com/Finerium/FrontendMedwatch |
 
 README frontend memiliki section navigasi, route map, RBAC matrix, dan demo credentials yang melengkapi dokumentasi backend ini.
 
