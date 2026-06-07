@@ -12,6 +12,10 @@ on:
         description: "Release tag to pull drugs.db from (blank = latest)"
         required: false
         default: ""
+      release_tag:
+        description: "Release tag to publish built installers to (blank = do not publish)"
+        required: false
+        default: ""
   push:
     branches:
       - feat/offline-production
@@ -41,7 +45,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     permissions:
-      contents: read
+      contents: write
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -126,3 +130,18 @@ jobs:
             portable-app/dist/*.zip
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Publish installers to release
+        if: ${{ github.event.inputs.release_tag != '' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ github.event.inputs.release_tag }}"
+          for d in "installer-based app/dist" "portable-app/dist"; do
+            find "$d" -maxdepth 1 -type f \( -name '*.exe' -o -name '*.dmg' -o -name '*.zip' \) -print0 \
+              | while IFS= read -r -d '' f; do
+                  echo "uploading: $f"
+                  gh release upload "$TAG" "$f" --repo "$GITHUB_REPOSITORY" --clobber
+                done
+          done
