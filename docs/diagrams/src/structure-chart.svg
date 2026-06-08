@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1740" height="770" viewBox="0 0 1740 770">
+<defs><marker id="cdown" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L5 9 L9 1" fill="none" stroke="#46514C" stroke-width="1.6"/></marker><marker id="cup" viewBox="0 0 10 10" refX="5" refY="1" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 9 L5 1 L9 9" fill="none" stroke="#46514C" stroke-width="1.6"/></marker></defs>
+<rect width="1740" height="770" fill="#FBFDFC"/>
+<text x="40" y="46" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#0E4B42" text-anchor="start" font-weight="bold">MedWatch Structure Chart</text>
+<text x="40" y="70" font-family="Helvetica, Arial, sans-serif" font-size="13.5" fill="#46514C" text-anchor="start" font-weight="normal">Dekomposisi modul dari kontrol utama ke seluruh fitur. Notasi bagan terstruktur (Yourdon/Constantine): kotak modul, garis pemanggilan, dan kopel data/kontrol.</text>
+<rect x="710.0" y="92" width="320" height="56" rx="9" fill="#E8F4F0" stroke="#1E6E62" stroke-width="2"/>
+<text x="870.0" y="116" font-family="Helvetica, Arial, sans-serif" font-size="16" fill="#1E6E62" text-anchor="middle" font-weight="bold">Aplikasi MedWatch</text>
+<text x="870.0" y="135" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#46514C" text-anchor="middle" font-weight="normal">kontrol utama (main) - login gate + menu per peran</text>
+<path d="M 870.0 150 L 878.0 158 L 870.0 166 L 862.0 158 Z" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.4"/>
+<line x1="870.0" y1="166" x2="870.0" y2="196" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="135.0" y1="196" x2="1605.0" y2="196" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="135.0" y1="196" x2="135.0" y2="296" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="128.0" y1="210" x2="128.0" y2="252" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<circle cx="128.0" cy="208" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<line x1="142.0" y1="252" x2="142.0" y2="210" stroke="#46514C" stroke-width="1.3" marker-end="url(#cup)"/>
+<circle cx="142.0" cy="284" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<text x="135.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">in: kredensial</text>
+<text x="135.0" y="278" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">out: token, peran</text>
+<rect x="37.0" y="296" width="196" height="54" rx="8" fill="#E8F4F0" stroke="#1E6E62" stroke-width="1.8"/>
+<text x="135.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#1E6E62" text-anchor="middle" font-weight="bold">Autentikasi</text>
+<text x="135.0" y="336" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#46514C" text-anchor="middle" font-weight="normal">api/auth.py</text>
+<line x1="135.0" y1="350" x2="135.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="135.0" y1="358" x2="41.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="41.0" y1="358" x2="41.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="41.0" y1="372" x2="51.0" y2="372" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="51.0" y="355.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="135.0" y="376" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Login (Argon2id)</text>
+<line x1="41.0" y1="416" x2="51.0" y2="416" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="51.0" y="399.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="135.0" y="420" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Registrasi</text>
+<line x1="41.0" y1="460" x2="51.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="51.0" y="443.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="135.0" y="464" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Penjaga peran (RBAC)</text>
+<line x1="345.0" y1="196" x2="345.0" y2="296" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="338.0" y1="210" x2="338.0" y2="252" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<circle cx="338.0" cy="208" r="3.2" fill="#46514C" stroke="#46514C" stroke-width="1.4"/>
+<line x1="352.0" y1="252" x2="352.0" y2="210" stroke="#46514C" stroke-width="1.3" marker-end="url(#cup)"/>
+<circle cx="352.0" cy="284" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<text x="345.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">in: peran</text>
+<text x="345.0" y="278" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">out: rekam pasien</text>
+<rect x="247.0" y="296" width="196" height="54" rx="8" fill="#EAF1F7" stroke="#3A6EA5" stroke-width="1.8"/>
+<text x="345.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#3A6EA5" text-anchor="middle" font-weight="bold">Manajemen Pasien</text>
+<text x="345.0" y="336" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#46514C" text-anchor="middle" font-weight="normal">anggota2</text>
+<line x1="345.0" y1="350" x2="345.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="345.0" y1="358" x2="251.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="251.0" y1="358" x2="251.0" y2="504" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="251.0" y1="372" x2="261.0" y2="372" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="261.0" y="355.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#3A6EA5" stroke-width="1.3"/>
+<text x="345.0" y="376" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Daftar pasien</text>
+<line x1="251.0" y1="416" x2="261.0" y2="416" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="261.0" y="399.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#3A6EA5" stroke-width="1.3"/>
+<text x="345.0" y="420" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Tambah SOAP</text>
+<line x1="251.0" y1="460" x2="261.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="261.0" y="443.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#3A6EA5" stroke-width="1.3"/>
+<text x="345.0" y="464" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Detail / cetak</text>
+<line x1="251.0" y1="504" x2="261.0" y2="504" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="261.0" y="487.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#3A6EA5" stroke-width="1.3"/>
+<text x="345.0" y="508" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Validasi klinis</text>
+<line x1="555.0" y1="196" x2="555.0" y2="296" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="548.0" y1="210" x2="548.0" y2="252" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<circle cx="548.0" cy="208" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<line x1="562.0" y1="252" x2="562.0" y2="210" stroke="#46514C" stroke-width="1.3" marker-end="url(#cup)"/>
+<circle cx="562.0" cy="284" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<text x="555.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">in: kata kunci</text>
+<text x="555.0" y="278" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">out: daftar obat</text>
+<rect x="457.0" y="296" width="196" height="54" rx="8" fill="#E8F4F0" stroke="#1E6E62" stroke-width="1.8"/>
+<text x="555.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#1E6E62" text-anchor="middle" font-weight="bold">Katalog Obat</text>
+<text x="555.0" y="336" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#46514C" text-anchor="middle" font-weight="normal">api/drug_db.py</text>
+<line x1="555.0" y1="350" x2="555.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="555.0" y1="358" x2="461.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="461.0" y1="358" x2="461.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="461.0" y1="372" x2="471.0" y2="372" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="471.0" y="355.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="555.0" y="376" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Pencarian FTS5</text>
+<line x1="461.0" y1="416" x2="471.0" y2="416" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="471.0" y="399.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="555.0" y="420" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Detail obat</text>
+<line x1="461.0" y1="460" x2="471.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="471.0" y="443.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="555.0" y="464" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Bandingkan obat</text>
+<line x1="765.0" y1="196" x2="765.0" y2="296" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="758.0" y1="210" x2="758.0" y2="252" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<circle cx="758.0" cy="208" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<line x1="772.0" y1="252" x2="772.0" y2="210" stroke="#46514C" stroke-width="1.3" marker-end="url(#cup)"/>
+<circle cx="772.0" cy="284" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<text x="765.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">in: daftar obat</text>
+<text x="765.0" y="278" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">out: skor + verdikt</text>
+<rect x="667.0" y="296" width="196" height="54" rx="8" fill="#FBF1E0" stroke="#9A6B12" stroke-width="1.8"/>
+<text x="765.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#9A6B12" text-anchor="middle" font-weight="bold">Cek Keamanan Obat</text>
+<text x="765.0" y="336" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#46514C" text-anchor="middle" font-weight="normal">anggota4</text>
+<line x1="765.0" y1="350" x2="765.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="765.0" y1="358" x2="671.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="671.0" y1="358" x2="671.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="671.0" y1="372" x2="681.0" y2="372" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="681.0" y="355.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#9A6B12" stroke-width="1.3"/>
+<text x="765.0" y="376" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Input multi-obat</text>
+<line x1="671.0" y1="416" x2="681.0" y2="416" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="681.0" y="399.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#9A6B12" stroke-width="1.3"/>
+<text x="765.0" y="420" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Analisis interaksi</text>
+<line x1="671.0" y1="460" x2="681.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="681.0" y="443.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#9A6B12" stroke-width="1.3"/>
+<text x="765.0" y="464" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Skor severitas</text>
+<line x1="975.0" y1="196" x2="975.0" y2="296" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="968.0" y1="210" x2="968.0" y2="252" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<circle cx="968.0" cy="208" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<line x1="982.0" y1="252" x2="982.0" y2="210" stroke="#46514C" stroke-width="1.3" marker-end="url(#cup)"/>
+<circle cx="982.0" cy="284" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<text x="975.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">in: filter</text>
+<text x="975.0" y="278" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">out: dataset chart</text>
+<rect x="877.0" y="296" width="196" height="54" rx="8" fill="#F0EAF6" stroke="#7A4FA3" stroke-width="1.8"/>
+<text x="975.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#7A4FA3" text-anchor="middle" font-weight="bold">Visualisasi</text>
+<text x="975.0" y="336" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#46514C" text-anchor="middle" font-weight="normal">anggota3</text>
+<line x1="975.0" y1="350" x2="975.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="975.0" y1="358" x2="881.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="881.0" y1="358" x2="881.0" y2="504" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="881.0" y1="372" x2="891.0" y2="372" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="891.0" y="355.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#7A4FA3" stroke-width="1.3"/>
+<text x="975.0" y="376" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Tren kunjungan</text>
+<line x1="881.0" y1="416" x2="891.0" y2="416" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="891.0" y="399.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#7A4FA3" stroke-width="1.3"/>
+<text x="975.0" y="420" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Distribusi kategori</text>
+<line x1="881.0" y1="460" x2="891.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="891.0" y="443.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#7A4FA3" stroke-width="1.3"/>
+<text x="975.0" y="464" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Top efek samping</text>
+<line x1="881.0" y1="504" x2="891.0" y2="504" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="891.0" y="487.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#7A4FA3" stroke-width="1.3"/>
+<text x="975.0" y="508" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Heatmap obat-efek</text>
+<line x1="1185.0" y1="196" x2="1185.0" y2="296" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="1178.0" y1="210" x2="1178.0" y2="252" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<circle cx="1178.0" cy="208" r="3.2" fill="#46514C" stroke="#46514C" stroke-width="1.4"/>
+<line x1="1192.0" y1="252" x2="1192.0" y2="210" stroke="#46514C" stroke-width="1.3" marker-end="url(#cup)"/>
+<circle cx="1192.0" cy="284" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<text x="1185.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">in: jenis laporan</text>
+<text x="1185.0" y="278" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">out: berkas PDF</text>
+<rect x="1087.0" y="296" width="196" height="54" rx="8" fill="#E6F3EC" stroke="#2E7D52" stroke-width="1.8"/>
+<text x="1185.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#2E7D52" text-anchor="middle" font-weight="bold">Ekspor PDF</text>
+<text x="1185.0" y="336" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#46514C" text-anchor="middle" font-weight="normal">anggota5</text>
+<line x1="1185.0" y1="350" x2="1185.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1185.0" y1="358" x2="1091.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1091.0" y1="358" x2="1091.0" y2="504" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1091.0" y1="372" x2="1101.0" y2="372" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1101.0" y="355.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#2E7D52" stroke-width="1.3"/>
+<text x="1185.0" y="376" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Rekam medis</text>
+<line x1="1091.0" y1="416" x2="1101.0" y2="416" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1101.0" y="399.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#2E7D52" stroke-width="1.3"/>
+<text x="1185.0" y="420" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Kunjungan bulanan</text>
+<line x1="1091.0" y1="460" x2="1101.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1101.0" y="443.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#2E7D52" stroke-width="1.3"/>
+<text x="1185.0" y="464" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Efek samping</text>
+<line x1="1091.0" y1="504" x2="1101.0" y2="504" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1101.0" y="487.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#2E7D52" stroke-width="1.3"/>
+<text x="1185.0" y="508" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Inventaris obat</text>
+<line x1="1395.0" y1="196" x2="1395.0" y2="296" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="1388.0" y1="210" x2="1388.0" y2="252" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<circle cx="1388.0" cy="208" r="3.2" fill="#46514C" stroke="#46514C" stroke-width="1.4"/>
+<line x1="1402.0" y1="252" x2="1402.0" y2="210" stroke="#46514C" stroke-width="1.3" marker-end="url(#cup)"/>
+<circle cx="1402.0" cy="284" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<text x="1395.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">in: peran admin</text>
+<text x="1395.0" y="278" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">out: statistik</text>
+<rect x="1297.0" y="296" width="196" height="54" rx="8" fill="#E8F4F0" stroke="#1E6E62" stroke-width="1.8"/>
+<text x="1395.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#1E6E62" text-anchor="middle" font-weight="bold">Admin</text>
+<text x="1395.0" y="336" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#46514C" text-anchor="middle" font-weight="normal">api/routes</text>
+<line x1="1395.0" y1="350" x2="1395.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1395.0" y1="358" x2="1301.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1301.0" y1="358" x2="1301.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1301.0" y1="372" x2="1311.0" y2="372" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1311.0" y="355.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="1395.0" y="376" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Manajemen user</text>
+<line x1="1301.0" y1="416" x2="1311.0" y2="416" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1311.0" y="399.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="1395.0" y="420" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Trigger scraper</text>
+<line x1="1301.0" y1="460" x2="1311.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1311.0" y="443.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="1395.0" y="464" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">Statistik sistem</text>
+<line x1="1605.0" y1="196" x2="1605.0" y2="296" stroke="#9AA7A1" stroke-width="1.8"/>
+<line x1="1598.0" y1="210" x2="1598.0" y2="252" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<circle cx="1598.0" cy="208" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<line x1="1612.0" y1="252" x2="1612.0" y2="210" stroke="#46514C" stroke-width="1.3" marker-end="url(#cup)"/>
+<circle cx="1612.0" cy="284" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<text x="1605.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">in: nama obat</text>
+<text x="1605.0" y="278" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#46514C" text-anchor="middle" font-weight="normal">out: baris katalog</text>
+<rect x="1507.0" y="296" width="196" height="54" rx="8" fill="#E8F4F0" stroke="#1E6E62" stroke-width="1.8"/>
+<text x="1605.0" y="318" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#1E6E62" text-anchor="middle" font-weight="bold">Akuisisi Data</text>
+<text x="1605.0" y="336" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#46514C" text-anchor="middle" font-weight="normal">anggota1</text>
+<line x1="1605.0" y1="350" x2="1605.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1605.0" y1="358" x2="1511.0" y2="358" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1511.0" y1="358" x2="1511.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<line x1="1511.0" y1="372" x2="1521.0" y2="372" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1521.0" y="355.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="1605.0" y="376" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">openFDA fetch</text>
+<line x1="1511.0" y1="416" x2="1521.0" y2="416" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1521.0" y="399.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="1605.0" y="420" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">RxNorm enrich</text>
+<line x1="1511.0" y1="460" x2="1521.0" y2="460" stroke="#9AA7A1" stroke-width="1.5"/>
+<rect x="1521.0" y="443.0" width="168" height="34" rx="6" fill="#FFFFFF" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="1605.0" y="464" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1A2520" text-anchor="middle" font-weight="normal">DailyMed enrich</text>
+<rect x="40" y="600" width="1660" height="140" rx="10" fill="#F4F8F6" stroke="#C2DDD5" stroke-width="1.4"/>
+<text x="60" y="626" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#0E4B42" text-anchor="start" font-weight="bold">Legenda</text>
+<text x="60" y="650" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#1A2520" text-anchor="start" font-weight="bold">Notasi:</text>
+<rect x="60" y="660" width="26" height="16" rx="4" fill="#FFFFFF" stroke="#46514C" stroke-width="1.3"/>
+<text x="94" y="672" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">kotak modul (fungsi)</text>
+<line x1="62" y1="692" x2="86" y2="692" stroke="#9AA7A1" stroke-width="1.8"/>
+<text x="94" y="696" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">garis pemanggilan (call)</text>
+<circle cx="66" cy="712" r="3.2" fill="none" stroke="#46514C" stroke-width="1.4"/>
+<line x1="66" y1="706" x2="66" y2="720" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<text x="94" y="716" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">kopel data (lingkaran kosong)</text>
+<circle cx="290" cy="712" r="3.2" fill="#46514C" stroke="#46514C" stroke-width="1.4"/>
+<line x1="290" y1="706" x2="290" y2="720" stroke="#46514C" stroke-width="1.3" marker-end="url(#cdown)"/>
+<text x="300" y="716" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">kopel kontrol/flag (lingkaran isi)</text>
+<path d="M 300 663 L 307 670 L 300 677 L 293 670 Z" fill="#FFFFFF" stroke="#46514C" stroke-width="1.4"/>
+<text x="314" y="674" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">pemanggilan kondisional (sesuai peran)</text>
+<text x="300" y="696" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">panah: arah aliran data (in turun, out naik)</text>
+<text x="560" y="650" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#1A2520" text-anchor="start" font-weight="bold">Pemilik modul:</text>
+<rect x="560" y="653" width="18" height="12" rx="3" fill="#E8F4F0" stroke="#1E6E62" stroke-width="1.3"/>
+<text x="584" y="663" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">Ghaisan - api / integrasi / anggota1</text>
+<rect x="560" y="668" width="18" height="12" rx="3" fill="#EAF1F7" stroke="#3A6EA5" stroke-width="1.3"/>
+<text x="584" y="678" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">Bimo - anggota2</text>
+<rect x="560" y="683" width="18" height="12" rx="3" fill="#F0EAF6" stroke="#7A4FA3" stroke-width="1.3"/>
+<text x="584" y="693" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">Alia - anggota3</text>
+<rect x="560" y="698" width="18" height="12" rx="3" fill="#FBF1E0" stroke="#9A6B12" stroke-width="1.3"/>
+<text x="584" y="708" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">Iqbal - anggota4</text>
+<rect x="560" y="713" width="18" height="12" rx="3" fill="#E6F3EC" stroke="#2E7D52" stroke-width="1.3"/>
+<text x="584" y="723" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">Abhidal - anggota5</text>
+<text x="1180" y="650" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">Sumber: kode repo terverifikasi runtime.</text>
+<text x="1180" y="666" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">main memanggil fitur setelah autentikasi + sesuai peran (RBAC).</text>
+<text x="1180" y="682" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">Tiap fitur memanggil sub-modul (leaf) pada level di bawahnya.</text>
+<text x="1180" y="698" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#46514C" text-anchor="start" font-weight="normal">Kopel mendokumentasikan data/flag yang mengalir antar modul.</text>
+</svg>

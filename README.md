@@ -197,6 +197,16 @@ Alur auth: password diverifikasi dengan Argon2id (plus pepper server di Cloud Ru
 diterbitkan, token disimpan sebagai Bearer di `localStorage` dan dikirim sebagai header
 `Authorization` di setiap panggilan. Model cookie httpOnly lama sudah tidak dipakai.
 
+### Structure Chart (dekomposisi modul)
+
+Bagan terstruktur (structure chart, notasi Yourdon/Constantine) dari kontrol utama `main`
+turun ke seluruh fitur dan sub-modulnya. Tiap kotak adalah modul, garis adalah pemanggilan
+(call), dan kopel mendokumentasikan data (lingkaran kosong) atau kontrol/flag (lingkaran isi)
+yang mengalir antar modul. Warna menandai pemilik modul per anggota tim. Source SVG di
+[`docs/diagrams/src/structure-chart.svg`](./docs/diagrams/src/structure-chart.svg).
+
+![Structure Chart MedWatch: modul kontrol utama main memanggil delapan subsistem fitur (autentikasi, manajemen pasien, katalog obat, cek keamanan obat, visualisasi, ekspor PDF, admin, akuisisi data), masing-masing dengan sub-modulnya, plus kopel data dan kontrol antar modul dan kode warna pemilik per anggota tim](./docs/diagrams/png/structure-chart.png)
+
 ### Diagram C4 Level 1 (System Context)
 
 ![C4 Level 1 Context: aktor tenaga kesehatan, masyarakat, admin terhubung ke MedWatch melalui Vercel frontend; MedWatch terkoneksi ke openFDA API dan GCS state bucket](./docs/diagrams/png/c4-l1-context.png)
